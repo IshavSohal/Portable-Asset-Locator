@@ -1,0 +1,10 @@
+import request from "supertest";
+import app from "../index";
+
+describe("Server setup tests", () => {
+    it("Root test", async () => {
+      const res = await request(app)
+      .get("/")
+      expect(res.statusCode).toEqual(200);
+    });
+  });
