@@ -5,3 +5,5 @@ Things to do to set up the backend locally
 - Run `npm install` to install all dependencies (once)
 - Run `npx ts-jest config:init` to configure the jest file
 - Run `npm run dev` to run the server (make sure you saved all changes beforehand)
+
+For testing run `npm run test`
