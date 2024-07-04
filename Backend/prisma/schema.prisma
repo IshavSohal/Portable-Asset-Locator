@@ -20,7 +20,7 @@ model Role {
 }
 
 model User { 
-  id            Int         @id @default(autoincrement()) 
+  UID           Int         @id @unique
   email         String      @unique
   firstName     String
   lastName      String
