@@ -9,7 +9,8 @@ Things to do to set up the backend locally
 
 For testing run `npm run test`
 
-To work with Prisma
+To work with Prisma:
+
 - Add the connection string to the `.env` file in the Backend root directory  
   (use `DATABASE_URL="sqlserver://NATSQLDEVAPPS2\INS2;database=AQC_Dev;integratedSecurity=true;trustServerCertificate=true;"`)
 - Run `npx prisma generate` to generate the Prisma Client to reflect the schema. This will need to be reran when changes are made in schema.prisma.
