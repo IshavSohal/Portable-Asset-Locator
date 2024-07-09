@@ -12,7 +12,9 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use('/', indexRouter);
+// Hello World endpoints have the /HelloWorld path
 app.use("/HelloWorld", helloWorldRouter);
+// Authetication functionalities are preceded by the /authenticate path
 app.use("/authenticate", authenticationRouter);
 
 if (process.env.NODE_ENV !== 'test'){
