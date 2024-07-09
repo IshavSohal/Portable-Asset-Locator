@@ -20,10 +20,11 @@ model Role {
 }
 
 model User { 
-  UID           Int         @id @unique
+  UID           Int         @id @default(autoincrement())
   email         String      @unique
   firstName     String
   lastName      String
   role          Role        @relation(fields: [roleName], references: [name])
   roleName      String
+  password      String
 }

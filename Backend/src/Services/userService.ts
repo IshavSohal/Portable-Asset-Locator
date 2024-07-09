@@ -14,7 +14,7 @@ export class UserService {
      * @param {User} data The data for the new user
      * @returns {Promise<User>} The created user
      */
-    public async createUser(data: User): Promise<User> {
+    public async createUser(data: Omit<User, 'UID'>): Promise<User> {
         return prisma.user.create({ data });
     }
 
@@ -36,6 +36,18 @@ export class UserService {
      */
     public async getUserById(UID: number): Promise<User | null> {
         return prisma.user.findUnique({ where: { UID } });
+    }
+
+    /**
+     * Get a user by their email
+     * 
+     * @param {string} email The email of the user to retrieve
+     * @returns {Promise<User | null>} The user with the specific email, null if not found
+     */
+    public async getUserByEmail(email: string) : Promise<User | null>{
+        return prisma.user.findUnique({ 
+            where: { email: email },
+        });
     }
 
     /**

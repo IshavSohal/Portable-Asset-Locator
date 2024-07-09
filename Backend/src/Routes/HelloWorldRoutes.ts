@@ -12,3 +12,5 @@ helloWorldRoute.route("/start")
     .get((req: Request, res: Response) => {
         helloWorldController.helloWorld(req, res);
     });
+
+module.exports = helloWorldRoute;
