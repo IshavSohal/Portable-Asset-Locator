@@ -23,3 +23,5 @@ To work with Prisma:
 - Run `npx prisma db push` to quickly apply changes made in our Prisma schema to the database (this does not generate a migration file)
 - Run `npx prisma migrate dev --name [name_of_migration]` to do the above but generate a migration file. At the moment this will not work
 
+For testing authentication methods on your local, add `ENCRYPTION_ALGORITHM="aes-256-cbc"` to the `.env` file.
+

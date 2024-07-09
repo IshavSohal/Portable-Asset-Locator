@@ -10,7 +10,11 @@ export class ConsoleLogger {
         transports: [new winstonLogging.transports.Console()],
     });
 
-    static log(message:string):void{
+    static logInfo(message:string):void{
         this.consoleLogger.info(message);
+    }
+
+    static logWarning(message:string):void{
+        this.consoleLogger.error(message);
     }
 }
