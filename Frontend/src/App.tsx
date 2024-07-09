@@ -1,10 +1,26 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { GcdsHeader, GcdsTopNav, GcdsNavLink } from '@cdssnc/gcds-components-react';
 
 function App() {
   return (
     <div className="App">
+      <GcdsHeader
+      langHref="#"
+      skipToHref="#"
+      >
+      </GcdsHeader>
+
+      <GcdsTopNav
+      label="Top navigation"
+      alignment="right"
+      >
+    <GcdsNavLink href="#home" slot="home">Portable Asset Locator</GcdsNavLink> 
+    <GcdsNavLink href="#">Why GC Notify</GcdsNavLink>
+    <GcdsNavLink href="#">Contact us</GcdsNavLink>
+    </GcdsTopNav>
+    
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
