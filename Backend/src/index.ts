@@ -4,14 +4,18 @@ import dotenv from "dotenv";
 const indexRouter = require("./Routes/index");
 const helloWorldRouter = require("./Routes/HelloWorldRoutes");
 const authenticationRouter = require("./Routes/AuthenticationRoutes");
+import path from "path";
 
 dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
+const distPath = path.join(__dirname, '../../Frontend/build')
+
+app.use(express.static(distPath))
 app.use(express.json());
-app.use('/', indexRouter);
+app.use('/api/', indexRouter);
 // Hello World endpoints have the /HelloWorld path
 app.use("/HelloWorld", helloWorldRouter);
 // Authetication functionalities are preceded by the /authenticate path
