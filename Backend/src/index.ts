@@ -15,11 +15,18 @@ const distPath = path.join(__dirname, '../../Frontend/build')
 
 app.use(express.static(distPath))
 app.use(express.json());
+
+// API routes
 app.use('/api/', indexRouter);
 // Hello World endpoints have the /HelloWorld path
 app.use("/HelloWorld", helloWorldRouter);
 // Authetication functionalities are preceded by the /authenticate path
 app.use("/authenticate", authenticationRouter);
+
+// Handles any requests that don't match the ones above
+app.get('*', (req, res) =>{
+  res.sendFile(path.join(distPath, 'index.html'));
+});
 
 if (process.env.NODE_ENV !== 'test'){
     app.listen(port, () => {
