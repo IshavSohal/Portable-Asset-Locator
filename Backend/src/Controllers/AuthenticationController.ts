@@ -26,6 +26,6 @@ export class AuthenticationController {
             lastName: lastName,
             roleName: "Base"
         });
-        return res.sendStatus(200);
+        return res.sendStatus(201);
     }
 }
