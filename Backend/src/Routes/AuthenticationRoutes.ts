@@ -17,8 +17,8 @@ authenticationRoutes.route("/register")
     .post(
         [body("email").exists().matches(/^[A-Za-z0-9._%+-]+@ec\.gc\.ca$/).isEmail().isLength({max:50}),
          body("password").exists().matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/),
-         body("firstName").exists().isLength({min: 1, max:20}),
-         body("lastName").exists().isLength({min: 1, max:20})
+         body("firstName").exists().isLength({min: 1, max:50}),
+         body("lastName").exists().isLength({min: 1, max:50})
         ],
         async (req: Request, res: Response) => {
             ConsoleLogger.logInfo('Registration Attempt');
