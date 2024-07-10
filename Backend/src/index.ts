@@ -12,7 +12,14 @@ const port = process.env.PORT || 3000;
 const distPath = path.join(__dirname, '../../Frontend/build')
 
 app.use(express.static(distPath))
+
+// API routes
 app.use('/api/', routes);
+
+// Handles any requests that don't match the ones above
+app.get('*', (req, res) =>{
+  res.sendFile(path.join(distPath, 'index.html'));
+});
 
 if (process.env.NODE_ENV !== 'test'){
     app.listen(port, () => {
