@@ -1,6 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import logo from './logo.svg';
 import './App.css';
+import {
+    GcdsHeader,
+    GcdsTopNav,
+    GcdsNavLink,
+} from '@cdssnc/gcds-components-react';
 import Dashboard from './pages/Dashboard';
 
 function App() {
@@ -17,6 +22,20 @@ function App() {
 function Home() {
     return (
         <div className='App'>
+            <GcdsHeader langHref='#' skipToHref='#'>
+                <GcdsTopNav
+                    slot='menu'
+                    label='Top navigation'
+                    alignment='right'
+                >
+                    <GcdsNavLink href='#home' slot='home'>
+                        Portable Asset Locator
+                    </GcdsNavLink>
+                    <GcdsNavLink href='#'>Why GC Notify</GcdsNavLink>
+                    <GcdsNavLink href='#'>Contact us</GcdsNavLink>
+                </GcdsTopNav>
+            </GcdsHeader>
+
             <header className='App-header'>
                 <img src={logo} className='App-logo' alt='logo' />
                 <p>
