@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { fetchHelloWorld } from '../requests/simple';
 
 function MessageDisplay() {
     const [message, setMessage] = useState('');
@@ -6,14 +7,7 @@ function MessageDisplay() {
     useEffect(() => {
         // fetch data
         const dataFetch = async () => {
-            const res = await fetch('/api/start');
-            if (!res.ok) {
-                // This will activate the closest `error.js` Error Boundary
-                const errorText = await res.text();
-
-                setMessage('Error fetching data: ' + errorText);
-            }
-            const message = await res.text();
+            const message = await fetchHelloWorld();
             // set state when the data received
             setMessage(message);
         };
