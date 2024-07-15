@@ -7,7 +7,7 @@ const fetchHelloWorld: () => Promise<string> = async () => {
     //     server = 'http://localhost:8080' // TODO: Resolve CORS
     // }
 
-    const res = await fetch('/api/start');
+    const res = await fetch('/api/HelloWorld/start');
     if (!res.ok) {
         // This will activate the closest `error.js` Error Boundary
         const errorText = await res.text();
