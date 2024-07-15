@@ -15,7 +15,6 @@ const distPath = path.join(__dirname, '../../Frontend/build');
 
 app.use(express.json());
 app.use(express.static(distPath))
-app.use(express.json());
 
 app.use('/api', indexRouter);
 // Hello World endpoints have the /HelloWorld path
