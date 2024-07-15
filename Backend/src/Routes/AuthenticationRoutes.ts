@@ -1,0 +1,40 @@
+import express, { Express, Request, Response, Router } from "express";
+import { AuthenticationController } from "../Controllers/AuthenticationController";
+import { ConsoleLogger } from "../Logging/ConsoleLogger";
+import { body } from "express-validator";
+const { check, validationResult } = require('express-validator');
+
+
+export const authenticationRoutes = Router();
+const authenticationController = new AuthenticationController;
+
+/**
+ * JSON Validation
+ * email: must be valid and in the ec.gc.ca domain
+ * password: must be 8 characters with an uppercase character, and number
+ */
+authenticationRoutes.route("/register")
+    .post(
+        [body("email").exists().matches(/^[A-Za-z0-9._%+-]+@ec\.gc\.ca$/).isEmail().isLength({max:50}),
+         body("password").exists().matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d!?@#$%^&*()]{8,}$/),
+         body("firstName").exists().isLength({min: 1, max:50}),
+         body("lastName").exists().isLength({min: 1, max:50})
+        ],
+        async (req: Request, res: Response) => {
+            ConsoleLogger.logInfo('Registration Attempt');
+            const errors = validationResult(req);
+            // If JSON validation fails, send a 400, Conflict
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() });
+            }
+            
+            let email = req.body.email as string;
+            let password = req.body.password as string;
+            let firstName = req.body.firstName as string;
+            let lastName = req.body.lastName as string;
+
+            return await authenticationController.Register(email, password, firstName, lastName, res);
+        }
+    );
+
+module.exports = authenticationRoutes;
