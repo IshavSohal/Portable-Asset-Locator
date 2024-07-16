@@ -1,14 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import logo from "./logo.svg";
 import "./App.css";
-import {
-  GcdsHeader,
-  GcdsTopNav,
-  GcdsNavLink,
-} from "@cdssnc/gcds-components-react";
 import Dashboard from "./pages/Dashboard";
 import Registration from "./pages/Registration";
 import MainTemplate from "./templates/MainTemplate";
+import SignOn from "./pages/SignOn";
 
 function App() {
   return (
@@ -16,6 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/signin" element={<SignOn />} />
         <Route path="/register" element={<Registration />} />
       </Routes>
     </Router>
