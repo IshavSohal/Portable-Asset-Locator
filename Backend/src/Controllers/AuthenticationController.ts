@@ -12,7 +12,7 @@ export class AuthenticationController {
     // Registers a user in the DB
     // If a user with the same email already exists, send a conflict
     // Encrypts the password to be stored in the DB
-    public async Register(email:string, password:string, firstName:string, lastName:string, res:Response){
+    public async Register(email:string, password:string, firstName:string, lastName:string, roleName:string, res:Response){
         if ((await userService.getUserByEmail(email)) != null){
             ConsoleLogger.logWarning("User email conflict");
             return res.sendStatus(409);
@@ -24,7 +24,7 @@ export class AuthenticationController {
             password: encryptedPassword,
             firstName: firstName,
             lastName: lastName,
-            roleName: "Base"
+            roleName: roleName
         });
         return res.sendStatus(201);
     }

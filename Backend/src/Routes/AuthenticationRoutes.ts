@@ -32,8 +32,9 @@ authenticationRoutes.route("/register")
             let password = req.body.password as string;
             let firstName = req.body.firstName as string;
             let lastName = req.body.lastName as string;
-
-            return await authenticationController.Register(email, password, firstName, lastName, res);
+            let roleName = req.body.roleName ? req.body.roleName as string : "Base"
+            
+            return await authenticationController.Register(email, password, firstName, lastName, roleName, res);
         }
     );
 

@@ -6,6 +6,7 @@ import path from "path";
 const indexRouter = require("./Routes/index");
 const helloWorldRouter = require("./Routes/HelloWorldRoutes");
 const authenticationRouter = require("./Routes/AuthenticationRoutes");
+const assetRouter = require("./Routes/AssetRoutes");
 
 dotenv.config();
 
@@ -21,6 +22,8 @@ app.use('/api', indexRouter);
 app.use("/api/HelloWorld", helloWorldRouter);
 // Authetication functionalities are preceded by the /authenticate path
 app.use("/api/auth", authenticationRouter);
+// Asset functionalities are preceded by the /asset path
+app.use("/api/asset", assetRouter);
 
 // API routes
 // app.use('/api/', routes);
