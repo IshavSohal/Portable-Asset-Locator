@@ -1,18 +1,17 @@
-import {
-    GcdsButton,
+import { 
+    GcdsButton, 
     GcdsContainer,
     GcdsDateModified,
-    GcdsHeading,
-    GcdsInput,
+    GcdsHeading, 
+    GcdsInput
 } from '@cdssnc/gcds-components-react'
-import MainTemplate from '../templates/MainTemplate'
+import MainTemplate from "../templates/MainTemplate";
 
 function SignOn() {
     return (
         <MainTemplate currentPage="signin">
             <GcdsHeading tag="h1" style={{ marginBottom: 48 }}>
-                {' '}
-                Sign-In{' '}
+                Sign-In
             </GcdsHeading>
             <GcdsInput
                 inputId="input-email"

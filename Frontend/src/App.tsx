@@ -1,22 +1,22 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import logo from './logo.svg'
-import './App.css'
-import Dashboard from './pages/Dashboard'
-import Registration from './pages/Registration'
-import MainTemplate from './templates/MainTemplate'
-import SignOn from './pages/SignOn'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import logo from "./logo.svg";
+import "./App.css";
+import Dashboard from "./pages/Dashboard";
+import Registration from "./pages/Registration";
+import MainTemplate from "./templates/MainTemplate";
+import SignOn from "./pages/SignOn";
 
 function App() {
-    return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/signin" element={<SignOn />} />
-                <Route path="/register" element={<Registration />} />
-            </Routes>
-        </Router>
-    )
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/signin" element={<SignOn />} />
+        <Route path="/register" element={<Registration />} />
+      </Routes>
+    </Router>
+  );
 }
 
 function Home() {
