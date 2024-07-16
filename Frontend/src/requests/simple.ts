@@ -9,9 +9,7 @@ const fetchHelloWorld: () => Promise<string> = async () => {
 
     const res = await fetch('/api/HelloWorld/start');
     if (!res.ok) {
-        // This will activate the closest `error.js` Error Boundary
         const errorText = await res.text();
-
         return 'Error fetching data: ' + errorText;
     }
     return res.text();
