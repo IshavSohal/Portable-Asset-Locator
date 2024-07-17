@@ -6,11 +6,11 @@ const fetchHelloWorld: () => Promise<string> = async () => {
     // if (process.env.NODE_ENV !== 'production') {
     //     server = 'http://localhost:8080' // TODO: Resolve CORS
     // }
-
+    
     const res = await fetch('/api/HelloWorld/start');
     if (!res.ok) {
         const errorText = await res.text();
-        return 'Error fetching data: ' + errorText;
+        throw new Error('Error fetching data: ' + errorText);
     }
     return res.text();
 }
