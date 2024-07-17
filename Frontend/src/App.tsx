@@ -23,8 +23,8 @@ function Home() {
     return (
         <div className='App'>
             <GcdsHeader langHref='#' skipToHref='#'>
-                <GcdsTopNav
-                    slot='menu'
+                <div slot="menu">
+                <GcdsTopNav style={{fontSize:20}}
                     label='Top navigation'
                     alignment='right'
                 >
@@ -34,6 +34,7 @@ function Home() {
                     <GcdsNavLink href='#'>Why GC Notify</GcdsNavLink>
                     <GcdsNavLink href='#'>Contact us</GcdsNavLink>
                 </GcdsTopNav>
+                </div>
             </GcdsHeader>
 
             <header className='App-header'>
