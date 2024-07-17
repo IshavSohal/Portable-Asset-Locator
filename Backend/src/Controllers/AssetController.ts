@@ -39,7 +39,7 @@ export class AssetController {
         let custodian = await userService.getUserById(data.custodian)
         if (custodian === null || custodian.roleName != 'Custodian') {
             ConsoleLogger.logWarning("No custodian was found for this asset");
-            return res.sendStatus(409);
+            return res.sendStatus(400);
         }
 
         let result = await assetService.createAsset(data)
