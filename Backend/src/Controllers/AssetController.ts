@@ -21,7 +21,6 @@ export class AssetController {
         }
     }
 
-    //public async createAsset(name:string, type:string, make:string, model:string, assetTag:string, serialNumber:string, description:string, res:Response) {
     public async createAsset(data:Omit<Asset, 'id'>, res:Response) { 
         let custodian = await userService.getUserById(data.custodian)
         if (custodian === null || custodian.roleName != 'Custodian') {
