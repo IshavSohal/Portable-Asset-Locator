@@ -27,7 +27,7 @@ assetRoutes.get(
     }
 )
 
-assetRoutes.route("/create")
+assetRoutes.route("")
     .post(
         [body("name").exists(),
          body("type").exists(),
@@ -46,9 +46,9 @@ assetRoutes.route("/create")
             let data = {
                 name: req.body.name as string,
                 type: req.body.type as string,
-                make: req.body.make ? req.body.model as string : null,
+                make: req.body.make ? req.body.make as string : null,
                 model: req.body.model ? req.body.model as string : null,
-                assetTag: req.body.model as string,
+                assetTag: req.body.assetTag as string,
                 serialNumber: req.body.serialNumber ? req.body.serialNumber as string : null,
                 description: req.body.description ? req.body.description as string : null,
                 custodian: req.body.custodian as number,
