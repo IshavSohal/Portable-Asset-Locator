@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,17 +8,54 @@ datasource db {
 }
 
 model Role {
-  id            Int         @id @default(autoincrement()) 
-  name          String      @unique
-  users         User[]
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  users User[]
 }
 
-model User { 
-  UID           Int         @id @default(autoincrement())
-  email         String      @unique
-  firstName     String
-  lastName      String
-  role          Role        @relation(fields: [roleName], references: [name])
-  roleName      String
-  password      String
+model User {
+  UID       Int     @id @default(autoincrement())
+  email     String  @unique
+  firstName String
+  lastName  String
+  roleName  String
+  password  String
+  Asset     Asset[]
+  role      Role    @relation(fields: [roleName], references: [name])
+  iv        Bytes   @default("")
+}
+
+model Asset {
+  id                Int       @id @default(autoincrement())
+  name              String    @db.VarChar(255)
+  type              String    @db.VarChar(255)
+  make              String?   @db.VarChar(255)
+  assetTag          String    @db.Char(6)
+  serialNumber      String?   @db.VarChar(255)
+  description       String?   @db.Text
+  custodian         Int
+  location          String    @db.VarChar(255)
+  warrantyStartDate DateTime?
+  warrantyEndDate   DateTime?
+  warrantyDetails   String?   @db.Text
+  dateOfPurchase    DateTime?
+  cost              Decimal?  @db.Decimal(10, 2)
+  purchaser         String?   @db.VarChar(255)
+  comment           String?   @db.Text
+  model             String?   @db.VarChar(255)
+  User              User      @relation(fields: [custodian], references: [UID])
+  Location          Location  @relation(fields: [location], references: [location])
+  AssetType         AssetType @relation(fields: [type], references: [type])
+}
+
+model AssetType {
+  id    Int     @id @default(autoincrement())
+  type  String  @unique @db.VarChar(255)
+  Asset Asset[]
+}
+
+model Location {
+  id       Int     @id @default(autoincrement())
+  location String  @unique @db.VarChar(255)
+  Asset    Asset[]
 }
