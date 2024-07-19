@@ -1,11 +1,15 @@
 // src/index.js
-import express, { Express, Request, Response } from "express";
+import express, { Express, NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 // import { routes } from "./Routes";
 import path from "path";
+import session from 'express-session';
+import { cookie } from "express-validator";
+import { ConsoleLogger } from "./Logging/ConsoleLogger";
 const indexRouter = require("./Routes/index");
 const helloWorldRouter = require("./Routes/HelloWorldRoutes");
 const authenticationRouter = require("./Routes/AuthenticationRoutes");
+
 
 dotenv.config();
 
@@ -13,14 +17,32 @@ const app: Express = express();
 const port = process.env.PORT || 3000;
 const distPath = path.join(__dirname, '../../Frontend/build');
 
+app.use(session({
+  secret: 'EC-PAL-Session',
+  resave: false,
+  saveUninitialized: true,
+    cookie: {
+      httpOnly: true,
+      secure:true,
+      maxAge: 3600000 
+    }
+}));
+
+declare module 'express-session' {
+  export interface SessionData {
+    user: { [key: string]: any };
+    userId: number;
+  }
+}
+
 app.use(express.json());
 app.use(express.static(distPath))
 
 app.use('/api', indexRouter);
-// Hello World endpoints have the /HelloWorld path
-app.use("/api/HelloWorld", helloWorldRouter);
 // Authetication functionalities are preceded by the /authenticate path
 app.use("/api/auth", authenticationRouter);
+// Hello World endpoints have the /HelloWorld path
+app.use("/api/HelloWorld", helloWorldRouter);
 
 // API routes
 // app.use('/api/', routes);
