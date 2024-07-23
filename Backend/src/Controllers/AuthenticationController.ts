@@ -32,7 +32,6 @@ export class AuthenticationController {
     }
 
 
-    // NOT READY
     public async Authenticate(email: string, password: string): Promise<User | null>{
         var requestedUser = await userService.getUserByEmail(email);
         if (requestedUser == null){

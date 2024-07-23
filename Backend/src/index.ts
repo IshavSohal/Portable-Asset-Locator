@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 // import { routes } from "./Routes";
 import path from "path";
 import session from 'express-session';
-import { cookie } from "express-validator";
+import cors from 'cors';
 import { ConsoleLogger } from "./Logging/ConsoleLogger";
 const indexRouter = require("./Routes/index");
 const helloWorldRouter = require("./Routes/HelloWorldRoutes");
@@ -23,7 +23,7 @@ app.use(session({
   saveUninitialized: true,
     cookie: {
       httpOnly: true,
-      secure:true,
+      secure:false,
       maxAge: 3600000 
     }
 }));
@@ -34,6 +34,12 @@ declare module 'express-session' {
     userId: number;
   }
 }
+
+const corsOptions = {
+  origin: 'http://localhost:3000',
+
+};
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.static(distPath))
