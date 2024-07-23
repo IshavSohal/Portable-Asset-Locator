@@ -36,12 +36,12 @@ export class AuthenticationController {
     public async Authenticate(email: string, password: string): Promise<User | null>{
         var requestedUser = await userService.getUserByEmail(email);
         if (requestedUser == null){
-            throw new AuthConflictError("User doesn't exist", 404);
+            throw new AuthConflictError("User doesn't exist", 401);
         }
         if (encryptionProvider.EncryptionComparison(requestedUser.password, password, requestedUser.iv)){
             return requestedUser;
         }
-        throw new AuthConflictError("User doesn't exist", 404);
+        throw new AuthConflictError("Invalid credentials", 401);
     }
 }
 
