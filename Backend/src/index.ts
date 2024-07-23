@@ -23,20 +23,24 @@ app.use(session({
   saveUninitialized: true,
     cookie: {
       httpOnly: true,
-      secure:false,
+      secure:(process.env.LOCAL_ENV) ? false : true,
       maxAge: 3600000 
     }
 }));
 
+type User = {
+  id: number;
+  email: string;
+};
+
 declare module 'express-session' {
   export interface SessionData {
-    user: { [key: string]: any };
-    userId: number;
+    user: User
   }
 }
 
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: 'http://localhost:' + port,
 
 };
 app.use(cors(corsOptions));

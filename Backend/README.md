@@ -11,6 +11,7 @@ Things to do to set up the backend locally:
   - Add the connection string to the `.env` file in the Backend root directory (use `DATABASE_URL="sqlserver://NATSQLDEVAPPS2\INS2;database=AQC_Dev;integratedSecurity=true;trustServerCertificate=true;"`)
   - Run `npx prisma generate` to generate the Prisma Client to reflect the schema. This will need to be reran when changes are made in schema.prisma.
 - For testing authentication methods on your local, add `ENCRYPTION_ALGORITHM="aes-256-cbc"` to the `.env` file.
+- If you're running this on localhost under http please include `LOCAL_ENV=true` in your `.env` file
 
 To start server:
 

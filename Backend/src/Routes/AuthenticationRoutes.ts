@@ -37,7 +37,7 @@ authenticationRoutes.route("/register")
             try
             {
                 var createdUser = await authenticationController.Register(email, password, firstName, lastName);
-                req.session.userId = createdUser.UID;
+                req.session.user = {id: createdUser.UID, email: createdUser.email}
                 res.sendStatus(201)
             }
             catch (error){
@@ -69,7 +69,7 @@ authenticationRoutes.route("/login")
             try{
                 var foundUser = await authenticationController.Authenticate(email, password);
                 if (foundUser != null){
-                    req.session.userId = foundUser.UID;
+                    req.session.user = {id: foundUser.UID, email: foundUser.email}
                     res.sendStatus(200);
                 }
             }
