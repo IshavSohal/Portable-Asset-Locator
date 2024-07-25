@@ -222,82 +222,82 @@ function Registration() {
         console.log('Submission function not implemented!');
     }
 
-    return (
-        <>
-            <MainTemplate currentPage='register'>
-                <GcdsHeading tag='h1'>Register PAL Account</GcdsHeading>
+  return (
+    <>
+      <MainTemplate currentPage="register">
+        <GcdsHeading tag="h1" style={{paddingBottom: 28}}>Register PAL Account</GcdsHeading>
+        <GcdsInput
+          inputId="input-firstname"
+          error-links="FirstName"
+          label="First Name"
+          hint="Maximum 50 characters."
+          name="registration-first-name"
+          required
+          validator={[
+            getNameValidator(true, true),
+            getNameValidator(true, false),
+            getNameValidator(false, true),
+          ]}
+          validateOn="other"
+          onGcdsInput={(e: any) => e.target.validate()}
+          style={{ marginBottom: 48 }}
+        />
+        <GcdsInput
+          inputId="input-lastname"
+          label="Last Name"
+          hint="Maximum 50 characters."
+          name="registration-last-name"
+          required
+          validator={[
+            getNameValidator(true, true),
+            getNameValidator(true, false),
+            getNameValidator(false, true),
+          ]}
+          validateOn="other"
+          onGcdsInput={(e: any) => e.target.validate()}
+          style={{ marginBottom: 48 }}
+        />
+        <GcdsInput
+          inputId="input-email"
+          label="Email"
+          hint="Must end in @ec.gc.ca."
+          name="registration-email"
+          required
+          validator={[getEmailValidator()]}
+          style={{ marginBottom: 48 }}
+        />
+        <GcdsInput
+          inputId="input-password"
+          label="Password"
+          hint="Must be a minimum of 8 characters, with at least one uppercase character and one number. Only these special characters are allowed: !?@#$%^&*()"
+          name="registration-password"
+          type="password"
+          required
+          validator={[getPasswordValidator()]}
+          validateOn="other"
+          onGcdsInput={(e: any) => {
+            setCurrentPass(e.target.value || ""); // TODO: Bad async stuff, activating too late to show until next round. Find a way to use useEffect.
+            setTimeout(() => e.target.validate(), 25); // Really hacky solution to deal with above async stuff. Might break, find a better way w/ useEffect or other.
+          }}
+          style={{ marginBottom: 48}}
+        />
 
-                <GcdsContainer size='full' style={{ paddingTop: '48px' }}>
-                    <GcdsInput
-                        inputId='input-firstname'
-                        error-links='FirstName'
-                        label='First Name'
-                        hint='Maximum 50 characters.'
-                        name='firstName'
-                        required
-                        validator={[
-                            getNameValidator(true, true),
-                            getNameValidator(true, false),
-                            getNameValidator(false, true),
-                        ]}
-                        validateOn='other'
-                        onGcdsInput={(e) => { e.target.validate(); handleChange(e)}}
-                        style={{ marginBottom: '48px', width: '110%' }}
-                    />
-                    <GcdsInput
-                        inputId='input-lastname'
-                        label='Last Name'
-                        hint='Maximum 50 characters.'
-                        name='lastName'
-                        required
-                        validator={[
-                            getNameValidator(true, true),
-                            getNameValidator(true, false),
-                            getNameValidator(false, true),
-                        ]}
-                        validateOn='other'
-                        onGcdsInput={(e) => e.target.validate()}
-                        style={{ marginBottom: '48px', width: '110%' }}
-                    />
-                    <GcdsInput
-                        inputId='input-email'
-                        label='Email'
-                        hint='Must end in @ec.gc.ca.'
-                        name='email'
-                        required
-                        validator={[getEmailValidator()]}
-                        style={{ marginBottom: '48px', width: '110%' }}
-                    />
-                    <GcdsInput
-                        inputId='input-password'
-                        label='Password'
-                        hint='Must be a minimum of 8 characters, with at least one uppercase character and one number. Only these special characters are allowed: !?@#$%^&*()'
-                        name='registration-password'
-                        type='password'
-                        required
-                        validator={[getPasswordValidator()]}
-                        validateOn='other'
-                        onGcdsInput={(e) => {
-                            setCurrentPass(e.target.value || ''); // TODO: Bad async stuff, activating too late to show until next round. Find a way to use useEffect.
-                            setTimeout(() => e.target.validate(), 25); // Really hacky solution to deal with above async stuff. Might break, find a better way w/ useEffect or other.
-                        }}
-                        style={{ marginBottom: '48px', width: '110%' }}
-                    />
+        <GcdsButton
+          buttonId="registration-submit"
+          type="submit"
+          onGcdsClick={(e: any) => handleSubmission(e)}
+        >
+          Submit
+        </GcdsButton>
 
-                    <GcdsButton
-                        buttonId='registration-submit'
-                        type='submit'
-                        disabled={isLoading}
-                        onGcdsClick={(e) => handleSubmission(e)}
-                    >
-                        Submit
-                    </GcdsButton>
-                </GcdsContainer>
-
-                <GcdsDateModified>2024-07-19</GcdsDateModified>
-            </MainTemplate>
-        </>
-    );
+        <GcdsContainer size="xl" centered style={{paddingBottom: 10}}>
+              <GcdsDateModified>
+                  2024-07-19
+              </GcdsDateModified>
+        </GcdsContainer>
+      </MainTemplate>
+    </>
+  );
 }
 
 export default Registration;

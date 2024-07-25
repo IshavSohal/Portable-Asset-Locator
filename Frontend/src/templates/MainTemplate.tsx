@@ -4,10 +4,14 @@
  */
 
 import {
+  GcdsContainer,
   GcdsFooter,
   GcdsHeader,
   GcdsNavLink,
+  GcdsText,
   GcdsTopNav,
+  
+  
 } from "@cdssnc/gcds-components-react";
 import { ReactNode } from "react";
 
@@ -55,8 +59,8 @@ function MainTemplate({
   userType = userType ?? "employee";
 
   return (
-    <div>
-      <GcdsHeader langHref="#" skipToHref="#">
+    <GcdsContainer size="full" centered>
+      <GcdsHeader langHref="#" skipToHref="#" style={{paddingBottom: 48}}>
         <GcdsTopNav slot="menu" label="Top navigation" alignment="right">
           <GcdsNavLink href="/" slot="home">
             Portable Asset Locator
@@ -68,7 +72,6 @@ function MainTemplate({
               <GcdsNavLink
                 style={{
                   fontSize: "20px",
-                  fontFamily: "Noto sans, sans-serif",
                   paddingBottom: currentPage === "signin" ? "2px" : "0",
                 }}
                 current={currentPage === "signin"}
@@ -79,7 +82,6 @@ function MainTemplate({
               <GcdsNavLink
                 style={{
                   fontSize: "20px",
-                  fontFamily: "Noto sans, sans-serif",
                   paddingBottom: currentPage === "register" ? "2px" : "0",
                 }}
                 current={currentPage === "register"}
@@ -96,7 +98,6 @@ function MainTemplate({
               <GcdsNavLink
                 style={{
                   fontSize: "20px",
-                  fontFamily: "Noto sans, sans-serif",
                   paddingBottom:
                     currentPage === "unassigned-assets" ? "2px" : "0",
                 }}
@@ -109,7 +110,6 @@ function MainTemplate({
                 <GcdsNavLink
                   style={{
                     fontSize: "20px",
-                    fontFamily: "Noto sans, sans-serif",
                     paddingBottom: currentPage === "team-assets" ? "2px" : "0",
                   }}
                   current={currentPage === "team-assets"}
@@ -121,7 +121,6 @@ function MainTemplate({
               <GcdsNavLink
                 style={{
                   fontSize: "20px",
-                  fontFamily: "Noto sans, sans-serif",
                   paddingBottom: currentPage === "my-assets" ? "2px" : "0",
                 }}
                 current={currentPage === "my-assets"}
@@ -132,7 +131,6 @@ function MainTemplate({
               <GcdsNavLink
                 style={{
                   fontSize: "20px",
-                  fontFamily: "Noto sans, sans-serif",
                 }}
                 href="/"
               >
@@ -143,31 +141,22 @@ function MainTemplate({
         </GcdsTopNav>
       </GcdsHeader>
 
-      <div
-        aria-label="content"
-        style={{
-          marginTop: addMargins ? "60px" : 0,
-          textAlign: "center",
-        }}
-      >
-        <div
-          style={{
-            display: "inline-block",
-            maxWidth: "90%",
-            textAlign: "left",
-          }}
-        >
-          {children}
-        </div>
-      </div>
+      <GcdsContainer size="xl" centered padding="0" margin="0" style={{marginLeft: 10}}>
+        <div> {children} </div>
+      </GcdsContainer>
+
+      <GcdsContainer size="xl" centered style={{backgroundColor: '#33465C', paddingTop: 1, marginBottom: -15 }}>
+          <GcdsText margin-bottom="450" margin-top="450" style={{ paddingBottom: 5}}>
+              <div style={{ color: 'white', fontSize: 24 }}> Portable Asset Locator </div>
+          </GcdsText>
+      </GcdsContainer>
 
       <GcdsFooter
         display="compact"
-        contextualHeading="Portable Asset Locator"
-        contextualLinks='{ "Home": "/", "About": "#" }'
-        style={{ textAlign: "start" }}
-      />
-    </div>
+        contextualHeading=""
+        contextualLinks='{}'
+        />
+    </GcdsContainer>
   );
 }
 
