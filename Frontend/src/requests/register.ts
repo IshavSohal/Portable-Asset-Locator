@@ -5,9 +5,10 @@ const registerUser = async ({firstName, lastName, email, password } : {firstName
         email,
         password
     }
-    
 
-    const response = await fetch("/api/auth/register", {
+    const server = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8080';
+
+    const response = await fetch(server + "/api/auth/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
