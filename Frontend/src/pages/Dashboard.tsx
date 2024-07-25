@@ -1,14 +1,20 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import MainTemplate from "../templates/MainTemplate";
+import { GcdsHeading } from "@cdssnc/gcds-components-react";
+import MessageDisplay from '../components/MessageDisplay';
 
 function Dashboard() {
-    return (
-        <div>
-            <h1>Dashboard</h1>
+  return (
+    <MainTemplate addMargins={false}>
+      <GcdsHeading tag="h1">Dashboard</GcdsHeading>
+      <div>
+        <Link to="/">Home</Link>
+      </div>
             <div>
-                <Link to='/'>Home</Link>
+                <MessageDisplay />
             </div>
-        </div>
-    );
+    </MainTemplate>
+  );
 }
 
 export default Dashboard;
