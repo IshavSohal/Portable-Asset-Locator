@@ -14,7 +14,8 @@ const authenticationRouter = require("./Routes/AuthenticationRoutes");
 dotenv.config();
 
 const app: Express = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
+const client = process.env.CLIENT_PORT || 3000; 
 const distPath = path.join(__dirname, '../../Frontend/build');
 
 app.use(session({
@@ -40,7 +41,7 @@ declare module 'express-session' {
 }
 
 const corsOptions = {
-  origin: 'http://localhost:' + port,
+  origin: 'http://localhost:' + client,
 
 };
 app.use(cors(corsOptions));
