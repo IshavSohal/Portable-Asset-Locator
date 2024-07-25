@@ -209,7 +209,7 @@ function Registration() {
               getNameValidator(false, true),
             ]}
             validateOn="other"
-            onGcdsInput={(e) => e.target.validate()}
+            onGcdsInput={(e: any) => e.target.validate()}
             style={{ marginBottom: "48px", width: "110%" }}
           />
           <GcdsInput
@@ -224,7 +224,7 @@ function Registration() {
               getNameValidator(false, true),
             ]}
             validateOn="other"
-            onGcdsInput={(e) => e.target.validate()}
+            onGcdsInput={(e: any) => e.target.validate()}
             style={{ marginBottom: "48px", width: "110%" }}
           />
           <GcdsInput
@@ -245,7 +245,7 @@ function Registration() {
             required
             validator={[getPasswordValidator()]}
             validateOn="other"
-            onGcdsInput={(e) => {
+            onGcdsInput={(e: any) => {
               setCurrentPass(e.target.value || ""); // TODO: Bad async stuff, activating too late to show until next round. Find a way to use useEffect.
               setTimeout(() => e.target.validate(), 25); // Really hacky solution to deal with above async stuff. Might break, find a better way w/ useEffect or other.
             }}
@@ -255,7 +255,7 @@ function Registration() {
           <GcdsButton
             buttonId="registration-submit"
             type="submit"
-            onGcdsClick={(e) => handleSubmission(e)}
+            onGcdsClick={(e: any) => handleSubmission(e)}
           >
             Submit
           </GcdsButton>
