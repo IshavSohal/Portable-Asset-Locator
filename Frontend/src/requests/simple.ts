@@ -1,18 +1,26 @@
-const fetchHelloWorld: () => Promise<string> = async () => {
+interface FetchCall<T> {
+    (endpoint: string): Promise<T>;
+}
+
+// Experimental - refactoring for more streamlined GET requests.
+// TO-DO: more testing
+const fetchGet: FetchCall<any> = async (endpoint) => {
     // During development, we want to run the client
-    // with the faster npm run start 
-    // (instead of creating a build everytime a change is made)
-    // let server = 'http://localhost:8080';
-    // if (process.env.NODE_ENV !== 'production') {
-    //     server = 'http://localhost:8080' // TODO: Resolve CORS
-    // }
+    // with the faster npm run start (instead of npm run build everytime a change is made)
+    const server = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8080';
     
-    const res = await fetch('/api/HelloWorld/start');
+    const res = await fetch(server + endpoint);
     if (!res.ok) {
         const errorText = await res.text();
-        throw new Error('Error fetching data: ' + errorText);
+        throw new Error('FetchGet Error - Error fetching data: ' + errorText);
     }
     return res.text();
+}
+
+
+const fetchHelloWorld: () => Promise<string> = async () => {
+    const message = await fetchGet('/api/HelloWorld/start');
+    return message as string;
 }
 
 export { fetchHelloWorld };
