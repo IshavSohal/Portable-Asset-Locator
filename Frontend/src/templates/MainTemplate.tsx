@@ -73,6 +73,7 @@ function MainTemplate({
                 style={{
                   fontSize: "20px",
                   paddingBottom: currentPage === "signin" ? "2px" : "0",
+                  fontFamily: "Noto sans, sans-serif"
                 }}
                 current={currentPage === "signin"}
                 href="/signin"
@@ -83,6 +84,7 @@ function MainTemplate({
                 style={{
                   fontSize: "20px",
                   paddingBottom: currentPage === "register" ? "2px" : "0",
+                  fontFamily: "Noto sans, sans-serif"
                 }}
                 current={currentPage === "register"}
                 href="/register"
@@ -100,6 +102,7 @@ function MainTemplate({
                   fontSize: "20px",
                   paddingBottom:
                     currentPage === "unassigned-assets" ? "2px" : "0",
+                    fontFamily: "Noto sans, sans-serif"
                 }}
                 current={currentPage === "unassigned-assets"}
                 href="/"
@@ -111,6 +114,7 @@ function MainTemplate({
                   style={{
                     fontSize: "20px",
                     paddingBottom: currentPage === "team-assets" ? "2px" : "0",
+                    fontFamily: "Noto sans, sans-serif"
                   }}
                   current={currentPage === "team-assets"}
                   href="/"
@@ -141,12 +145,12 @@ function MainTemplate({
         </GcdsTopNav>
       </GcdsHeader>
 
-      <GcdsContainer size="xl" centered padding="0" margin="0" style={{marginLeft: 10}}>
+      <GcdsContainer size="xl" centered padding="0" margin="0" style={{marginLeft: 10, marginRight: 10}}>
         <div> {children} </div>
       </GcdsContainer>
 
       <GcdsContainer size="xl" centered style={{backgroundColor: '#33465C', paddingTop: 1, marginBottom: -15 }}>
-          <GcdsText margin-bottom="450" margin-top="450" style={{ paddingBottom: 5}}>
+          <GcdsText margin-bottom="450" margin-top="450" style={{ paddingBottom: 5, marginLeft: 10}}>
               <div style={{ color: 'white', fontSize: 24 }}> Portable Asset Locator </div>
           </GcdsText>
       </GcdsContainer>
