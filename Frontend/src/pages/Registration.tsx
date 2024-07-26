@@ -193,7 +193,7 @@ function Registration() {
   return (
     <>
       <MainTemplate currentPage="register">
-        <GcdsHeading tag="h1" style={{paddingBottom: 28}}>Register PAL Account</GcdsHeading>
+        <GcdsHeading tag="h1" style={{marginBottom: 48}}>Register PAL Account</GcdsHeading>
         <GcdsInput
           inputId="input-firstname"
           error-links="FirstName"

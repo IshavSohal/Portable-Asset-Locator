@@ -11,15 +11,14 @@ function SignOn() {
     return (
         <MainTemplate currentPage="signin">
             <GcdsHeading tag="h1" style={{ marginBottom: 48 }}>
-                {' '}
-                Sign-In{' '}
+                Sign-In
             </GcdsHeading>
             <GcdsInput
                 inputId="input-email"
                 label="Email"
                 name="sign-in-email"
                 required
-                style={{ marginBottom: 48 }}
+                style={{ marginBottom: 48, width: '110%'}}
             ></GcdsInput>
 
             <GcdsInput
@@ -28,7 +27,7 @@ function SignOn() {
                 name="sign-in-email"
                 type="password"
                 required
-                style={{ marginBottom: 48 }}
+                style={{ marginBottom: 48, width: '110%'}}
             ></GcdsInput>
 
             <GcdsButton> Sign in </GcdsButton>
