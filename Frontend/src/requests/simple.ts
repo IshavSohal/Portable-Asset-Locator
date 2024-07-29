@@ -9,7 +9,9 @@ const fetchGet: FetchCall<any> = async (endpoint) => {
     // with the faster npm run start (instead of npm run build everytime a change is made)
     const server = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8080';
     
-    const res = await fetch(server + endpoint);
+    const res = await fetch(server + endpoint, {
+        credentials: 'include'
+    });
     if (!res.ok) {
         const errorText = await res.text();
         throw new Error('FetchGet Error - Error fetching data: ' + errorText);
