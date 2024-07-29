@@ -1,20 +1,23 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import logo from './logo.svg'
 import './App.css'
 import Dashboard from './pages/Dashboard'
 import Registration from './pages/Registration'
 import MainTemplate from './templates/MainTemplate'
 import SignOn from './pages/SignOn'
+import AuthProvider from './hooks/AuthProvider'
 
 function App() {
     return (
         <Router>
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/signin" element={<SignOn />} />
-                <Route path="/register" element={<Registration />} />
-            </Routes>
+            <AuthProvider>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/signin" element={<SignOn />} />
+                    <Route path="/register" element={<Registration />} />
+                </Routes>
+            </AuthProvider>
         </Router>
     )
 }
@@ -27,14 +30,9 @@ function Home() {
                 <p>
                     Edit <code>src/App.tsx</code> and save to reload.
                 </p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Learn React
-                </a>
+                <Link className="App-link" to="/dashboard">
+                    Dashboard
+                </Link>
             </div>
         </MainTemplate>
     )

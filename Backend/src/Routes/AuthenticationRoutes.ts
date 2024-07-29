@@ -69,8 +69,10 @@ authenticationRoutes.route("/login")
             try{
                 var foundUser = await authenticationController.Authenticate(email, password);
                 if (foundUser != null){
-                    req.session.user = {id: foundUser.UID, email: foundUser.email}
-                    res.sendStatus(200);
+                    req.session.user = { id: foundUser.UID, email: foundUser.email }
+                    res.status(200).send(req.session.user);
+                } else {
+                    res.sendStatus(503);
                 }
             }
             catch (error){

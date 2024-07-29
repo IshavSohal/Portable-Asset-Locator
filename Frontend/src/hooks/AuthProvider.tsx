@@ -1,48 +1,47 @@
-import { useContext, createContext, useState, PropsWithChildren } from 'react';
+import { useContext, createContext, useState, PropsWithChildren } from 'react'
+import { loginUser } from '../requests/auth'
+import { useNavigate } from 'react-router-dom'
+import { user } from '../types/user'
 
-type AuthContextType = {
-    user: user | null;
-    logIn: (email: string) => void; // TO-DO update func params
-    logOut: () => void;
-} | null;
+type IAuthContextType = {
+    user: user | null
+    logIn: (email: string, password: string) => Promise<void>
+    logOut: () => void
+}
 
-type user = {
-    id: number;
-    email: string;
-};
+const initialValue = {
+    user: null,
+    logIn: () => new Promise<void>((resolve) => setTimeout(resolve, 1000)),
+    logOut: () => {},
+}
 
-const AuthContext = createContext<AuthContextType>(null);
+const AuthContext = createContext<IAuthContextType>(initialValue)
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
-    const [user, setUser] = useState<user | null>(null);
+    const [user, setUser] = useState<user | null>(initialValue.user)
+    const navigate = useNavigate()
 
-    const logIn = (email: string) => {
-        /** TODO
-         *    - make request to fetch user
-         *    - if successful, update user and redirect to _______
-         *    - if unsuccessful, return error
-         */
-        const userData = {
-            id: 1,
-            email,
-        };
-        setUser(userData);
-    };
+    const logIn = async (email: string, password: string) => {
+        const res = await loginUser({ email, password })
+        const userData = res
+        setUser(userData)
+        navigate('/dashboard')
+    }
 
     const logOut = () => {
-        setUser(null);
-        // TO-DO: redirect to login
-    };
+        setUser(null)
+        navigate('/signin')
+    }
 
     return (
         <AuthContext.Provider value={{ user, logIn, logOut }}>
             {children}
         </AuthContext.Provider>
-    );
-};
+    )
+}
 
-export default AuthProvider;
+export default AuthProvider
 
 export const useAuth = () => {
-    return useContext(AuthContext);
-};
+    return useContext(AuthContext)
+}

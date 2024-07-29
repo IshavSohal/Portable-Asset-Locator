@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 import path from "path";
 import session from 'express-session';
 import cors from 'cors';
-import { ConsoleLogger } from "./Logging/ConsoleLogger";
 const indexRouter = require("./Routes/index");
 const helloWorldRouter = require("./Routes/HelloWorldRoutes");
 const authenticationRouter = require("./Routes/AuthenticationRoutes");
