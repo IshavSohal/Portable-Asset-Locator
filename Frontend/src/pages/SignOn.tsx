@@ -6,20 +6,30 @@ import {
     GcdsInput,
 } from '@cdssnc/gcds-components-react'
 import MainTemplate from '../templates/MainTemplate'
-import { GcdsButtonCustomEvent } from '@cdssnc/gcds-components/dist/types/components'
+import {
+    GcdsButtonCustomEvent,
+    GcdsInputCustomEvent,
+} from '@cdssnc/gcds-components/dist/types/components'
 import { useState } from 'react'
 import { useAuth } from '../hooks/AuthProvider'
+
+interface InputValues {
+    email: string
+    password: string
+}
 
 function SignOn() {
     const { logIn } = useAuth()
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [inputFields, setInputFields] = useState<InputValues>({
+        email: '',
+        password: '',
+    })
 
     async function handleSubmission(
         e: GcdsButtonCustomEvent<void>
     ): Promise<void> {
-        // TODO: capture credentials from form
-        const email = 'jenny.zhang@ec.gc.ca'
-        const password = 'aPassword123'
+        const { email, password } = inputFields
 
         setIsSubmitting(true)
         try {
@@ -30,7 +40,10 @@ function SignOn() {
         } finally {
             setIsSubmitting(false)
         }
-        setIsSubmitting(false)
+    }
+
+    const handleChange = (e: GcdsInputCustomEvent<any>) => {
+        setInputFields({ ...inputFields, [e.target.name]: e.target.value })
     }
 
     return (
@@ -43,18 +56,20 @@ function SignOn() {
             <GcdsInput
                 inputId="input-email"
                 label="Email"
-                name="sign-in-email"
+                name="email"
                 required
                 style={{ marginBottom: 48 }}
+                onGcdsInput={handleChange}
             ></GcdsInput>
 
             <GcdsInput
                 inputId="input-password"
                 label="Password"
-                name="sign-in-email"
+                name="password"
                 type="password"
                 required
                 style={{ marginBottom: 48 }}
+                onGcdsInput={handleChange}
             ></GcdsInput>
 
             <GcdsButton
