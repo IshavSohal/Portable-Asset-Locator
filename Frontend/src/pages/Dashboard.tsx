@@ -1,20 +1,26 @@
-import { Link } from "react-router-dom";
-import MainTemplate from "../templates/MainTemplate";
-import { GcdsHeading } from "@cdssnc/gcds-components-react";
-import MessageDisplay from '../components/MessageDisplay';
+import { Link, Navigate } from 'react-router-dom'
+import MainTemplate from '../templates/MainTemplate'
+import { GcdsHeading } from '@cdssnc/gcds-components-react'
+import MessageDisplay from '../components/MessageDisplay'
+import { useAuth } from '../hooks/AuthProvider'
 
 function Dashboard() {
-  return (
-    <MainTemplate addMargins={false}>
-      <GcdsHeading tag="h1">Dashboard</GcdsHeading>
-      <div>
-        <Link to="/">Home</Link>
-      </div>
+    const { user, logOut } = useAuth()
+
+    if (!user) return <Navigate to="/signin" replace={true} />
+    return (
+        <MainTemplate addMargins={false}>
+            <GcdsHeading tag="h1">Dashboard</GcdsHeading>
+            <div>
+                <Link to="/">Home</Link>
+            </div>
             <div>
                 <MessageDisplay />
             </div>
-    </MainTemplate>
-  );
+            <div>Hello {user.email}!</div>
+            <button onClick={logOut}>Log out</button>
+        </MainTemplate>
+    )
 }
 
-export default Dashboard;
+export default Dashboard
