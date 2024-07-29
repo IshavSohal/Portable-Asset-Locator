@@ -41,6 +41,7 @@ declare module 'express-session' {
 }
 
 const corsOptions = {
+  credentials: true,
   origin: 'http://localhost:' + client,
 
 };
@@ -59,7 +60,7 @@ app.use("/api/HelloWorld", helloWorldRouter);
 // app.use('/api/', routes);
 
 // Handles any requests that don't match the ones above
-app.get('*', (req, res) =>{
+app.get('*', (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'));
 });
 
