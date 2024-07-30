@@ -9,6 +9,7 @@ import { ConsoleLogger } from "./Logging/ConsoleLogger";
 const indexRouter = require("./Routes/index");
 const helloWorldRouter = require("./Routes/HelloWorldRoutes");
 const authenticationRouter = require("./Routes/AuthenticationRoutes");
+const assetRouter = require("./Routes/AssetRoutes");
 
 
 dotenv.config();
@@ -53,7 +54,8 @@ app.use('/api', indexRouter);
 app.use("/api/auth", authenticationRouter);
 // Hello World endpoints have the /HelloWorld path
 app.use("/api/HelloWorld", helloWorldRouter);
-
+// Asset functionalities are preceded by the /asset path
+app.use("/api/asset", assetRouter);
 // API routes
 // app.use('/api/', routes);
 
