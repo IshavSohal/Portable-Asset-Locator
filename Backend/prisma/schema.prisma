@@ -25,37 +25,37 @@ model User {
   iv        Bytes   @default("")
 }
 
-model Asset {
-  id                Int       @id @default(autoincrement())
-  name              String    @db.VarChar(255)
-  type              String    @db.VarChar(255)
-  make              String?   @db.VarChar(255)
-  assetTag          String    @db.Char(6)
-  serialNumber      String?   @db.VarChar(255)
-  description       String?   @db.Text
-  custodian         Int
-  location          String    @db.VarChar(255)
-  warrantyStartDate DateTime?
-  warrantyEndDate   DateTime?
-  warrantyDetails   String?   @db.Text
-  dateOfPurchase    DateTime?
-  cost              Decimal?  @db.Decimal(10, 2)
-  purchaser         String?   @db.VarChar(255)
-  comment           String?   @db.Text
-  model             String?   @db.VarChar(255)
-  User              User      @relation(fields: [custodian], references: [UID])
-  Location          Location  @relation(fields: [location], references: [location])
-  AssetType         AssetType @relation(fields: [type], references: [type])
-}
-
 model AssetType {
-  id    Int     @id @default(autoincrement())
-  type  String  @unique @db.VarChar(255)
-  Asset Asset[]
+  id            Int         @id @default(autoincrement()) 
+  type          String      @unique @db.VarChar(255) 
+  assets        Asset[]
 }
 
 model Location {
-  id       Int     @id @default(autoincrement())
-  location String  @unique @db.VarChar(255)
-  Asset    Asset[]
+  id            Int         @id @default(autoincrement()) 
+  location      String      @unique @db.VarChar(255)
+  assets        Asset[]
 }
+
+model Asset { 
+  id                        Int           @id @default(autoincrement()) 
+  name                      String        @db.VarChar(255) 
+  assetType                 AssetType     @relation(fields: [type], references: [type])
+  type                      String        @db.VarChar(255) 
+  make                      String?       @db.VarChar(255) 
+  model                     String?       @db.VarChar(255) 
+  assetTag                  String        @db.Char(6) 
+  serialNumber              String?       @db.VarChar(255) 
+  description               String?       @db.Text 
+  custodian                 Int           
+  custodianID               User          @relation(fields: [custodian], references: [UID])
+  locationType              Location      @relation(fields: [location], references: [location])
+  location                  String        @db.VarChar(255)
+  warrantyStartDate         DateTime?      
+  warrantyEndDate           DateTime?
+  warrantyDetails           String?       @db.Text
+  dateOfPurchase            DateTime?
+  cost                      Decimal?      @db.Decimal(10,2)
+  purchaser                 String?       @db.VarChar(255)
+  comment                   String?       @db.Text
+} 
