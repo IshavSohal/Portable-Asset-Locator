@@ -225,7 +225,7 @@ function Registration() {
   return (
     <>
       <MainTemplate currentPage="register">
-        <GcdsHeading tag="h1" style={{paddingBottom: 28}}>Register PAL Account</GcdsHeading>
+        <GcdsHeading tag="h1" style={{marginBottom: 48}}>Register PAL Account</GcdsHeading>
         <GcdsInput
           inputId="input-firstname"
           error-links="FirstName"
@@ -240,7 +240,7 @@ function Registration() {
           ]}
           validateOn="other"
           onGcdsInput={(e: any) => e.target.validate()}
-          style={{ marginBottom: 48 }}
+          style={{ marginBottom: 48, width: '110%' }}
         />
         <GcdsInput
           inputId="input-lastname"
@@ -255,7 +255,7 @@ function Registration() {
           ]}
           validateOn="other"
           onGcdsInput={(e: any) => e.target.validate()}
-          style={{ marginBottom: 48 }}
+          style={{ marginBottom: 48, width: '110%' }}
         />
         <GcdsInput
           inputId="input-email"
@@ -264,7 +264,7 @@ function Registration() {
           name="registration-email"
           required
           validator={[getEmailValidator()]}
-          style={{ marginBottom: 48 }}
+          style={{ marginBottom: 48, width: '110%' }}
         />
         <GcdsInput
           inputId="input-password"
@@ -279,7 +279,7 @@ function Registration() {
             setCurrentPass(e.target.value || ""); // TODO: Bad async stuff, activating too late to show until next round. Find a way to use useEffect.
             setTimeout(() => e.target.validate(), 25); // Really hacky solution to deal with above async stuff. Might break, find a better way w/ useEffect or other.
           }}
-          style={{ marginBottom: 48}}
+          style={{ marginBottom: 48, width: '110%'}}
         />
 
         <GcdsButton

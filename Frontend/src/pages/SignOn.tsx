@@ -4,53 +4,52 @@ import {
     GcdsDateModified,
     GcdsHeading,
     GcdsInput,
-} from '@cdssnc/gcds-components-react'
-import MainTemplate from '../templates/MainTemplate'
+} from '@cdssnc/gcds-components-react';
+import MainTemplate from '../templates/MainTemplate';
 import {
     GcdsButtonCustomEvent,
     GcdsInputCustomEvent,
-} from '@cdssnc/gcds-components/dist/types/components'
-import { useState } from 'react'
-import { useAuth } from '../hooks/AuthProvider'
+} from '@cdssnc/gcds-components/dist/types/components';
+import { useState } from 'react';
+import { useAuth } from '../hooks/AuthProvider';
 
 interface InputValues {
-    email: string
-    password: string
+    email: string;
+    password: string;
 }
 
 function SignOn() {
-    const { logIn } = useAuth()
-    const [isSubmitting, setIsSubmitting] = useState(false)
+    const { logIn } = useAuth();
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [inputFields, setInputFields] = useState<InputValues>({
         email: '',
         password: '',
-    })
+    });
 
     async function handleSubmission(
         e: GcdsButtonCustomEvent<void>
     ): Promise<void> {
-        const { email, password } = inputFields
+        const { email, password } = inputFields;
 
-        setIsSubmitting(true)
+        setIsSubmitting(true);
         try {
-            await logIn(email, password)
+            await logIn(email, password);
         } catch (err) {
             // setError((err as Error).message);
-            alert((err as Error).message)
+            alert((err as Error).message);
         } finally {
-            setIsSubmitting(false)
+            setIsSubmitting(false);
         }
     }
 
     const handleChange = (e: GcdsInputCustomEvent<any>) => {
-        setInputFields({ ...inputFields, [e.target.name]: e.target.value })
-    }
+        setInputFields({ ...inputFields, [e.target.name]: e.target.value });
+    };
 
     return (
         <MainTemplate currentPage="signin">
             <GcdsHeading tag="h1" style={{ marginBottom: 48 }}>
-                {' '}
-                Sign-In{' '}
+                Sign-In
             </GcdsHeading>
             {/* TODO: Add Error component */}
             <GcdsInput
@@ -58,7 +57,7 @@ function SignOn() {
                 label="Email"
                 name="email"
                 required
-                style={{ marginBottom: 48 }}
+                style={{ marginBottom: 48, width: '110%' }}
                 onGcdsInput={handleChange}
             ></GcdsInput>
 
@@ -68,7 +67,7 @@ function SignOn() {
                 name="password"
                 type="password"
                 required
-                style={{ marginBottom: 48 }}
+                style={{ marginBottom: 48, width: '110%' }}
                 onGcdsInput={handleChange}
             ></GcdsInput>
 
@@ -83,7 +82,7 @@ function SignOn() {
                 <GcdsDateModified>2024-07-19</GcdsDateModified>
             </GcdsContainer>
         </MainTemplate>
-    )
+    );
 }
 
-export default SignOn
+export default SignOn;
