@@ -10,9 +10,12 @@ import type { Validator } from '@cdssnc/gcds-components/dist/types/validators';
 
 import MainTemplate from '../templates/MainTemplate';
 import { useState } from 'react';
-import { GcdsButtonCustomEvent, GcdsInputCustomEvent } from '@cdssnc/gcds-components/dist/types/components';
+import {
+    GcdsButtonCustomEvent,
+    GcdsInputCustomEvent,
+} from '@cdssnc/gcds-components/dist/types/components';
 
-import { registerUser } from '../requests/register';
+import { registerUser } from '../requests/auth';
 
 interface InputValues {
     firstName: string;
@@ -184,10 +187,10 @@ function Registration() {
         };
     }
 
-    function handleChange (e: GcdsInputCustomEvent<any>) {
-      setFormInputs({ ...formInputs, [e.target.name]: e.target.value });
-      console.log(formInputs);
-    };
+    function handleChange(e: GcdsInputCustomEvent<any>) {
+        setFormInputs({ ...formInputs, [e.target.name]: e.target.value });
+        console.log(formInputs);
+    }
 
     /**
      * Handler for "Submit" button presses. Should contain the logic for calling the registration
@@ -207,7 +210,7 @@ function Registration() {
         setIsLoading(true);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         try {
-            console.log(formInputs)
+            console.log(formInputs);
             const message = await registerUser(formInputs);
             // TO-DO
             alert('User created');
@@ -222,82 +225,82 @@ function Registration() {
         console.log('Submission function not implemented!');
     }
 
-  return (
-    <>
-      <MainTemplate currentPage="register">
-        <GcdsHeading tag="h1" style={{marginBottom: 48}}>Register PAL Account</GcdsHeading>
-        <GcdsInput
-          inputId="input-firstname"
-          error-links="FirstName"
-          label="First Name"
-          hint="Maximum 50 characters."
-          name="registration-first-name"
-          required
-          validator={[
-            getNameValidator(true, true),
-            getNameValidator(true, false),
-            getNameValidator(false, true),
-          ]}
-          validateOn="other"
-          onGcdsInput={(e: any) => e.target.validate()}
-          style={{ marginBottom: 48, width: '110%' }}
-        />
-        <GcdsInput
-          inputId="input-lastname"
-          label="Last Name"
-          hint="Maximum 50 characters."
-          name="registration-last-name"
-          required
-          validator={[
-            getNameValidator(true, true),
-            getNameValidator(true, false),
-            getNameValidator(false, true),
-          ]}
-          validateOn="other"
-          onGcdsInput={(e: any) => e.target.validate()}
-          style={{ marginBottom: 48, width: '110%' }}
-        />
-        <GcdsInput
-          inputId="input-email"
-          label="Email"
-          hint="Must end in @ec.gc.ca."
-          name="registration-email"
-          required
-          validator={[getEmailValidator()]}
-          style={{ marginBottom: 48, width: '110%' }}
-        />
-        <GcdsInput
-          inputId="input-password"
-          label="Password"
-          hint="Must be a minimum of 8 characters, with at least one uppercase character and one number. Only these special characters are allowed: !?@#$%^&*()"
-          name="registration-password"
-          type="password"
-          required
-          validator={[getPasswordValidator()]}
-          validateOn="other"
-          onGcdsInput={(e: any) => {
-            setCurrentPass(e.target.value || ""); // TODO: Bad async stuff, activating too late to show until next round. Find a way to use useEffect.
-            setTimeout(() => e.target.validate(), 25); // Really hacky solution to deal with above async stuff. Might break, find a better way w/ useEffect or other.
-          }}
-          style={{ marginBottom: 48, width: '110%'}}
-        />
+    return (
+        <>
+            <MainTemplate currentPage="register">
+                <GcdsHeading tag="h1" style={{ marginBottom: 48 }}>
+                    Register PAL Account
+                </GcdsHeading>
+                <GcdsInput
+                    inputId="input-firstname"
+                    error-links="FirstName"
+                    label="First Name"
+                    hint="Maximum 50 characters."
+                    name="registration-first-name"
+                    required
+                    validator={[
+                        getNameValidator(true, true),
+                        getNameValidator(true, false),
+                        getNameValidator(false, true),
+                    ]}
+                    validateOn="other"
+                    onGcdsInput={(e: any) => e.target.validate()}
+                    style={{ marginBottom: 48, width: '110%' }}
+                />
+                <GcdsInput
+                    inputId="input-lastname"
+                    label="Last Name"
+                    hint="Maximum 50 characters."
+                    name="registration-last-name"
+                    required
+                    validator={[
+                        getNameValidator(true, true),
+                        getNameValidator(true, false),
+                        getNameValidator(false, true),
+                    ]}
+                    validateOn="other"
+                    onGcdsInput={(e: any) => e.target.validate()}
+                    style={{ marginBottom: 48, width: '110%' }}
+                />
+                <GcdsInput
+                    inputId="input-email"
+                    label="Email"
+                    hint="Must end in @ec.gc.ca."
+                    name="registration-email"
+                    required
+                    validator={[getEmailValidator()]}
+                    style={{ marginBottom: 48, width: '110%' }}
+                />
+                <GcdsInput
+                    inputId="input-password"
+                    label="Password"
+                    hint="Must be a minimum of 8 characters, with at least one uppercase character and one number. Only these special characters are allowed: !?@#$%^&*()"
+                    name="registration-password"
+                    type="password"
+                    required
+                    validator={[getPasswordValidator()]}
+                    validateOn="other"
+                    onGcdsInput={(e: any) => {
+                        setCurrentPass(e.target.value || ''); // TODO: Bad async stuff, activating too late to show until next round. Find a way to use useEffect.
+                        setTimeout(() => e.target.validate(), 25); // Really hacky solution to deal with above async stuff. Might break, find a better way w/ useEffect or other.
+                    }}
+                    style={{ marginBottom: 48, width: '110%' }}
+                />
 
-        <GcdsButton
-          buttonId="registration-submit"
-          type="submit"
-          onGcdsClick={(e: any) => handleSubmission(e)}
-        >
-          Submit
-        </GcdsButton>
+                <GcdsButton
+                    buttonId="registration-submit"
+                    type="submit"
+                    onGcdsClick={(e: any) => handleSubmission(e)}
+                >
+                    Submit
+                </GcdsButton>
 
-        <GcdsContainer size="xl" centered style={{paddingBottom: 10}}>
-              <GcdsDateModified>
-                  2024-07-19
-              </GcdsDateModified>
-        </GcdsContainer>
-      </MainTemplate>
-    </>
-  );
+                <GcdsContainer size="xl" centered style={{ paddingBottom: 10 }}>
+                    <GcdsDateModified>2024-07-19</GcdsDateModified>
+                </GcdsContainer>
+            </MainTemplate>
+        </>
+    );
 }
 
 export default Registration;
