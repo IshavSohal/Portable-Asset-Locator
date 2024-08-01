@@ -7,6 +7,7 @@ import MainTemplate from './templates/MainTemplate';
 import SignOn from './pages/SignOn';
 import AuthProvider, { useAuth } from './hooks/AuthProvider';
 import { useEffect, useState } from 'react';
+import PrivateRoutes from './routes/PrivateRoutes';
 
 function App() {
     const { loadUser, user } = useAuth();
@@ -34,7 +35,9 @@ function App() {
             <Router>
                 <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route element={<PrivateRoutes />}>
+                        <Route path="/dashboard" element={<Dashboard />} />
+                    </Route>
                     <Route path="/signin" element={<SignOn />} />
                     <Route path="/register" element={<Registration />} />
                 </Routes>

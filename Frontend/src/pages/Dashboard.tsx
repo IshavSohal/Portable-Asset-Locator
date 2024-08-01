@@ -6,8 +6,6 @@ import { useAuth } from '../hooks/AuthProvider';
 
 function Dashboard() {
     const { user, logOut } = useAuth();
-
-    if (!user) return <Navigate to="/signin" replace={true} />;
     return (
         <MainTemplate addMargins={false}>
             <GcdsHeading tag="h1">Dashboard</GcdsHeading>
@@ -17,7 +15,7 @@ function Dashboard() {
             <div>
                 <MessageDisplay />
             </div>
-            <div>Hello {user.email}!</div>
+            <div>Hello {user?.email}!</div>
             <button onClick={logOut}>Log out</button>
         </MainTemplate>
     );
