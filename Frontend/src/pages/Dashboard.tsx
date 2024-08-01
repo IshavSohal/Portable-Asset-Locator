@@ -1,13 +1,13 @@
-import { Link, Navigate } from 'react-router-dom'
-import MainTemplate from '../templates/MainTemplate'
-import { GcdsHeading } from '@cdssnc/gcds-components-react'
-import MessageDisplay from '../components/MessageDisplay'
-import { useAuth } from '../hooks/AuthProvider'
+import { Link, Navigate } from 'react-router-dom';
+import MainTemplate from '../templates/MainTemplate';
+import { GcdsHeading } from '@cdssnc/gcds-components-react';
+import MessageDisplay from '../components/MessageDisplay';
+import { useAuth } from '../hooks/AuthProvider';
 
 function Dashboard() {
-    const { user, logOut } = useAuth()
+    const { user, logOut } = useAuth();
 
-    if (!user) return <Navigate to="/signin" replace={true} />
+    if (!user) return <Navigate to="/signin" replace={true} />;
     return (
         <MainTemplate addMargins={false}>
             <GcdsHeading tag="h1">Dashboard</GcdsHeading>
@@ -20,7 +20,7 @@ function Dashboard() {
             <div>Hello {user.email}!</div>
             <button onClick={logOut}>Log out</button>
         </MainTemplate>
-    )
+    );
 }
 
-export default Dashboard
+export default Dashboard;
