@@ -86,12 +86,25 @@ authenticationRoutes.route("/login")
         }
     );
 
- authenticationRoutes.route("/session").get((req: Request, res: Response) => {
+authenticationRoutes.route("/profile").get((req: Request, res: Response) => {
     if (req.session.user) {
         res.status(200).send(req.session.user);
     } else {
         res.sendStatus(401);
     }
 });
+
+authenticationRoutes.route("/logout").get((req: Request, res: Response) => {
+    req.session.destroy((err) => {
+        if (err) {
+            ConsoleLogger.logWarning(err);
+            res.status(500).send("Error logging out"); 
+        } else {
+            ConsoleLogger.logInfo("Logout Successful")
+            res.sendStatus(200);
+        }
+    })
+});
+
 
 module.exports = authenticationRoutes;
