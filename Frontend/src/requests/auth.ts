@@ -15,7 +15,7 @@ const loginUser = async (data : {email: string, password: string}): Promise<user
 }
 
 const loadUser = async() => {
-  const response = await fetchGet("/api/auth/session");
+  const response = await fetchGet("/api/auth/profile");
   if (response.ok) {
     return await response.json() as user;
   } else {
@@ -37,4 +37,11 @@ const registerUser = async (data : {firstName: string, lastName: string, email: 
   }
 }
 
-export { registerUser, loginUser, loadUser };
+const logoutUser = async () => {
+  const response = await fetchGet("/api/auth/logout");
+  if (!response.ok) {
+    throw new Error(await response.text());
+  } 
+}
+
+export { registerUser, loginUser, logoutUser, loadUser };

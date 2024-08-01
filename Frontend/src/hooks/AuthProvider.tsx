@@ -1,19 +1,19 @@
 import { useContext, createContext, useState, PropsWithChildren } from 'react';
-import { loginUser, loadUser as load } from '../requests/auth';
+import { loginUser, loadUser as load, logoutUser } from '../requests/auth';
 // import { useNavigate } from 'react-router-dom'
 import { user } from '../types/user';
 
 type IAuthContextType = {
     user: user | null;
     logIn: (email: string, password: string) => Promise<void>;
-    logOut: () => void;
+    logOut: () => Promise<void>;
     loadUser: () => Promise<void>;
 };
 
 const initialValue = {
     user: null,
     logIn: () => new Promise<void>((resolve) => setTimeout(resolve, 1000)),
-    logOut: () => {},
+    logOut: () => new Promise<void>((resolve) => setTimeout(resolve, 1000)),
     loadUser: () => new Promise<void>((resolve) => setTimeout(resolve, 1000)),
 };
 
@@ -30,9 +30,9 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
         // navigate('/dashboard')
     };
 
-    const logOut = () => {
+    const logOut = async () => {
+        await logoutUser();
         setUser(null);
-        // navigate('/signin')
     };
 
     const loadUser = async () => {
