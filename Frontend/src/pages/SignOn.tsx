@@ -12,6 +12,7 @@ import {
 } from '@cdssnc/gcds-components/dist/types/components';
 import { useState } from 'react';
 import { useAuth } from '../hooks/AuthProvider';
+import { useNavigate } from 'react-router-dom';
 
 interface InputValues {
     email: string;
@@ -20,6 +21,7 @@ interface InputValues {
 
 function SignOn() {
     const { logIn } = useAuth();
+    const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [inputFields, setInputFields] = useState<InputValues>({
         email: '',
@@ -34,6 +36,7 @@ function SignOn() {
         setIsSubmitting(true);
         try {
             await logIn(email, password);
+            navigate('/dashboard');
         } catch (err) {
             // setError((err as Error).message);
             alert((err as Error).message);

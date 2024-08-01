@@ -5,21 +5,42 @@ import Dashboard from './pages/Dashboard';
 import Registration from './pages/Registration';
 import MainTemplate from './templates/MainTemplate';
 import SignOn from './pages/SignOn';
-import AuthProvider from './hooks/AuthProvider';
+import AuthProvider, { useAuth } from './hooks/AuthProvider';
+import { useEffect, useState } from 'react';
 
 function App() {
-    return (
-        <Router>
-            <AuthProvider>
+    const { loadUser, user } = useAuth();
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        console.log('Loading App');
+        const load = async () => {
+            try {
+                await loadUser();
+                console.log(user);
+            } catch (err) {
+                console.warn(err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        load();
+    }, []);
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    } else {
+        return (
+            <Router>
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/signin" element={<SignOn />} />
                     <Route path="/register" element={<Registration />} />
                 </Routes>
-            </AuthProvider>
-        </Router>
-    );
+            </Router>
+        );
+    }
 }
 
 function Home() {
