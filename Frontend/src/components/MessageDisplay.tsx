@@ -9,7 +9,6 @@ function MessageDisplay() {
     useEffect(() => {
         // fetch data
         const dataFetch = async () => {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
             try {
                 const message = await fetchHelloWorld();
                 // set state when the data received
