@@ -1,11 +1,11 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
-import logo from './logo.svg'
-import './App.css'
-import Dashboard from './pages/Dashboard'
-import Registration from './pages/Registration'
-import MainTemplate from './templates/MainTemplate'
-import SignOn from './pages/SignOn'
-import AuthProvider from './hooks/AuthProvider'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import logo from './logo.svg';
+import './App.css';
+import Dashboard from './pages/Dashboard';
+import Registration from './pages/Registration';
+import MainTemplate from './templates/MainTemplate';
+import SignOn from './pages/SignOn';
+import AuthProvider from './hooks/AuthProvider';
 
 function App() {
     return (
@@ -19,7 +19,7 @@ function App() {
                 </Routes>
             </AuthProvider>
         </Router>
-    )
+    );
 }
 
 function Home() {
@@ -35,7 +35,7 @@ function Home() {
                 </Link>
             </div>
         </MainTemplate>
-    )
+    );
 }
 
-export default App
+export default App;
