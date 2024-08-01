@@ -1,7 +1,11 @@
 {
     "name": "PAL-LAP",
     "scripts": {
-        "setup": "cd Frontend && npm install && npm run build",
-        "dev": "cd Backend && npm install && npm run dev"
-    }
+      "setup": "cd Frontend && npm install && npm run build",
+      "dev": "cd Backend && npm install && npm run dev"
+    }, 
+    "dependencies": {
+      "@cdssnc/gcds-components": "^0.22.2",
+      "@cdssnc/gcds-components-react": "^0.22.2"
+  }
 }
