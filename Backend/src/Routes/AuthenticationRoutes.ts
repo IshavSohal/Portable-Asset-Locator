@@ -86,4 +86,12 @@ authenticationRoutes.route("/login")
         }
     );
 
+ authenticationRoutes.route("/session").get((req: Request, res: Response) => {
+    if (req.session.user) {
+        res.status(200).send(req.session.user);
+    } else {
+        res.sendStatus(401);
+    }
+});
+
 module.exports = authenticationRoutes;
