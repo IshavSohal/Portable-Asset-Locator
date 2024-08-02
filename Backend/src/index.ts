@@ -32,6 +32,9 @@ app.use(session({
 type User = {
   id: number;
   email: string;
+  firstName: string;
+  lastName: string;
+  role: string;
 };
 
 declare module 'express-session' {
