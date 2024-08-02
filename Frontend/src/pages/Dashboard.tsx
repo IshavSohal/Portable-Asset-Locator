@@ -1,4 +1,4 @@
-import { Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import MainTemplate from '../templates/MainTemplate';
 import { GcdsHeading } from '@cdssnc/gcds-components-react';
 import MessageDisplay from '../components/MessageDisplay';

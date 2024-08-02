@@ -8,6 +8,7 @@ import SignOn from './pages/SignOn';
 import AuthProvider, { useAuth } from './hooks/AuthProvider';
 import { useEffect, useState } from 'react';
 import PrivateRoutes from './routes/PrivateRoutes';
+import UnauthRoutes from './routes/UnauthRoutes';
 
 function App() {
     const { loadUser, user } = useAuth();
@@ -38,8 +39,10 @@ function App() {
                     <Route element={<PrivateRoutes />}>
                         <Route path="/dashboard" element={<Dashboard />} />
                     </Route>
-                    <Route path="/signin" element={<SignOn />} />
-                    <Route path="/register" element={<Registration />} />
+                    <Route element={<UnauthRoutes />}>
+                        <Route path="/signin" element={<SignOn />} />
+                        <Route path="/register" element={<Registration />} />
+                    </Route>
                 </Routes>
             </Router>
         );
