@@ -37,8 +37,8 @@ authenticationRoutes.route("/register")
             try
             {
                 var createdUser = await authenticationController.Register(email, password, firstName, lastName);
-                req.session.user = {id: createdUser.UID, email: createdUser.email}
-                res.sendStatus(201)
+                req.session.user = {id: createdUser.UID, email: createdUser.email};
+                res.sendStatus(201);
             }
             catch (error){
                 if (error instanceof AuthConflictError){
