@@ -18,16 +18,17 @@ export class AssetController {
             ConsoleLogger.logWarning("Asset ID does not exist");
             return res.sendStatus(409);
         } else {
+            let jsonRes = JSON.parse(JSON.stringify(result));
+            jsonRes.custFirstName = null;
+            jsonRes.custLastName = null;
+            jsonRes.custEmail = null;
             let custodian = await userService.getUserById(result.custodian);
-            if (custodian === null){
-                res.status(200).json(result)
+            if (custodian !== null){
+                jsonRes.custFirstName = custodian?.firstName;
+                jsonRes.custLastName = custodian?.lastName;
+                jsonRes.custEmail = custodian?.email;
             }
 
-            let jsonRes = JSON.parse(JSON.stringify(result));
-            jsonRes.custFirstName = custodian?.firstName
-            jsonRes.custLastName = custodian?.lastName
-            jsonRes.custEmail = custodian?.email;
-            
             return res.status(200).json(jsonRes)
         }
     }

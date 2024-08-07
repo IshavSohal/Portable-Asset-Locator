@@ -21,7 +21,6 @@ assetRoutes.get(
         //let id = req.body.id as number;
         let id = parseInt(req.params.id, 10);
         if (isNaN(id)){
-            console.log("fail");
             return res.sendStatus(400);
         }
         
