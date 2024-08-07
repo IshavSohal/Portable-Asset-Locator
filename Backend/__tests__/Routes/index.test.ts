@@ -3,8 +3,7 @@ import app from "../../src/index";
 
 describe("Server setup tests", () => {
     it("Root test", async () => {
-      const res = await request(app)
-      .get("/")
-      expect(res.statusCode).toEqual(200);
+      const res = await request(app).get("/api")
+      expect(res.statusCode).toEqual(302);
     });
   });

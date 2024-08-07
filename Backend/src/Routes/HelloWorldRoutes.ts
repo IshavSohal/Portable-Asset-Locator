@@ -11,7 +11,7 @@ helloWorldRoute.route("/")
         res.sendStatus(200);
     });
 helloWorldRoute.route("/start")
-    .get(requireAuth, (req: Request, res: Response) => {
+    .get((req: Request, res: Response) => {
         helloWorldController.helloWorld(req, res);
     });
 
