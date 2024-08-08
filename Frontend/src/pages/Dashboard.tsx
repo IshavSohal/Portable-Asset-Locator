@@ -2,6 +2,15 @@ import { Link } from 'react-router-dom';
 import MainTemplate from '../templates/MainTemplate';
 import { GcdsHeading, GcdsPagination } from '@cdssnc/gcds-components-react';
 import MessageDisplay from '../components/MessageDisplay';
+import {
+    TableContainer,
+    Table,
+    Thead,
+    Tbody,
+    Tr,
+    Th,
+    Td,
+} from '@chakra-ui/react';
 
 function Dashboard() {
     const userAssets: asset[] = exampleAssets;
