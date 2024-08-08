@@ -17,13 +17,22 @@ import {
     Td,
     TableCaption,
 } from '@chakra-ui/react';
+import { useAuth } from '../hooks/AuthProvider';
 
 function Dashboard() {
     const userAssets: asset[] = exampleAssets;
-
+    const { user, logOut } = useAuth();
     return (
-        <MainTemplate>
+        <MainTemplate addMargins={false}>
             <GcdsHeading tag="h1">Dashboard</GcdsHeading>
+            <p>
+                Hello {user?.firstName} {user?.lastName}!
+            </p>
+            <p>
+                {user?.email} | Your role: {user?.role}
+            </p>
+
+            {/* The following code is for experimentation */}
             <div>
                 <Link to="/">Home</Link>
             </div>
@@ -79,6 +88,7 @@ function Dashboard() {
                     </Table>
                 </TableContainer>
             </GcdsContainer>
+            <button onClick={logOut}>Log out</button>
         </MainTemplate>
     );
 }

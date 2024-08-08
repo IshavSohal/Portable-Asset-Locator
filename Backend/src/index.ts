@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 import path from "path";
 import session from 'express-session';
 import cors from 'cors';
-import { ConsoleLogger } from "./Logging/ConsoleLogger";
 const indexRouter = require("./Routes/index");
 const helloWorldRouter = require("./Routes/HelloWorldRoutes");
 const authenticationRouter = require("./Routes/AuthenticationRoutes");
@@ -15,7 +14,8 @@ const assetRouter = require("./Routes/AssetRoutes");
 dotenv.config();
 
 const app: Express = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
+const client = process.env.CLIENT_PORT || 3000; 
 const distPath = path.join(__dirname, '../../Frontend/build');
 
 app.use(session({
@@ -32,6 +32,9 @@ app.use(session({
 type User = {
   id: number;
   email: string;
+  firstName: string;
+  lastName: string;
+  role: string;
 };
 
 declare module 'express-session' {
@@ -41,7 +44,8 @@ declare module 'express-session' {
 }
 
 const corsOptions = {
-  origin: 'http://localhost:' + port,
+  credentials: true,
+  origin: 'http://localhost:' + client,
 
 };
 app.use(cors(corsOptions));
@@ -60,7 +64,7 @@ app.use("/api/asset", assetRouter);
 // app.use('/api/', routes);
 
 // Handles any requests that don't match the ones above
-app.get('*', (req, res) =>{
+app.get('*', (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'));
 });
 

@@ -1,22 +1,52 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import logo from "./logo.svg";
-import "./App.css";
-import Dashboard from "./pages/Dashboard";
-import Registration from "./pages/Registration";
-import MainTemplate from "./templates/MainTemplate";
-import SignOn from "./pages/SignOn";
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import logo from './logo.svg';
+import './App.css';
+import Dashboard from './pages/Dashboard';
+import Registration from './pages/Registration';
+import MainTemplate from './templates/MainTemplate';
+import SignOn from './pages/SignOn';
+import AuthProvider, { useAuth } from './hooks/AuthProvider';
+import { useEffect, useState } from 'react';
+import PrivateRoutes from './routes/PrivateRoutes';
+import UnauthRoutes from './routes/UnauthRoutes';
 
 function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/signin" element={<SignOn />} />
-        <Route path="/register" element={<Registration />} />
-      </Routes>
-    </Router>
-  );
+    const { loadUser, user } = useAuth();
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        console.log('Loading App');
+        const load = async () => {
+            try {
+                await loadUser();
+                console.log(user);
+            } catch (err) {
+                console.warn(err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        load();
+    }, []);
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    } else {
+        return (
+            <Router>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route element={<PrivateRoutes />}>
+                        <Route path="/dashboard" element={<Dashboard />} />
+                    </Route>
+                    <Route element={<UnauthRoutes />}>
+                        <Route path="/signin" element={<SignOn />} />
+                        <Route path="/register" element={<Registration />} />
+                    </Route>
+                </Routes>
+            </Router>
+        );
+    }
 }
 
 function Home() {
@@ -27,17 +57,12 @@ function Home() {
                 <p>
                     Edit <code>src/App.tsx</code> and save to reload.
                 </p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Learn React
-                </a>
+                <Link className="App-link" to="/dashboard">
+                    Dashboard
+                </Link>
             </div>
         </MainTemplate>
-    )
+    );
 }
 
-export default App
+export default App;

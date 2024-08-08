@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import '@cdssnc/gcds-components-react/gcds.css';
+import AuthProvider from './hooks/AuthProvider';
+
 import {
     ChakraBaseProvider,
     extendBaseTheme,
@@ -30,7 +32,9 @@ const root = ReactDOM.createRoot(
 root.render(
     <React.StrictMode>
         <ChakraBaseProvider theme={theme}>
-            <App />
+            <AuthProvider>
+                <App />
+            </AuthProvider>
         </ChakraBaseProvider>
     </React.StrictMode>
 );
