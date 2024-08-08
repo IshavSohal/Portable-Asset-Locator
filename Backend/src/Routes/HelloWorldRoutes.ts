@@ -1,6 +1,6 @@
 import express, { Express, Request, Response, Router } from "express";
 import { HelloWorldController } from "../Controllers/HelloWorldController";
-var requireAuth = require("../Middleware/AuthMiddleware");
+// var requireAuth = require("../Middleware/AuthMiddleware");
 
 
 export const helloWorldRoute = Router();
@@ -11,7 +11,7 @@ helloWorldRoute.route("/")
         res.sendStatus(200);
     });
 helloWorldRoute.route("/start")
-    .get(requireAuth, (req: Request, res: Response) => {
+    .get((req: Request, res: Response) => {
         helloWorldController.helloWorld(req, res);
     });
 

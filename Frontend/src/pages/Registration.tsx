@@ -208,7 +208,7 @@ function Registration() {
           ]}
           validateOn="other"
           onGcdsInput={(e: any) => e.target.validate()}
-          style={{ marginBottom: 48, width: '110%' }}
+          style={{ marginBottom: "48px", width: "110%" }}
         />
         <GcdsInput
           inputId="input-lastname"
@@ -223,7 +223,7 @@ function Registration() {
           ]}
           validateOn="other"
           onGcdsInput={(e: any) => e.target.validate()}
-          style={{ marginBottom: 48, width: '110%' }}
+          style={{ marginBottom: "48px", width: "110%" }}
         />
         <GcdsInput
           inputId="input-email"
@@ -244,8 +244,8 @@ function Registration() {
           validator={[getPasswordValidator()]}
           validateOn="other"
           onGcdsInput={(e: any) => {
-            setCurrentPass(e.target.value || ""); // TODO: Bad async stuff, activating too late to show until next round. Find a way to use useEffect.
-            setTimeout(() => e.target.validate(), 25); // Really hacky solution to deal with above async stuff. Might break, find a better way w/ useEffect or other.
+          setCurrentPass(e.target.value || ""); // TODO: Bad async stuff, activating too late to show until next round. Find a way to use useEffect.
+          setTimeout(() => e.target.validate(), 25); // Really hacky solution to deal with above async stuff. Might break, find a better way w/ useEffect or other.
           }}
           style={{ marginBottom: 48, width: '110%'}}
         />
