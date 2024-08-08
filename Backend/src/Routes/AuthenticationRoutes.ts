@@ -36,8 +36,11 @@ authenticationRoutes.route("/register")
 
             try
             {
-                var createdUser = await authenticationController.Register(email, password, firstName, lastName);
-                req.session.user = {id: createdUser.UID, email: createdUser.email}
+                const createdUser = await authenticationController.Register(email, password, firstName, lastName);
+                // const { email, firstName, lastName, roleName } = createdUser;
+                // req.session.user = { id: createdUser.UID, email, firstName, lastName, roleName }
+
+                // req.session.user = {id: createdUser.UID, email: createdUser.email}
                 res.sendStatus(201)
             }
             catch (error){
@@ -67,10 +70,13 @@ authenticationRoutes.route("/login")
             let email = req.body.email as string;
             let password = req.body.password as string;
             try{
-                var foundUser = await authenticationController.Authenticate(email, password);
+                const foundUser = await authenticationController.Authenticate(email, password);
                 if (foundUser != null){
-                    req.session.user = {id: foundUser.UID, email: foundUser.email}
-                    res.sendStatus(200);
+                    const { firstName, lastName, roleName } = foundUser;
+                    req.session.user = { id: foundUser.UID, email: foundUser.email, firstName, lastName, role: roleName }
+                    res.status(200).send(req.session.user);
+                } else {
+                    res.sendStatus(503);
                 }
             }
             catch (error){
@@ -83,5 +89,26 @@ authenticationRoutes.route("/login")
             
         }
     );
+
+authenticationRoutes.route("/profile").get((req: Request, res: Response) => {
+    if (req.session.user) {
+        res.status(200).send(req.session.user);
+    } else {
+        res.sendStatus(401);
+    }
+});
+
+authenticationRoutes.route("/logout").get((req: Request, res: Response) => {
+    req.session.destroy((err) => {
+        if (err) {
+            ConsoleLogger.logWarning(err);
+            res.status(500).send("Error logging out"); 
+        } else {
+            ConsoleLogger.logInfo("Logout Successful")
+            res.sendStatus(200);
+        }
+    })
+});
+
 
 module.exports = authenticationRoutes;
