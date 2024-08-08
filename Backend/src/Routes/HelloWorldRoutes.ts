@@ -1,6 +1,6 @@
 import express, { Express, Request, Response, Router } from "express";
 import { HelloWorldController } from "../Controllers/HelloWorldController";
-var requireAuth = require("../Middleware/AuthMiddleware");
+// var requireAuth = require("../Middleware/AuthMiddleware");
 
 
 export const helloWorldRoute = Router();
