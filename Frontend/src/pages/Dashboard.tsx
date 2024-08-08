@@ -1,6 +1,11 @@
 import { Link } from 'react-router-dom';
 import MainTemplate from '../templates/MainTemplate';
-import { GcdsHeading, GcdsPagination } from '@cdssnc/gcds-components-react';
+import {
+    GcdsContainer,
+    GcdsHeading,
+    GcdsLink,
+    GcdsText,
+} from '@cdssnc/gcds-components-react';
 import MessageDisplay from '../components/MessageDisplay';
 import {
     TableContainer,
@@ -10,13 +15,14 @@ import {
     Tr,
     Th,
     Td,
+    TableCaption,
 } from '@chakra-ui/react';
 
 function Dashboard() {
     const userAssets: asset[] = exampleAssets;
 
     return (
-        <MainTemplate addMargins={false}>
+        <MainTemplate>
             <GcdsHeading tag="h1">Dashboard</GcdsHeading>
             <div>
                 <Link to="/">Home</Link>
@@ -24,42 +30,55 @@ function Dashboard() {
             <div>
                 <MessageDisplay />
             </div>
-            <h2>Your assets</h2>
-            <h3>Assigned to you</h3>
-            <p>Here are all the assets that are currently assigned to you.</p>
-            <p>Showing {userAssets.length} results.</p>
-            <div>
-                <table>
-                    <caption>Table of your current assigned assets</caption>
-                    <thead>
-                        <tr>
-                            <th>Asset</th>
-                            <th>Asset tag</th>
-                            <th>Type</th>
-                            <th>Assignment start date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {userAssets.map((asset, index) => {
-                            return (
-                                <tr key={asset.id}>
-                                    <td>{asset.name}</td>
-                                    <td>{asset.tag}</td>
-                                    <td>{asset.type}</td>
-                                    <td>{asset.startDate.toDateString()}</td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-
-                    <tr></tr>
-                </table>
-                {/* <GcdsPagination
-                label="Pagination"
-                totalPages={2}
-                currentPage={1}
-            ></GcdsPagination> */}
-            </div>
+            <GcdsHeading tag="h2" marginBottom="0">
+                Your assets
+            </GcdsHeading>
+            <GcdsHeading tag="h3" marginTop="400">
+                Assigned to you
+            </GcdsHeading>
+            <GcdsText>
+                Here are all the assets that are currently assigned to you.
+            </GcdsText>
+            <GcdsContainer border padding="400" margin="0">
+                <GcdsText size="caption">
+                    Showing {userAssets.length} results.
+                </GcdsText>
+                <TableContainer>
+                    <Table>
+                        <TableCaption>
+                            Table of your current assigned assets
+                        </TableCaption>
+                        <Thead>
+                            <Tr>
+                                <Th>Asset</Th>
+                                <Th>Asset tag</Th>
+                                <Th>Type</Th>
+                                <Th>Assignment start date</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {userAssets.map((asset) => {
+                                return (
+                                    <Tr key={asset.id}>
+                                        <Td>
+                                            <GcdsLink
+                                                href={`/assets/${asset.id}`}
+                                            >
+                                                {asset.name}
+                                            </GcdsLink>
+                                        </Td>
+                                        <Td>{asset.tag}</Td>
+                                        <Td>{asset.type}</Td>
+                                        <Td>
+                                            {asset.startDate.toDateString()}
+                                        </Td>
+                                    </Tr>
+                                );
+                            })}
+                        </Tbody>
+                    </Table>
+                </TableContainer>
+            </GcdsContainer>
         </MainTemplate>
     );
 }

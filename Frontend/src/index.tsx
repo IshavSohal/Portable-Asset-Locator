@@ -10,11 +10,17 @@ import {
     theme as chakraTheme,
 } from '@chakra-ui/react';
 
-const { Table } = chakraTheme.components;
+const { Table, Link } = chakraTheme.components;
 
 const theme = extendBaseTheme({
     components: {
         Table,
+        Link,
+    },
+    fonts: {
+        body: "'Noto Sans', sans-serif",
+        heading: "'Lato', serif",
+        mono: "'Noto Sans Mono', monospace",
     },
 });
 
