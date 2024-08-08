@@ -19,14 +19,16 @@ export class AssetController {
             return res.sendStatus(409);
         } else {
             let jsonRes = JSON.parse(JSON.stringify(result));
-            jsonRes.custFirstName = null;
-            jsonRes.custLastName = null;
-            jsonRes.custEmail = null;
+            jsonRes.custodian = null;
             let custodian = await userService.getUserById(result.custodian);
             if (custodian !== null){
-                jsonRes.custFirstName = custodian?.firstName;
-                jsonRes.custLastName = custodian?.lastName;
-                jsonRes.custEmail = custodian?.email;
+                let custObject = {
+                    id: custodian.UID,
+                    firstName: custodian?.firstName,
+                    lastName: custodian?.lastName,
+                    email: custodian?.email
+                };
+                jsonRes.custodian = custObject;
             }
 
             return res.status(200).json(jsonRes)
