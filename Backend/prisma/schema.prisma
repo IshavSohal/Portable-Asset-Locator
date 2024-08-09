@@ -14,27 +14,28 @@ model Role {
 }
 
 model User {
-  UID       Int     @id @default(autoincrement())
-  email     String  @unique
-  firstName String
-  lastName  String
-  roleName  String
-  password  String
-  Asset     Asset[]
-  role      Role    @relation(fields: [roleName], references: [name])
-  iv        Bytes   @default("")
+  UID                 Int           @id @default(autoincrement())
+  email               String        @unique
+  firstName           String
+  lastName            String
+  roleName            String
+  password            String
+  role                Role          @relation(fields: [roleName], references: [name])
+  iv                  Bytes         @default("")
+  asset               Asset[]
+  assignment          Assignment[]
 }
 
 model AssetType {
   id            Int         @id @default(autoincrement()) 
   type          String      @unique @db.VarChar(255) 
-  assets        Asset[]
+  asset         Asset[]
 }
 
 model Location {
   id            Int         @id @default(autoincrement()) 
   location      String      @unique @db.VarChar(255)
-  assets        Asset[]
+  asset         Asset[]
 }
 
 model Asset { 
@@ -58,4 +59,15 @@ model Asset {
   cost                      Decimal?      @db.Decimal(10,2)
   purchaser                 String?       @db.VarChar(255)
   comment                   String?       @db.Text
+  assignment                Assignment[]
 } 
+
+model Assignment {
+  id                        Int           @id @default(autoincrement()) 
+  assigneeID                User          @relation(fields: [assignee], references: [UID], onDelete: NoAction, onUpdate: NoAction)
+  assignee                  Int
+  assetID                   Asset         @relation(fields: [asset], references: [id])
+  asset                     Int       
+  startOfAssignment         DateTime      
+  endOfAssignment           DateTime?     
+}
