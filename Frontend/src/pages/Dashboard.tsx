@@ -6,7 +6,6 @@ import {
     GcdsLink,
     GcdsText,
 } from '@cdssnc/gcds-components-react';
-import MessageDisplay from '../components/MessageDisplay';
 import {
     TableContainer,
     Table,
@@ -15,30 +14,43 @@ import {
     Tr,
     Th,
     Td,
-    TableCaption,
 } from '@chakra-ui/react';
 import { useAuth } from '../hooks/AuthProvider';
+import { useEffect, useState } from 'react';
+import { fetchGet } from '../requests/requests';
 
 function Dashboard() {
-    const userAssets: asset[] = exampleAssets;
+    const [userAssets, setUserAssets] = useState<asset[]>([]);
     const { user, logOut } = useAuth();
+
+    const [error, setError] = useState<null | string>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // fetch data
+        const dataFetch = async () => {
+            try {
+                // const assets = await (await fetchGet("/api/assets")).json() as asset[];
+                const assets = (await fetchUserAssets()) as asset[];
+                // set state when the data received
+                setUserAssets(assets);
+            } catch (err) {
+                setError((err as Error).message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        dataFetch();
+    }, []);
+
     return (
         <MainTemplate addMargins={false}>
             <GcdsHeading tag="h1">Dashboard</GcdsHeading>
-            <p>
-                Hello {user?.firstName} {user?.lastName}!
-            </p>
-            <p>
-                {user?.email} | Your role: {user?.role}
-            </p>
-
-            {/* The following code is for experimentation */}
-            <div>
-                <Link to="/">Home</Link>
-            </div>
-            <div>
-                <MessageDisplay />
-            </div>
+            <GcdsText>
+                Welcome, {user?.firstName} {user?.lastName} ({user?.email}) !
+            </GcdsText>
+            <button onClick={logOut}>Log out</button>
             <GcdsHeading tag="h2" marginBottom="0">
                 Your assets
             </GcdsHeading>
@@ -54,9 +66,9 @@ function Dashboard() {
                 </GcdsText>
                 <TableContainer>
                     <Table>
-                        <TableCaption>
+                        {/* <TableCaption>
                             Table of your current assigned assets
-                        </TableCaption>
+                        </TableCaption> */}
                         <Thead>
                             <Tr>
                                 <Th>Asset</Th>
@@ -65,30 +77,37 @@ function Dashboard() {
                                 <Th>Assignment start date</Th>
                             </Tr>
                         </Thead>
-                        <Tbody>
-                            {userAssets.map((asset) => {
-                                return (
-                                    <Tr key={asset.id}>
-                                        <Td>
-                                            <GcdsLink
-                                                href={`/assets/${asset.id}`}
-                                            >
-                                                {asset.name}
-                                            </GcdsLink>
-                                        </Td>
-                                        <Td>{asset.tag}</Td>
-                                        <Td>{asset.type}</Td>
-                                        <Td>
-                                            {asset.startDate.toDateString()}
-                                        </Td>
-                                    </Tr>
-                                );
-                            })}
-                        </Tbody>
+                        {loading ? (
+                            <Tbody>Loading....</Tbody>
+                        ) : error ? (
+                            <Tbody>Error: {error}</Tbody>
+                        ) : userAssets.length == 0 ? (
+                            <Tbody>No records</Tbody>
+                        ) : (
+                            <Tbody>
+                                {userAssets.map((asset) => {
+                                    return (
+                                        <Tr key={asset.id}>
+                                            <Td>
+                                                <GcdsLink
+                                                    href={`/assets/${asset.id}`}
+                                                >
+                                                    {asset.name}
+                                                </GcdsLink>
+                                            </Td>
+                                            <Td>{asset.tag}</Td>
+                                            <Td>{asset.type}</Td>
+                                            <Td>
+                                                {asset.startDate.toDateString()}
+                                            </Td>
+                                        </Tr>
+                                    );
+                                })}
+                            </Tbody>
+                        )}
                     </Table>
                 </TableContainer>
             </GcdsContainer>
-            <button onClick={logOut}>Log out</button>
         </MainTemplate>
     );
 }
@@ -103,6 +122,11 @@ type asset = {
     startDate: Date;
 };
 
+async function fetchUserAssets() {
+    // TODO: make api request
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return exampleAssets;
+}
 const exampleAssets = [
     {
         id: 1,
