@@ -1,56 +1,67 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import logo from './logo.svg';
 import './App.css';
-import {
-    GcdsHeader,
-    GcdsTopNav,
-    GcdsNavLink,
-} from '@cdssnc/gcds-components-react';
 import Dashboard from './pages/Dashboard';
+import Registration from './pages/Registration';
+import MainTemplate from './templates/MainTemplate';
+import SignOn from './pages/SignOn';
+import AuthProvider, { useAuth } from './hooks/AuthProvider';
+import { useEffect, useState } from 'react';
+import PrivateRoutes from './routes/PrivateRoutes';
+import UnauthRoutes from './routes/UnauthRoutes';
 
 function App() {
-    return (
-        <Router>
-            <Routes>
-                <Route path='/' element={<Home />} />
-                <Route path='/dashboard' element={<Dashboard />} />
-            </Routes>
-        </Router>
-    );
+    const { loadUser, user } = useAuth();
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        console.log('Loading App');
+        const load = async () => {
+            try {
+                await loadUser();
+                console.log(user);
+            } catch (err) {
+                console.warn(err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        load();
+    }, []);
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    } else {
+        return (
+            <Router>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route element={<PrivateRoutes />}>
+                        <Route path="/dashboard" element={<Dashboard />} />
+                    </Route>
+                    <Route element={<UnauthRoutes />}>
+                        <Route path="/signin" element={<SignOn />} />
+                        <Route path="/register" element={<Registration />} />
+                    </Route>
+                </Routes>
+            </Router>
+        );
+    }
 }
 
 function Home() {
     return (
-        <div className='App'>
-            <GcdsHeader langHref='#' skipToHref='#'>
-                <GcdsTopNav
-                    slot='menu'
-                    label='Top navigation'
-                    alignment='right'
-                >
-                    <GcdsNavLink href='#home' slot='home'>
-                        Portable Asset Locator
-                    </GcdsNavLink>
-                    <GcdsNavLink href='#'>Why GC Notify</GcdsNavLink>
-                    <GcdsNavLink href='#'>Contact us</GcdsNavLink>
-                </GcdsTopNav>
-            </GcdsHeader>
-
-            <header className='App-header'>
-                <img src={logo} className='App-logo' alt='logo' />
+        <MainTemplate addMargins={false}>
+            <div className="App-header">
+                <img src={logo} className="App-logo" alt="logo" />
                 <p>
                     Edit <code>src/App.tsx</code> and save to reload.
                 </p>
-                <a
-                    className='App-link'
-                    href='https://reactjs.org'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                >
-                    Learn React
-                </a>
-            </header>
-        </div>
+                <Link className="App-link" to="/dashboard">
+                    Dashboard
+                </Link>
+            </div>
+        </MainTemplate>
     );
 }
 

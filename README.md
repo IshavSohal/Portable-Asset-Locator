@@ -11,7 +11,7 @@ TODO: Guide users through getting your code up and running on their own system. 
 # Build and Test
 To build and run the server with client app, from your terminal in the root directory, run the following commands in order:
 
-1.  `npm run setup` 
+1. `npm run setup` 
 2. `npm run dev`
 
 # Resources
