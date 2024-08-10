@@ -3,6 +3,7 @@ import { ConsoleLogger } from "../Logging/ConsoleLogger";
 import { AssetService } from "../Services/assetService";
 import { Asset } from '@prisma/client';
 import { UserService } from "../Services/userService";
+import { json } from "stream/consumers";
 
 const assetService = new AssetService();
 const userService = new UserService();
@@ -15,9 +16,22 @@ export class AssetController {
 
         if (result === null) {
             ConsoleLogger.logWarning("Asset ID does not exist");
-            return res.sendStatus(409);
+            return res.sendStatus(404);
         } else {
-            return res.status(200).json(result)
+            let jsonRes = JSON.parse(JSON.stringify(result));
+            jsonRes.custodian = null;
+            let custodian = await userService.getUserById(result.custodian);
+            if (custodian) {
+                let custObject = {
+                    id: custodian.UID,
+                    firstName: custodian.firstName,
+                    lastName: custodian.lastName,
+                    email: custodian.email
+                };
+                jsonRes.custodian = custObject;
+            }
+
+            return res.status(200).json(jsonRes)
         }
     }
 

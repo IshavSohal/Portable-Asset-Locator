@@ -11,18 +11,20 @@ const assetController = new AssetController;
 assetRoutes.get(
     '/:id', 
     async (req: Request, res: Response) => {
-        ConsoleLogger.logInfo('Registration Attempt');
+        
         const errors = validationResult(req);
 
         // If JSON validation fails, send a 400, Conflict
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-
         //let id = req.body.id as number;
-        let id = parseInt(req.params.id, 10)
-        console.log(id)
-
+        let id = parseInt(req.params.id, 10);
+        if (isNaN(id)){
+            return res.sendStatus(400);
+        }
+        
+        ConsoleLogger.logInfo(`Attempt to retrieve asset information for id=${id}`);
         return await assetController.getAsset(id, res)
     }
 )
@@ -36,7 +38,7 @@ assetRoutes.route("")
          body("location").exists()
         ],
         async (req: Request, res: Response) => {
-            ConsoleLogger.logInfo('Registration Attempt');
+            ConsoleLogger.logInfo('Attempt to create new asset');
             const errors = validationResult(req);
             // If JSON validation fails, send a 400, Conflict
             if (!errors.isEmpty()) {
