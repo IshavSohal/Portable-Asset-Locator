@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import MainTemplate from '../templates/MainTemplate';
 import {
     GcdsContainer,
@@ -21,7 +20,7 @@ import { fetchGet } from '../requests/requests';
 
 function Dashboard() {
     const [userAssets, setUserAssets] = useState<asset[]>([]);
-    const { user, logOut } = useAuth();
+    const { user } = useAuth();
 
     const [error, setError] = useState<null | string>(null);
     const [loading, setLoading] = useState(true);
@@ -50,7 +49,6 @@ function Dashboard() {
             <GcdsText>
                 Welcome, {user?.firstName} {user?.lastName} ({user?.email}) !
             </GcdsText>
-            <button onClick={logOut}>Log out</button>
             <GcdsHeading tag="h2" marginBottom="0">
                 Your assets
             </GcdsHeading>
@@ -95,10 +93,10 @@ function Dashboard() {
                                                     {asset.name}
                                                 </GcdsLink>
                                             </Td>
-                                            <Td>{asset.tag}</Td>
+                                            <Td>{asset.assetTag}</Td>
                                             <Td>{asset.type}</Td>
                                             <Td>
-                                                {asset.startDate.toDateString()}
+                                                {asset.startDate?.toDateString()}
                                             </Td>
                                         </Tr>
                                     );
@@ -117,14 +115,12 @@ export default Dashboard;
 type asset = {
     id: number;
     name: string;
-    tag: string;
+    assetTag: string;
     type: string;
     startDate: Date;
 };
 
 async function fetchUserAssets() {
-    // TODO: make api request
-    await new Promise((resolve) => setTimeout(resolve, 1000));
     const response = await fetchGet('/api/asset/user');
     if (response.ok) {
         const assets = await response.json();
@@ -134,21 +130,20 @@ async function fetchUserAssets() {
             'fetchUserAssets Error:' + response.status + (await response.text())
         );
     }
-    return exampleAssets;
 }
-const exampleAssets = [
-    {
-        id: 1,
-        name: 'Dell Laptop',
-        tag: 'A12345',
-        type: 'Laptop',
-        startDate: new Date('August 1, 2024'),
-    },
-    {
-        id: 2,
-        name: 'Dell Mouse',
-        tag: 'A12367',
-        type: 'Mouse',
-        startDate: new Date('August 1, 2024'),
-    },
-];
+// const exampleAssets = [
+//     {
+//         id: 1,
+//         name: 'Dell Laptop',
+//         tag: 'A12345',
+//         assetTag: 'Laptop',
+//         startDate: new Date('August 1, 2024'),
+//     },
+//     {
+//         id: 2,
+//         name: 'Dell Mouse',
+//         tag: 'A12367',
+//         assetTag: 'Mouse',
+//         startDate: new Date('August 1, 2024'),
+//     },
+// ];
