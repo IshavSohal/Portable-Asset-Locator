@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
  */
 export class UserService {
     /**
-     * Creates a new user
+     * Create a new user
      * 
      * @param {User} data The data for the new user
      * @returns {Promise<User>} The created user
@@ -62,7 +62,7 @@ export class UserService {
     }
 
     /**
-     * Delete a user by their ID
+     * Delete a user
      * 
      * @param {number} id The ID of the user to delete 
      * @returns {Promise<User>} The delete user
