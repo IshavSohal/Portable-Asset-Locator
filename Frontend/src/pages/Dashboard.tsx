@@ -125,6 +125,15 @@ type asset = {
 async function fetchUserAssets() {
     // TODO: make api request
     await new Promise((resolve) => setTimeout(resolve, 1000));
+    const response = await fetchGet('/api/asset/user');
+    if (response.ok) {
+        const assets = await response.json();
+        return assets;
+    } else {
+        throw new Error(
+            'fetchUserAssets Error:' + response.status + (await response.text())
+        );
+    }
     return exampleAssets;
 }
 const exampleAssets = [
