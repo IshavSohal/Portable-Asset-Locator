@@ -44,17 +44,12 @@ export class AssetService {
      * @param {number} userID The ID of the user
      * @return {Promise<Asset[] | null>} An array of assets for that user, or null if not found
      */
-    public async getUserAssets(userID: number): Promise<Asset[] | null> {
-        // Fetch the assignments for the user
-        let userAssignments = await prisma.assignment.findMany({ where: { assignee: userID } });
-
-        // If no assignments are found, return null
-        if (userAssignments.length === 0) {
-            return null;
-        }
+    public async getUserCurrentAssets(userID: number): Promise<Asset[] | null> {
+        // Fetch the active/current assignments for the user
+        let userAssignments = await prisma.assignment.findMany({ where: { assignee: userID, endOfAssignment: null } });
 
         // Extract asset IDs from the assignments
-        let userAssetIDs = userAssignments.map(assignment => assignment.asset);
+        let userAssetIDs = userAssignments.map(assignment => assignment.asset); 
 
         // Fetch the assets using the asset IDs
         let userAssets = await Promise.all(
@@ -63,11 +58,6 @@ export class AssetService {
 
         // Filter out any null values
         const validUserAssets = userAssets.filter((asset): asset is Asset => asset !== null);
-
-        // If no valid assets are found, return null
-        if (validUserAssets.length === 0) {
-            return null;
-        }
         
         // Return the array of valid assets
         return validUserAssets;
