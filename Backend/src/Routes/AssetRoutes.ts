@@ -5,7 +5,7 @@ import { body } from "express-validator";
 import { Decimal } from "@prisma/client/runtime/library";
 
 const { validationResult } = require('express-validator');
-var requireAuth = require("../Middleware/AuthMiddleware");
+var authMiddleware = require("../Middleware/AuthMiddleware");
 export const assetRoutes = Router();
 
 const assetController = new AssetController;
@@ -44,7 +44,7 @@ assetRoutes.get(
  */
 assetRoutes.get(
     '/user',
-    requireAuth,
+    authMiddleware.isAuthenticated,
     async (req: Request, res: Response) => {
         ConsoleLogger.logInfo('Getting user assets');
         const errors = validationResult(req);
@@ -105,7 +105,7 @@ assetRoutes.get(
  */
 assetRoutes.get(
     '/custodian',
-    requireAuth,
+    authMiddleware.isCustodian,
     async (req: Request, res: Response) => {
         ConsoleLogger.logInfo('Getting custodian assets attempt');
         const errors = validationResult(req);
@@ -143,6 +143,7 @@ assetRoutes.route("")
          body("purchaser").optional().isString().withMessage("Purchaser must be a valid string"),
          body("comment").optional().isString().withMessage("Comment must be a valid string")
         ],
+        authMiddleware.isCustodian,
         handleValidationErrors,
         async (req: Request, res: Response) => {
             ConsoleLogger.logInfo('Attempt to create new asset');
