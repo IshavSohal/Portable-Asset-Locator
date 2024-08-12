@@ -59,14 +59,11 @@ export class AssetController {
      * Get all assets belonging to a user given the user ID
      */
     public async getUserAssets(userID: number, res: Response) {
-        let userAssets = await assetService.getUserAssets(userID);
+        let userAssets = await assetService.getUserCurrentAssets(userID);
 
-        if (userAssets === null) {
-            ConsoleLogger.logWarning("No assets exist for this user ID");
-            return res.sendStatus(409);
-        } else {
-            return res.status(200).json(userAssets);
-        }
+        
+        return res.status(200).json(userAssets);
+        
     }
 
     /**
