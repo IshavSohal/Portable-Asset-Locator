@@ -29,7 +29,6 @@ function Dashboard() {
         // fetch data
         const dataFetch = async () => {
             try {
-                // const assets = await (await fetchGet("/api/assets")).json() as asset[];
                 const assets = (await fetchUserAssets()) as asset[];
                 // set state when the data received
                 setUserAssets(assets);
@@ -79,7 +78,7 @@ function Dashboard() {
                             <Tbody>Loading....</Tbody>
                         ) : error ? (
                             <Tbody>Error: {error}</Tbody>
-                        ) : userAssets.length == 0 ? (
+                        ) : userAssets.length === 0 ? (
                             <Tbody>No records</Tbody>
                         ) : (
                             <Tbody>
@@ -96,7 +95,7 @@ function Dashboard() {
                                             <Td>{asset.assetTag}</Td>
                                             <Td>{asset.type}</Td>
                                             <Td>
-                                                {asset.startDate?.toDateString()}
+                                                {asset.assignedOn.toDateString()}
                                             </Td>
                                         </Tr>
                                     );
@@ -117,14 +116,16 @@ type asset = {
     name: string;
     assetTag: string;
     type: string;
-    startDate: Date;
+    assignedOn: Date;
 };
 
 async function fetchUserAssets() {
     const response = await fetchGet('/api/asset/user');
     if (response.ok) {
         const assets = await response.json();
-        return assets;
+        return assets.map((a: asset) => {
+            return { ...a, assignedOn: new Date(a.assignedOn) };
+        });
     } else {
         throw new Error(
             'fetchUserAssets Error:' + response.status + (await response.text())
@@ -135,15 +136,15 @@ async function fetchUserAssets() {
 //     {
 //         id: 1,
 //         name: 'Dell Laptop',
-//         tag: 'A12345',
-//         assetTag: 'Laptop',
-//         startDate: new Date('August 1, 2024'),
+//         assetTag: 'A12345',
+//         type: 'Laptop',
+//         assignedOn: new Date('August 1, 2024'),
 //     },
 //     {
 //         id: 2,
 //         name: 'Dell Mouse',
-//         tag: 'A12367',
-//         assetTag: 'Mouse',
-//         startDate: new Date('August 1, 2024'),
+//         assetTag: 'A12367',
+//         type: 'Mouse',
+//         assignedOn: new Date('August 1, 2024'),
 //     },
 // ];
