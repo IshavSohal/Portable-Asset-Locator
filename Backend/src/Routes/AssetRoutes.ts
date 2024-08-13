@@ -5,7 +5,7 @@ import { body } from "express-validator";
 import { Decimal } from "@prisma/client/runtime/library";
 
 const { validationResult } = require('express-validator');
-var requireAuth = require("../Middleware/AuthMiddleware");
+var authMiddleware = require("../Middleware/AuthMiddleware");
 export const assetRoutes = Router();
 
 const assetController = new AssetController;
@@ -44,7 +44,7 @@ assetRoutes.get(
  */
 assetRoutes.get(
     '/user',
-    requireAuth,
+    authMiddleware.isAuthenticated,
     async (req: Request, res: Response) => {
         ConsoleLogger.logInfo('Getting user assets');
         const errors = validationResult(req);
@@ -57,6 +57,47 @@ assetRoutes.get(
         let userID = req.session.user!.id;
 
         return await assetController.getUserAssets(userID, res);
+    }
+)
+
+/**
+ * Get all assets belonging to the currently logged in custodian
+ */
+assetRoutes.get(
+    '/custodian',
+    authMiddleware.isCustodian,
+    async (req: Request, res: Response) => {
+        ConsoleLogger.logInfo('Getting custodian assets attempt');
+        const errors = validationResult(req);
+
+        // If JSON validation fails, send a 400, Conflict
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        let custodianID = req.session.user!.id;
+
+        return await assetController.getCustodianAssets(custodianID, res)
+    }
+)
+
+/**
+ * Get all assets under a custodian given the custodian ID
+ */
+assetRoutes.get(
+    '/custodian/:id',
+    async (req: Request, res: Response) => {
+        ConsoleLogger.logInfo('Getting custodian assets attempt');
+        const errors = validationResult(req);
+
+        // If JSON validation fails, send a 400, Conflict
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        let custodianID = parseInt(req.params.id, 10)
+
+        return await assetController.getCustodianAssets(custodianID, res)
     }
 )
 
@@ -85,47 +126,6 @@ assetRoutes.get(
 )
 
 /**
- * Get all assets under a custodian given the custodian ID
- */
-assetRoutes.get(
-    '/custodian/:id',
-    async (req: Request, res: Response) => {
-        ConsoleLogger.logInfo('Getting custodian assets attempt');
-        const errors = validationResult(req);
-
-        // If JSON validation fails, send a 400, Conflict
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-
-        let custodianID = parseInt(req.params.id, 10)
-
-        return await assetController.getCustodianAssets(custodianID, res)
-    }
-)
-
-/**
- * Get all assets belonging to the currently logged in custodian
- */
-assetRoutes.get(
-    '/custodian',
-    requireAuth,
-    async (req: Request, res: Response) => {
-        ConsoleLogger.logInfo('Getting custodian assets attempt');
-        const errors = validationResult(req);
-
-        // If JSON validation fails, send a 400, Conflict
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-
-        let custodianID = req.session.user!.id;
-
-        return await assetController.getCustodianAssets(custodianID, res)
-    }
-)
-
-/**
  * Create an asset
  */
 assetRoutes.route("")
@@ -147,6 +147,7 @@ assetRoutes.route("")
          body("purchaser").optional().isString().withMessage("Purchaser must be a valid string"),
          body("comment").optional().isString().withMessage("Comment must be a valid string")
         ],
+        authMiddleware.isCustodian,
         handleValidationErrors,
         async (req: Request, res: Response) => {
             ConsoleLogger.logInfo('Attempt to create new asset');
