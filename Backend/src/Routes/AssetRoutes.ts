@@ -61,26 +61,23 @@ assetRoutes.get(
 )
 
 /**
- * Get an asset given the asset ID
+ * Get all assets belonging to the currently logged in custodian
  */
 assetRoutes.get(
-    '/:id', 
+    '/custodian',
+    authMiddleware.isCustodian,
     async (req: Request, res: Response) => {
-        
+        ConsoleLogger.logInfo('Getting custodian assets attempt');
         const errors = validationResult(req);
 
         // If JSON validation fails, send a 400, Conflict
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        //let id = req.body.id as number;
-        let id = parseInt(req.params.id, 10);
-        if (isNaN(id)){
-            return res.sendStatus(400);
-        }
-        
-        ConsoleLogger.logInfo(`Attempt to retrieve asset information for id=${id}`);
-        return await assetController.getAsset(id, res)
+
+        let custodianID = req.session.user!.id;
+
+        return await assetController.getCustodianAssets(custodianID, res)
     }
 )
 
@@ -105,23 +102,26 @@ assetRoutes.get(
 )
 
 /**
- * Get all assets belonging to the currently logged in custodian
+ * Get an asset given the asset ID
  */
 assetRoutes.get(
-    '/custodian',
-    authMiddleware.isCustodian,
+    '/:id', 
     async (req: Request, res: Response) => {
-        ConsoleLogger.logInfo('Getting custodian assets attempt');
+        
         const errors = validationResult(req);
 
         // If JSON validation fails, send a 400, Conflict
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-
-        let custodianID = req.session.user!.id;
-
-        return await assetController.getCustodianAssets(custodianID, res)
+        //let id = req.body.id as number;
+        let id = parseInt(req.params.id, 10);
+        if (isNaN(id)){
+            return res.sendStatus(400);
+        }
+        
+        ConsoleLogger.logInfo(`Attempt to retrieve asset information for id=${id}`);
+        return await assetController.getAsset(id, res)
     }
 )
 
