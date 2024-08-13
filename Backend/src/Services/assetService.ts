@@ -1,5 +1,9 @@
 import { PrismaClient, Asset } from '@prisma/client';
 
+type AssignedAsset = Asset & {
+    assignedOn: Date
+}
+
 const prisma = new PrismaClient();
 
 /**
@@ -42,24 +46,43 @@ export class AssetService {
      * Get all assets belonging to a user
      * 
      * @param {number} userID The ID of the user
-     * @return {Promise<Asset[] | null>} An array of assets for that user, or null if not found
+     * @return {Promise<Asset[] | null>} An array of assets for that user
      */
-    public async getUserCurrentAssets(userID: number): Promise<Asset[] | null> {
+    public async getUserCurrentAssets(userID: number): Promise<AssignedAsset[]> {
         // Fetch the active/current assignments for the user
         let userAssignments = await prisma.assignment.findMany({ where: { assignee: userID, endOfAssignment: null } });
 
-        // Extract asset IDs from the assignments
-        let userAssetIDs = userAssignments.map(assignment => assignment.asset); 
+        // // Extract asset IDs from the assignments
+        // let userAssetIDs = userAssignments.map(assignment => assignment.asset); 
 
-        // Fetch the assets using the asset IDs
-        let userAssets = await Promise.all(
-            userAssetIDs.map(id => prisma.asset.findUnique({ where: { id: id } }))
+        // // Fetch the assets using the asset IDs
+        // let userAssets = await Promise.all(
+        //     userAssetIDs.map(id => prisma.asset.findUnique({ where: { id: id } }))
+        // );
+
+        // // Filter out any null values
+        // const validUserAssets = userAssets.filter((asset): asset is Asset => asset !== null);
+
+
+        let userAssetsAlt = await Promise.all(
+            userAssignments.map(async assignment => { 
+                return { asset: await prisma.asset.findUniqueOrThrow({ where: { id: assignment.id } }), assignedOn: assignment.startOfAssignment }
+            })
         );
+        // to-do: handle error
 
-        // Filter out any null values
-        const validUserAssets = userAssets.filter((asset): asset is Asset => asset !== null);
+        return userAssetsAlt.filter((object) => object.asset !== null ).map(({asset, assignedOn}) => { 
+            return { ...asset, assignedOn}
+        })
+
+        // let userAssetsReturn = userAssetsAlt.map(({asset, startDate}) => {
+        //     return {
+        //         ...asset,
+        //         startDate
+        //     }
+        // })
         
-        // Return the array of valid assets
-        return validUserAssets;
+        // // Return the array of valid assets
+        // return validUserAssets;
     }
 }
