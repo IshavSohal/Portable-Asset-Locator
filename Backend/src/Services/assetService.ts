@@ -46,7 +46,7 @@ export class AssetService {
      * Get all assets belonging to a user
      * 
      * @param {number} userID The ID of the user
-     * @return {Promise<Asset[] | null>} An array of assets for that user
+     * @return {Promise<AssignedAsset[]>} An array of assets for that user
      */
     public async getUserCurrentAssets(userID: number): Promise<AssignedAsset[]> {
         // Fetch the active/current assignments for the user
@@ -64,14 +64,14 @@ export class AssetService {
         // const validUserAssets = userAssets.filter((asset): asset is Asset => asset !== null);
 
 
-        let userAssetsAlt = await Promise.all(
+        let userAssets = await Promise.all(
             userAssignments.map(async assignment => { 
                 return { asset: await prisma.asset.findUniqueOrThrow({ where: { id: assignment.id } }), assignedOn: assignment.startOfAssignment }
             })
         );
         // to-do: handle error
 
-        return userAssetsAlt.filter((object) => object.asset !== null ).map(({asset, assignedOn}) => { 
+        return userAssets.filter((object) => object.asset !== null ).map(({asset, assignedOn}) => { 
             return { ...asset, assignedOn}
         })
 
