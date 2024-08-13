@@ -4,6 +4,8 @@ import { ConsoleLogger } from "../Logging/ConsoleLogger";
 import { body } from "express-validator";
 const { validationResult } = require('express-validator');
 
+var authMiddleware = require("../Middleware/AuthMiddleware");
+
 export const assignmentRoutes = Router();
 const assignmentController = new AssignmentController;
 
@@ -41,11 +43,13 @@ assignmentRoutes.get(
  */
 assignmentRoutes.route("")
     .post(
-        [body("assignee").exists().withMessage("Assignee is required").isInt().withMessage('Assignee must be a valid user ID'),
+        [
+         body("assignee").exists().withMessage("Assignee is required").isInt().withMessage('Assignee must be a valid user ID'),
          body("asset").exists().withMessage("Asset is required").isInt().withMessage('Asset must be a valid asset ID'),
          body("startOfAssignment").exists().withMessage("Start of assignment is required").isISO8601().withMessage("Start of assignment must be a valid ISO 8601 date-time"),
          body("endOfAssignment").optional().isISO8601().withMessage("End of assignment must be a valid ISO 8601 date-time")
         ],
+        authMiddleware.isCustodian,
         handleValidationErrors,
         async (req: Request, res: Response) => {
             ConsoleLogger.logInfo('Registration Attempt');
