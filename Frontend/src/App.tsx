@@ -12,6 +12,7 @@ import PrivateRoutes from './routes/PrivateRoutes';
 import UnauthRoutes from './routes/UnauthRoutes';
 import AssetProfile from './pages/AssetProfile';
 import CustodianRoutes from './routes/CustodianRoutes';
+import NotFound from './pages/NotFound';
 
 function App() {
   const { loadUser, user } = useAuth();
@@ -50,6 +51,7 @@ function App() {
             <Route path="/signin" element={<SignOn />} />
             <Route path="/register" element={<Registration />} />
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     );

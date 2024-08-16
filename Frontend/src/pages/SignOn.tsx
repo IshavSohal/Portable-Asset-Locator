@@ -2,15 +2,16 @@ import {
     GcdsButton,
     GcdsContainer,
     GcdsDateModified,
+    GcdsErrorMessage,
     GcdsHeading,
-    GcdsInput,
+    GcdsInput
 } from '@cdssnc/gcds-components-react';
 import MainTemplate from '../templates/MainTemplate';
 import {
     GcdsButtonCustomEvent,
     GcdsInputCustomEvent,
 } from '@cdssnc/gcds-components/dist/types/components';
-import { useState } from 'react';
+import { useEffect,  useState, useRef } from 'react';
 import { useAuth } from '../hooks/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 
@@ -27,19 +28,36 @@ function SignOn() {
         email: '',
         password: '',
     });
+    const [error, setError] = useState(false);
+    const documentRef = useRef(document);
+
+    useEffect(() => {
+        const curr = documentRef.current;
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Enter"){
+                handleSubmission();
+            }
+        }
+
+        curr.addEventListener("keydown", handleKeyDown);
+        return () => {
+            curr.removeEventListener("keydown", handleKeyDown);
+        };
+      
+      }, [inputFields]);
 
     async function handleSubmission(
-        e: GcdsButtonCustomEvent<void>
+        e?: GcdsButtonCustomEvent<void>
     ): Promise<void> {
         const { email, password } = inputFields;
-
         setIsSubmitting(true);
         try {
             await logIn(email, password);
             navigate('/dashboard');
         } catch (err) {
+            setError(true);
             // setError((err as Error).message);
-            alert((err as Error).message);
+            // alert((err as Error).message);
         } finally {
             setIsSubmitting(false);
         }
@@ -54,7 +72,13 @@ function SignOn() {
             <GcdsHeading tag="h1" style={{ marginBottom: 48 }}>
                 Sign-In
             </GcdsHeading>
-            {/* TODO: Add Error component */}
+            {(error && !isSubmitting) && (
+                <>
+                    <GcdsErrorMessage messageId="message-props">
+                        Invalid email or password. Please try again.
+                    </GcdsErrorMessage>
+                </>
+            )}
             <GcdsInput
                 inputId="input-email"
                 label="Email"
@@ -82,7 +106,7 @@ function SignOn() {
             </GcdsButton>
 
             <GcdsContainer size="xl" centered style={{ paddingBottom: 10 }}>
-                <GcdsDateModified>2024-07-19</GcdsDateModified>
+                <GcdsDateModified>2024-08-20</GcdsDateModified>
             </GcdsContainer>
         </MainTemplate>
     );

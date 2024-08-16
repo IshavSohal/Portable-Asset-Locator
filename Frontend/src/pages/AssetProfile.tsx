@@ -10,13 +10,14 @@ import { BsLaptop } from "react-icons/bs";
 import { GoTag } from "react-icons/go";
   
 import MainTemplate from "../templates/MainTemplate";
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { fetchGet } from '../requests/requests';
 import { useEffect, useState } from 'react';
 import { dateFormatter } from '../utils';
-
+import NotFound  from './NotFound'
 
 function AssetProfile() {
+    const navigate = useNavigate();
     const { assetid } = useParams();
     let [asset, setAsset] = useState({
         id: null,
@@ -43,18 +44,20 @@ function AssetProfile() {
     },
     });
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(false);
     
     useEffect(() => {
         console.log('Fetching Asset Info');
         const getAsset = async () => {
-            const response = await fetchGet(`/api/asset/${assetid}`);
-            if (response.ok) {
+            try{
+                const response = await fetchGet(`/api/asset/${assetid}`);
+                if (response.ok) {
+                    return await response.json();
+                } 
+            } catch(err) {
+                setError(true);
+            } finally {
                 setIsLoading(false);
-                return await response.json();
-            } else {
-                // propagate Error so that it may be handled on frontend
-                const { status } = response
-                throw new Error("loadUser Error:" + status + await response.text()); 
             }
         }
 
@@ -68,10 +71,14 @@ function AssetProfile() {
         <MainTemplate currentPage="my-assets"> 
             <GcdsText style={{paddingBottom: 10}}> Loading... </GcdsText>
         </MainTemplate>);
-    } 
+    } else if (error){
+        return <NotFound/>;
+    }
     return (
         <MainTemplate currentPage="my-assets">
-            <GcdsHeading tag="h1" style={{marginBottom: 48}}>{asset.name + ` (${asset.assetTag})`}</GcdsHeading>
+            <GcdsHeading tag="h1" style={{marginBottom: 48}}>
+                {asset.name && asset.assetTag ? asset.name + ` (${asset.assetTag})` : 'N/A'}
+            </GcdsHeading>
             
             <GcdsGrid  
                 columns="minmax(100px, 900px) minmax(100px, 250px)" 
@@ -176,7 +183,7 @@ function AssetProfile() {
             </GcdsGrid>
             
             <GcdsContainer size="xl" centered style={{paddingBottom: 10}}>
-                <GcdsDateModified> 2024-08-07 </GcdsDateModified>
+                <GcdsDateModified> 2024-08-20 </GcdsDateModified>
             </GcdsContainer>
             
         </MainTemplate>
