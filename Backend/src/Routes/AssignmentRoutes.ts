@@ -52,7 +52,7 @@ assignmentRoutes.route("")
         authMiddleware.isCustodian,
         handleValidationErrors,
         async (req: Request, res: Response) => {
-            ConsoleLogger.logInfo('Registration Attempt');
+            ConsoleLogger.logInfo('Creating an assignment');
             const errors = validationResult(req);
             // If JSON validation fails, send a 400, Conflict
             if (!errors.isEmpty()) {
