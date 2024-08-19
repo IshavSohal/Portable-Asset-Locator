@@ -16,7 +16,6 @@ const fetchPost = async(endpoint: string, data: any): Promise<Response> => {
 
   const fetchGet = async (endpoint: string): Promise<Response> => {
     const server = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8080';
-    
     const res = await fetch(server + endpoint, {
         credentials: 'include'
     });

@@ -9,6 +9,7 @@ import AuthProvider, { useAuth } from './hooks/AuthProvider';
 import { useEffect, useState } from 'react';
 import PrivateRoutes from './routes/PrivateRoutes';
 import UnauthRoutes from './routes/UnauthRoutes';
+import AssetProfile from './pages/AssetProfile'
 
 function App() {
     const { loadUser, user } = useAuth();
@@ -38,11 +39,13 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route element={<PrivateRoutes />}>
                         <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/asset/:assetid" element={<AssetProfile />} />
                     </Route>
                     <Route element={<UnauthRoutes />}>
                         <Route path="/signin" element={<SignOn />} />
                         <Route path="/register" element={<Registration />} />
                     </Route>
+                    
                 </Routes>
             </Router>
         );
