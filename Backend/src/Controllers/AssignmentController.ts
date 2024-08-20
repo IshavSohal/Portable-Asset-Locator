@@ -42,6 +42,14 @@ export class AssignmentController {
      * Create an assignment
      */
     public async createAssignment(data:Omit<Assignment, 'id'>, res:Response) { 
+
+        // Check if there is already an active assignment for the asset
+        let existingAssignment = await assignmentService.getActiveAssignmentFor(data.asset);
+        if (existingAssignment) {
+            ConsoleLogger.logWarning("active assignment already exists. cannot create another");
+            return res.sendStatus(409);
+        }
+
         let user = await userService.getUserById(data.assignee);
         if (user === null) {
             ConsoleLogger.logWarning("No user was found with this ID");
