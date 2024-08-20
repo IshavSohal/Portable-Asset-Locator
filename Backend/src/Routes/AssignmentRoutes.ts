@@ -66,9 +66,6 @@ assignmentRoutes.route("")
             if (asset && asset.custodian !== req.session.user?.id) {
                 return res.sendStatus(401);
             }
-
-            // // Check if there is already an active assignment for the asset
-            // let res = await assignmentService.getActiveAssignmentFor(assetID)
             
             const start = new Date(Date.now())
             let data = {
