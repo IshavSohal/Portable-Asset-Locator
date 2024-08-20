@@ -7,7 +7,7 @@ import { useAuth } from '../hooks/AuthProvider';
 function Dashboard() {
     const { user, logOut } = useAuth();
     return (
-        <MainTemplate addMargins={false}>
+        <MainTemplate>
             <GcdsHeading tag="h1">Dashboard</GcdsHeading>
             <p>
                 Hello {user?.firstName} {user?.lastName}!
