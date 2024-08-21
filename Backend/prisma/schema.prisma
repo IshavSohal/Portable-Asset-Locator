@@ -13,6 +13,12 @@ model Role {
   users User[]
 }
 
+model RequestStatus {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  requests Request[]
+}
+
 model User {
   UID                 Int           @id @default(autoincrement())
   email               String        @unique
@@ -24,6 +30,8 @@ model User {
   iv                  Bytes         @default("")
   asset               Asset[]
   assignment          Assignment[]
+  request             Request[]     @relation(name: "Requestor")
+  assignee            Request[]     @relation(name: "Assignee")
 }
 
 model AssetType {
@@ -60,6 +68,7 @@ model Asset {
   purchaser                 String?       @db.VarChar(255)
   comment                   String?       @db.Text
   assignment                Assignment[]
+  request                   Request[]       
 } 
 
 model Assignment {
@@ -70,4 +79,18 @@ model Assignment {
   asset                     Int       
   startOfAssignment         DateTime      
   endOfAssignment           DateTime?     
+}
+
+model Request {
+  id                        Int           @id @default(autoincrement()) 
+  requestorID               User          @relation(fields: [requestor], references: [UID], onDelete: NoAction, onUpdate: NoAction, name: "Requestor")
+  requestor                 Int
+  assigneeID                User          @relation(fields: [assignee], references: [UID], onDelete: NoAction, onUpdate: NoAction, name: "Assignee")
+  assignee                  Int
+  assetID                   Asset         @relation(fields: [asset], references: [id])
+  asset                     Int       
+  requestStatus             RequestStatus  @relation(fields: [requestStatusName], references: [name])
+  requestStatusName         String
+  startDate                 DateTime   
+  notes                     String?       @db.Text     
 }
