@@ -4,34 +4,16 @@
  */
 
 import {
+  GcdsContainer,
   GcdsFooter,
   GcdsHeader,
-  GcdsNavLink,
-  GcdsTopNav,
-} from "@cdssnc/gcds-components-react";
-import { ReactNode } from "react";
+  GcdsText,
+} from '@cdssnc/gcds-components-react';
+import { ReactNode } from 'react';
 
-interface AppProps {
-  /**
-   * Name of the current page.
-   */
-  currentPage?:
-    | "register"
-    | "signin"
-    | "unassigned-assets"
-    | "team-assets"
-    | "my-assets";
+import { TopNav, type TopNavProps } from '../components/TopNav';
 
-  /**
-   * Whether the user is currently logged in.
-   */
-  loggedIn?: boolean;
-
-  /**
-   * The type of user - Employee or Custodian.
-   */
-  userType?: "employee" | "custodian";
-
+interface MainTemplateProps extends TopNavProps {
   /**
    * The page content, to be placed into the slot.
    */
@@ -46,128 +28,52 @@ interface AppProps {
 
 function MainTemplate({
   currentPage,
-  loggedIn,
-  userType,
   children,
   addMargins,
-}: AppProps) {
+}: MainTemplateProps) {
   addMargins = addMargins ?? true;
-  userType = userType ?? "employee";
 
   return (
-    <div>
-      <GcdsHeader langHref="#" skipToHref="#">
-        <GcdsTopNav slot="menu" label="Top navigation" alignment="right">
-          <GcdsNavLink href="/" slot="home">
-            Portable Asset Locator
-          </GcdsNavLink>
-
-          {/* Links for non-logged in users */}
-          {!loggedIn && (
-            <>
-              <GcdsNavLink
-                style={{
-                  fontSize: "20px",
-                  fontFamily: "Noto sans, sans-serif",
-                  paddingBottom: currentPage === "signin" ? "2px" : "0",
-                }}
-                current={currentPage === "signin"}
-                href="/signin"
-              >
-                Sign-in
-              </GcdsNavLink>
-              <GcdsNavLink
-                style={{
-                  fontSize: "20px",
-                  fontFamily: "Noto sans, sans-serif",
-                  paddingBottom: currentPage === "register" ? "2px" : "0",
-                }}
-                current={currentPage === "register"}
-                href="/register"
-              >
-                Register
-              </GcdsNavLink>
-            </>
-          )}
-
-          {/* Links for logged-in people. Placeholders for now. TODO: Implement. */}
-          {loggedIn && (
-            <>
-              <GcdsNavLink
-                style={{
-                  fontSize: "20px",
-                  fontFamily: "Noto sans, sans-serif",
-                  paddingBottom:
-                    currentPage === "unassigned-assets" ? "2px" : "0",
-                }}
-                current={currentPage === "unassigned-assets"}
-                href="/"
-              >
-                Unassigned Assets
-              </GcdsNavLink>
-              {userType === "custodian" && (
-                <GcdsNavLink
-                  style={{
-                    fontSize: "20px",
-                    fontFamily: "Noto sans, sans-serif",
-                    paddingBottom: currentPage === "team-assets" ? "2px" : "0",
-                  }}
-                  current={currentPage === "team-assets"}
-                  href="/"
-                >
-                  Team Assets
-                </GcdsNavLink>
-              )}
-              <GcdsNavLink
-                style={{
-                  fontSize: "20px",
-                  fontFamily: "Noto sans, sans-serif",
-                  paddingBottom: currentPage === "my-assets" ? "2px" : "0",
-                }}
-                current={currentPage === "my-assets"}
-                href="/"
-              >
-                My Assets
-              </GcdsNavLink>
-              <GcdsNavLink
-                style={{
-                  fontSize: "20px",
-                  fontFamily: "Noto sans, sans-serif",
-                }}
-                href="/"
-              >
-                Sign out
-              </GcdsNavLink>
-            </>
-          )}
-        </GcdsTopNav>
+    <GcdsContainer size="full" centered>
+      <GcdsHeader langHref="#" skipToHref="#" style={{ paddingBottom: 48 }}>
+        <TopNav currentPage={currentPage} />
       </GcdsHeader>
 
-      <div
-        aria-label="content"
+      <GcdsContainer
+        className="main-content"
+        size="xl"
+        centered
+        padding="0"
+        margin="0"
+        style={{ marginLeft: 10 }}
+      >
+        <div> {children} </div>
+      </GcdsContainer>
+
+      <GcdsContainer
+        className="footer-content"
+        size="xl"
+        centered
         style={{
-          marginTop: addMargins ? "60px" : 0,
-          textAlign: "center",
+          backgroundColor: '#33465C',
+          paddingTop: 1,
+          marginBottom: -15,
         }}
       >
-        <div
-          style={{
-            display: "inline-block",
-            maxWidth: "90%",
-            textAlign: "left",
-          }}
+        <GcdsText
+          margin-bottom="450"
+          margin-top="450"
+          style={{ paddingBottom: 5 }}
         >
-          {children}
-        </div>
-      </div>
+          <div style={{ color: 'white', fontSize: 24 }}>
+            {' '}
+            Portable Asset Locator{' '}
+          </div>
+        </GcdsText>
+      </GcdsContainer>
 
-      <GcdsFooter
-        display="compact"
-        contextualHeading="Portable Asset Locator"
-        contextualLinks='{ "Home": "/", "About": "#" }'
-        style={{ textAlign: "start" }}
-      />
-    </div>
+      <GcdsFooter display="compact" contextualHeading="" contextualLinks="{}" />
+    </GcdsContainer>
   );
 }
 

@@ -4,16 +4,19 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import '@cdssnc/gcds-components-react/gcds.css';
+import AuthProvider from './hooks/AuthProvider';
 import { ChakraProvider } from '@chakra-ui/react'
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+    document.getElementById('root') as HTMLElement
 );
 root.render(
-  <ChakraProvider>
+    <ChakraProvider>
     <React.StrictMode>
-      <App />
-    </React.StrictMode>
+        <AuthProvider>
+              <App />
+        </AuthProvider>
+      </React.StrictMode>
   </ChakraProvider>
 );
 
