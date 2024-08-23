@@ -11,6 +11,7 @@ const authenticationRouter = require("./Routes/AuthenticationRoutes");
 const assetRouter = require("./Routes/AssetRoutes");
 const assignmentRouter = require("./Routes/AssignmentRoutes");
 const userRouter = require("./Routes/UserRoutes");
+const requestRouter = require("./Routes/RequestRoutes")
 
 
 dotenv.config();
@@ -66,6 +67,9 @@ app.use("/api/asset", assetRouter);
 app.use("/api/assignment", assignmentRouter);
 
 app.use("/api/users", userRouter);
+// Request functionalities are preceded by the /request path
+app.use("/api/request", requestRouter);
+
 // API routes
 // app.use('/api/', routes);
 

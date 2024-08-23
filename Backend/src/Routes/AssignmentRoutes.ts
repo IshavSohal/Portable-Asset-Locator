@@ -11,18 +11,16 @@ const assetService = new AssetService();
 export const assignmentRoutes = Router();
 const assignmentController = new AssignmentController();
 
-const handleValidationErrors = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const errors = validationResult(req);
-  ConsoleLogger.logWarning(errors.errors);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  next();
-};
+const handleValidationErrors = (req: Request, res: Response, next: NextFunction) => {
+    const errors = validationResult(req);
+    if (errors.errors.length !== 0){
+        ConsoleLogger.logWarning(errors.errors);
+    }
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+}
 
 /**
  * End an assignment - this sets the end date of the assignment
