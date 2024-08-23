@@ -13,7 +13,9 @@ const assignmentController = new AssignmentController;
 
 const handleValidationErrors = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
-    ConsoleLogger.logWarning(errors.errors);
+    if (errors.errors.length !== 0){
+        ConsoleLogger.logWarning(errors.errors);
+    }
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
