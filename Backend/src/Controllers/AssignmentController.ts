@@ -53,7 +53,7 @@ export class AssignmentController {
 
         if (userAssignments === null) {
             ConsoleLogger.logWarning("Assignment(s) could not be found");
-            return res.sendStatus(40)
+            return res.sendStatus(409)
         } else {
             return res.status(200).json(userAssignments);
         }
