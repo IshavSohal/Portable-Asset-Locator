@@ -8,6 +8,7 @@ import {
 } from "@cdssnc/gcds-components-react";
 import Dashboard from "./pages/Dashboard";
 import Registration from "./pages/Registration";
+import CustodianAssets from "./pages/CustodianAssets";
 import MainTemplate from "./templates/MainTemplate";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/register" element={<Registration />} />
+        <Route path="/custodian-dashboard" element={<CustodianAssets />} />
       </Routes>
     </Router>
   );
