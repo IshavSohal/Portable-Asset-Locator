@@ -25,15 +25,15 @@ const calculateDateDiff = (firstDate: Date, secondDate: Date, unit: 'years' | 'm
 
     const millisecondsDiff = secondDate.getTime() - firstDate.getTime();
     const millisecondsInDay = 24 * 60 * 60 * 1000; 
-    if (unit == 'days') {
+    if (unit === 'days') {
         return Math.round(
             millisecondsDiff / millisecondsInDay
         )
-    } else if (unit == 'months') {
+    } else if (unit === 'months') {
         return Math.round(
             millisecondsDiff / (millisecondsInDay * 30)
         )
-    } else if (unit == 'years') {
+    } else if (unit === 'years') {
         return Math.round(
             millisecondsDiff / (millisecondsInDay * 365)
         )

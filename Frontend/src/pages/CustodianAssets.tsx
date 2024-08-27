@@ -4,10 +4,8 @@ import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
-  Td,
   TableCaption,
   TableContainer,
 } from '@chakra-ui/react';
@@ -18,6 +16,29 @@ import { useState, useEffect } from 'react';
 import { CustodianAsset } from '../types';
 
 function CustodianAssets() {
+  const [assets, setAssets] = useState<CustodianAsset[]>([]);
+  // const { user } = useAuth();
+
+  const [error, setError] = useState<null | string>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // fetch data
+    const dataFetch = async () => {
+      try {
+        // const assets = (await fetchUserAssets()) as asset[];
+        // set state when the data received
+        setAssets(mockAssets);
+      } catch (err) {
+        setError((err as Error).message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    dataFetch();
+  }, []);
+
   return (
     <MainTemplate>
       <GcdsHeading tag="h1">Manage assets</GcdsHeading>
@@ -42,11 +63,19 @@ function CustodianAssets() {
               <Th>Assigned to</Th>
             </Tr>
           </Thead>
-          <Tbody>
-            {mockAssets.map((asset, index) => (
-              <CustodianAssetCard key={index} asset={asset} />
-            ))}
-          </Tbody>
+          {loading ? (
+            <Tbody>Loading...</Tbody>
+          ) : error ? (
+            <Tbody>Error: {error}</Tbody>
+          ) : assets.length === 0 ? (
+            <Tbody>No records</Tbody>
+          ) : (
+            <Tbody>
+              {mockAssets.map((asset, index) => (
+                <CustodianAssetCard key={index} asset={asset} />
+              ))}
+            </Tbody>
+          )}
         </Table>
       </TableContainer>
     </MainTemplate>
