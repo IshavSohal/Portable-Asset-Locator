@@ -1,40 +1,33 @@
-import {
-    GcdsButton,
-    GcdsContainer,
-    GcdsDateModified,
-    GcdsHeading,
-    GcdsInput,
-    GcdsGrid,
-  } from "@cdssnc/gcds-components-react";
+import { GcdsLink } from '@cdssnc/gcds-components-react';
 
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-} from '@chakra-ui/react'  
-import { CustodianAsset } from '../types'
+import { Tr, Td, Text } from '@chakra-ui/react';
+import { CustodianAsset } from '../types';
+import { calculateDateDiff } from '../utils';
 
-interface CustodianAssetCardProps{
+interface CustodianAssetCardProps {
   asset: CustodianAsset;
 }
-export function CustodianAssetCard({asset}: CustodianAssetCardProps){
-    return (
-      <Tr>
-
-          <Td>{asset.assetName}</Td>
-          <Td>{asset.assetTag}</Td>
-          <Td>{asset.type}</Td>
-          <Td>{asset.location}</Td>
-          <Td>{asset.age}</Td>
-          <Td>{asset.assignedTo}</Td>
-
-      </Tr>
-
-    )
+export function CustodianAssetCard({ asset }: CustodianAssetCardProps) {
+  return (
+    <Tr>
+      <Td>
+        <GcdsLink href={`/asset/${asset.id}`}>{asset.assetName}</GcdsLink>
+      </Td>
+      <Td>{asset.assetTag}</Td>
+      <Td>{asset.type}</Td>
+      <Td>{asset.location}</Td>
+      <Td>
+        {asset.dateOfPurchase
+          ? calculateDateDiff(asset.dateOfPurchase, new Date(), 'years')
+          : asset.age}
+      </Td>
+      <Td>
+        {asset.assignedTo ? (
+          asset.assignedTo
+        ) : (
+          <Text color="GrayText">None</Text>
+        )}
+      </Td>
+    </Tr>
+  );
 }

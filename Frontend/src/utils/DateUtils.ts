@@ -21,5 +21,26 @@ const dateFormatter = (date: string | null, verbose: boolean = false): string =>
     return 'N/A';
 }
 
+const calculateDateDiff = (firstDate: Date, secondDate: Date, unit: 'years' | 'months' | 'days'): number => {
 
-export { dateFormatter };
+    const millisecondsDiff = secondDate.getTime() - firstDate.getTime();
+    const millisecondsInDay = 24 * 60 * 60 * 1000; 
+    if (unit == 'days') {
+        return Math.round(
+            millisecondsDiff / millisecondsInDay
+        )
+    } else if (unit == 'months') {
+        return Math.round(
+            millisecondsDiff / (millisecondsInDay * 30)
+        )
+    } else if (unit == 'years') {
+        return Math.round(
+            millisecondsDiff / (millisecondsInDay * 365)
+        )
+    } 
+
+    return 0;
+}
+
+
+export { dateFormatter, calculateDateDiff };
