@@ -18,20 +18,12 @@ interface MainTemplateProps extends TopNavProps {
    * The page content, to be placed into the slot.
    */
   children?: ReactNode;
-
-  /**
-   * Whether top margins should be applied to the content section exterior.
-   * Default will be 'true'.
-   */
-  addMargins?: boolean;
 }
 
 function MainTemplate({
   currentPage,
   children,
-  addMargins,
 }: MainTemplateProps) {
-  addMargins = addMargins ?? true;
 
   return (
     <GcdsContainer size="full" centered>
