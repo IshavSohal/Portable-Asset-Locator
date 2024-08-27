@@ -43,7 +43,7 @@ function Dashboard() {
     }, []);
 
     return (
-        <MainTemplate addMargins={false}>
+        <MainTemplate>
             <GcdsHeading tag="h1">Dashboard</GcdsHeading>
             <GcdsText>
                 Welcome, {user?.firstName} {user?.lastName} ({user?.email}) !

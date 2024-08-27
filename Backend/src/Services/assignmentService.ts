@@ -24,7 +24,7 @@ export class AssignmentService {
      * @param {Assignment[]} data An array of data for the new assignments
      * @returns {Promise<{ count: number }>} The number of assignments created
      */
-    public async createUsers(data: Assignment[]): Promise<{ count: number }> {
+    public async createAssignments(data: Assignment[]): Promise<{ count: number }> {
         return prisma.assignment.createMany({ data })
     }
 

@@ -1,0 +1,15 @@
+type sitePages = 'register' | 'signin' | 'manage-assets' | 'my-assets';
+
+type pageURL = {
+  [page in sitePages]: string;
+};
+
+const pageURLs: pageURL = {
+  register: '/register',
+  signin: '/signin',
+  'manage-assets': '/',
+  'my-assets': '/',
+};
+
+export { pageURLs };
+export type { sitePages };
