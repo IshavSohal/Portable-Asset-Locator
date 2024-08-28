@@ -1,11 +1,10 @@
 export interface CustodianAsset {
     id: number;
-    assetName: string;
+    name: string;
     assetTag: string;
     type: string;
     location: string;
     age: number;
     dateOfPurchase?: Date | null;
-    assignee?: string | null;
-    assignedTo: string | null;
+    assignedTo?: string | null;
   }

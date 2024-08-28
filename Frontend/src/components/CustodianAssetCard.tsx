@@ -11,7 +11,7 @@ export function CustodianAssetCard({ asset }: CustodianAssetCardProps) {
   return (
     <Tr>
       <Td>
-        <GcdsLink href={`/asset/${asset.id}`}>{asset.assetName}</GcdsLink>
+        <GcdsLink href={`/asset/${asset.id}`}>{asset.name}</GcdsLink>
       </Td>
       <Td>{asset.assetTag}</Td>
       <Td>{asset.type}</Td>

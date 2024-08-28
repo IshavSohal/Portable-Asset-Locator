@@ -1,19 +1,12 @@
 import { GcdsHeading, GcdsText } from '@cdssnc/gcds-components-react';
 
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  TableCaption,
-  TableContainer,
-} from '@chakra-ui/react';
+import { Table, Thead, Tbody, Tr, Th, TableContainer } from '@chakra-ui/react';
 
 import { CustodianAssetCard } from '../components/CustodianAssetCard';
 import MainTemplate from '../templates/MainTemplate';
 import { useState, useEffect } from 'react';
 import { CustodianAsset } from '../types';
+import { fetchGet } from '../requests/requests';
 
 function CustodianAssets() {
   const [assets, setAssets] = useState<CustodianAsset[]>([]);
@@ -26,9 +19,10 @@ function CustodianAssets() {
     // fetch data
     const dataFetch = async () => {
       try {
-        // const assets = (await fetchUserAssets()) as asset[];
+        const assetsList = (await fetchUserAssets()) as CustodianAsset[];
         // set state when the data received
-        setAssets(mockAssets);
+        // await new Promise((resolve) => setTimeout(resolve, 1000));
+        setAssets(assetsList);
       } catch (err) {
         setError((err as Error).message);
       } finally {
@@ -45,7 +39,7 @@ function CustodianAssets() {
       <GcdsText textRole="secondary" size="caption" marginTop="400">
         These are assets that are under your custodianship.
       </GcdsText>
-      <GcdsText size="caption">Showing {mockAssets.length} results.</GcdsText>
+      <GcdsText size="caption">Showing {assets.length} results.</GcdsText>
       <TableContainer>
         <Table
           variant="striped"
@@ -71,8 +65,8 @@ function CustodianAssets() {
             <Tbody>No records</Tbody>
           ) : (
             <Tbody>
-              {mockAssets.map((asset, index) => (
-                <CustodianAssetCard key={index} asset={asset} />
+              {assets.map((asset) => (
+                <CustodianAssetCard key={asset.id} asset={asset} />
               ))}
             </Tbody>
           )}
@@ -84,10 +78,24 @@ function CustodianAssets() {
 
 export default CustodianAssets;
 
+async function fetchUserAssets() {
+  const response = await fetchGet('/api/asset/custodian');
+  if (response.ok) {
+    const assets = await response.json();
+    return assets.map((a: CustodianAsset) => {
+      return { ...a };
+    });
+  } else {
+    throw new Error(
+      'fetchUserAssets Error:' + response.status + (await response.text())
+    );
+  }
+}
+
 const mockAssets: CustodianAsset[] = [
   {
     id: 1,
-    assetName: 'Laptop',
+    name: 'Laptop',
     assetTag: '1123',
     type: 'Laptop',
     location: 'Toronto',
@@ -97,7 +105,7 @@ const mockAssets: CustodianAsset[] = [
   },
   {
     id: 2,
-    assetName: 'Mouse',
+    name: 'Mouse',
     assetTag: '1123',
     type: 'Laptop',
     location: 'Toronto',
@@ -106,7 +114,7 @@ const mockAssets: CustodianAsset[] = [
   },
   {
     id: 3,
-    assetName: 'Headphone',
+    name: 'Headphone',
     assetTag: '1123',
     type: 'Laptop',
     location: 'Toronto',
@@ -115,7 +123,7 @@ const mockAssets: CustodianAsset[] = [
   },
   {
     id: 4,
-    assetName: 'Headphone',
+    name: 'Headphone',
     assetTag: '1123',
     type: 'Laptop',
     location: 'Toronto',
@@ -124,7 +132,7 @@ const mockAssets: CustodianAsset[] = [
   },
   {
     id: 5,
-    assetName: 'Laptop',
+    name: 'Laptop',
     assetTag: '1123',
     type: 'Laptop',
     location: 'Toronto',
@@ -133,7 +141,7 @@ const mockAssets: CustodianAsset[] = [
   },
   {
     id: 1,
-    assetName: 'Mouse',
+    name: 'Mouse',
     assetTag: '1123',
     type: 'Laptop',
     location: 'Toronto',
@@ -142,7 +150,7 @@ const mockAssets: CustodianAsset[] = [
   },
   {
     id: 1,
-    assetName: 'Keyboard',
+    name: 'Keyboard',
     assetTag: '1123',
     type: 'Laptop',
     location: 'Toronto',
@@ -151,7 +159,7 @@ const mockAssets: CustodianAsset[] = [
   },
   {
     id: 1,
-    assetName: 'Monitor',
+    name: 'Monitor',
     assetTag: '1123',
     type: 'Laptop',
     location: 'Toronto',
@@ -160,7 +168,7 @@ const mockAssets: CustodianAsset[] = [
   },
   {
     id: 1,
-    assetName: 'Laptop',
+    name: 'Laptop',
     assetTag: '1123',
     type: 'Laptop',
     location: 'Toronto',
@@ -169,7 +177,7 @@ const mockAssets: CustodianAsset[] = [
   },
   {
     id: 1,
-    assetName: 'Monitor',
+    name: 'Monitor',
     assetTag: '1123',
     type: 'Laptop',
     location: 'Toronto',
@@ -178,7 +186,7 @@ const mockAssets: CustodianAsset[] = [
   },
   {
     id: 1,
-    assetName: 'Laptop',
+    name: 'Laptop',
     assetTag: '1123',
     type: 'Laptop',
     location: 'Toronto',
