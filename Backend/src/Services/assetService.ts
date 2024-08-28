@@ -78,4 +78,20 @@ export class AssetService {
             .filter((object): object is { asset: any; assignedOn: Date } => !!object)
             .map(({ asset, assignedOn }) => ({ ...asset, assignedOn }));
     }
+
+    /**
+     * Get all unassigned assets
+     * 
+     * @return {Promise<Asset[]>} An array of unassigned assets
+     */
+    public async getUnassignedAssets(): Promise<Asset[] | null> {
+        // Fetch all assignments
+        let assignments = await prisma.assignment.findMany();
+
+        // Fetch all assets
+        let assets = await prisma.asset.findMany();
+
+        // Filter out all the assets that are not in the assignments 
+        return assets.filter(asset => !assignments.some(assignment => assignment.asset === asset.id));
+    }
 }

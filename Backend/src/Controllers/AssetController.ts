@@ -61,9 +61,16 @@ export class AssetController {
     public async getUserAssets(userID: number, res: Response) {
         let userAssets = await assetService.getUserCurrentAssets(userID);
 
-        
         return res.status(200).json(userAssets);
-        
+    }
+
+    /**
+     * Get all unassigned assets
+     */
+    public async getUnassignedAssets(res: Response) {
+        let unassignedAssets = await assetService.getUnassignedAssets();
+
+        return res.status(200).json(unassignedAssets);
     }
 
     /**
