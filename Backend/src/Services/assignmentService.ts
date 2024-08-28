@@ -77,4 +77,13 @@ export class AssignmentService {
     public async getAllAssignments(): Promise<Assignment[]> {
         return prisma.assignment.findMany();
     }
+
+    /**
+     * Gets all assignments
+     * 
+     * @returns {Promise<Assignment[]>} An array of all assignments
+     */
+    public async getActiveAssignmentFor(assetID: number): Promise<Assignment|null> {
+        return prisma.assignment.findFirst({ where: { asset: assetID, endOfAssignment: null }});
+    }
 }
