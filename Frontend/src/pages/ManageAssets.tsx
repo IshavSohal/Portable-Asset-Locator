@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
 import { CustodianAsset } from '../types';
 import { fetchGet } from '../requests/requests';
 
-function CustodianAssets() {
+function ManageAssetsPage() {
   const [assets, setAssets] = useState<CustodianAsset[]>([]);
   // const { user } = useAuth();
 
@@ -76,7 +76,7 @@ function CustodianAssets() {
   );
 }
 
-export default CustodianAssets;
+export default ManageAssetsPage;
 
 async function fetchUserAssets() {
   const response = await fetchGet('/api/asset/custodian');
