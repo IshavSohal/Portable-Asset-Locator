@@ -20,11 +20,7 @@ interface MainTemplateProps extends TopNavProps {
   children?: ReactNode;
 }
 
-function MainTemplate({
-  currentPage,
-  children,
-}: MainTemplateProps) {
-
+function MainTemplate({ currentPage, children }: MainTemplateProps) {
   return (
     <GcdsContainer size="full" centered>
       <GcdsHeader langHref="#" skipToHref="#" style={{ paddingBottom: 48 }}>

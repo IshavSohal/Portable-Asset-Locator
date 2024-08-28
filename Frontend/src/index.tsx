@@ -6,14 +6,36 @@ import reportWebVitals from './reportWebVitals';
 import '@cdssnc/gcds-components-react/gcds.css';
 import AuthProvider from './hooks/AuthProvider';
 
+import {
+    ChakraBaseProvider,
+    extendBaseTheme,
+    theme as chakraTheme,
+} from '@chakra-ui/react';
+
+const { Table, Link } = chakraTheme.components;
+
+const theme = extendBaseTheme({
+    components: {
+        Table,
+        Link,
+    },
+    fonts: {
+        body: "'Noto Sans', sans-serif",
+        heading: "'Lato', serif",
+        mono: "'Noto Sans Mono', monospace",
+    },
+});
+
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
 root.render(
     <React.StrictMode>
-        <AuthProvider>
-            <App />
-        </AuthProvider>
+        <ChakraBaseProvider theme={theme}>
+            <AuthProvider>
+                <App />
+            </AuthProvider>
+        </ChakraBaseProvider>
     </React.StrictMode>
 );
 
