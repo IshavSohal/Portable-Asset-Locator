@@ -31,7 +31,7 @@ function ManageAssetsPage() {
   }, []);
 
   return (
-    <MainTemplate>
+    <MainTemplate currentPage="manage-assets">
       <GcdsHeading tag="h1">Manage assets</GcdsHeading>
       <GcdsText textRole="secondary" size="caption" marginTop="400">
         These are assets that are under your custodianship.
