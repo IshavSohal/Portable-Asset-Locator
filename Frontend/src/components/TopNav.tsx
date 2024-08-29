@@ -43,7 +43,7 @@ function NavLink({
     <GcdsNavLink
       style={{
         fontSize: '20px',
-        paddingBottom: isCurrentPage ? '2px' : '0',
+        paddingBottom: isCurrentPage ? '1px' : '0',
         fontFamily: 'Noto sans, sans-serif',
       }}
       current={isCurrentPage}

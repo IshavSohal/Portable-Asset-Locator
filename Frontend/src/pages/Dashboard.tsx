@@ -1,31 +1,150 @@
-import { Link } from 'react-router-dom';
 import MainTemplate from '../templates/MainTemplate';
-import { GcdsHeading } from '@cdssnc/gcds-components-react';
-import MessageDisplay from '../components/MessageDisplay';
+import {
+    GcdsContainer,
+    GcdsHeading,
+    GcdsLink,
+    GcdsText,
+} from '@cdssnc/gcds-components-react';
+import {
+    TableContainer,
+    Table,
+    Thead,
+    Tbody,
+    Tr,
+    Th,
+    Td,
+} from '@chakra-ui/react';
 import { useAuth } from '../hooks/AuthProvider';
+import { useEffect, useState } from 'react';
+import { fetchGet } from '../requests/requests';
 
 function Dashboard() {
-    const { user, logOut } = useAuth();
-    return (
-        <MainTemplate addMargins={false}>
-            <GcdsHeading tag="h1">Dashboard</GcdsHeading>
-            <p>
-                Hello {user?.firstName} {user?.lastName}!
-            </p>
-            <p>
-                {user?.email} | Your role: {user?.role}
-            </p>
+    const [userAssets, setUserAssets] = useState<asset[]>([]);
+    const { user } = useAuth();
 
-            {/* The following code is for experimentation */}
-            <div>
-                <Link to="/">Home</Link>
-            </div>
-            <div>
-                <MessageDisplay />
-            </div>
-            <button onClick={logOut}>Log out</button>
+    const [error, setError] = useState<null | string>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // fetch data
+        const dataFetch = async () => {
+            try {
+                const assets = (await fetchUserAssets()) as asset[];
+                // set state when the data received
+                setUserAssets(assets);
+            } catch (err) {
+                setError((err as Error).message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        dataFetch();
+    }, []);
+
+    return (
+        <MainTemplate>
+            <GcdsHeading tag="h1">Dashboard</GcdsHeading>
+            <GcdsText>
+                Welcome, {user?.firstName} {user?.lastName} ({user?.email}) !
+            </GcdsText>
+            <GcdsHeading tag="h2" marginBottom="0">
+                Your assets
+            </GcdsHeading>
+            <GcdsHeading tag="h3" marginTop="400">
+                Assigned to you
+            </GcdsHeading>
+            <GcdsText>
+                Here are all the assets that are currently assigned to you.
+            </GcdsText>
+            <GcdsContainer border padding="400" margin="0">
+                <GcdsText size="caption">
+                    Showing {userAssets.length} results.
+                </GcdsText>
+                <TableContainer>
+                    <Table>
+                        {/* <TableCaption>
+                            Table of your current assigned assets
+                        </TableCaption> */}
+                        <Thead>
+                            <Tr>
+                                <Th>Asset</Th>
+                                <Th>Asset tag</Th>
+                                <Th>Type</Th>
+                                <Th>Assignment start date</Th>
+                            </Tr>
+                        </Thead>
+                        {loading ? (
+                            <Tbody>Loading....</Tbody>
+                        ) : error ? (
+                            <Tbody>Error: {error}</Tbody>
+                        ) : userAssets.length === 0 ? (
+                            <Tbody>No records</Tbody>
+                        ) : (
+                            <Tbody>
+                                {userAssets.map((asset) => {
+                                    return (
+                                        <Tr key={asset.id}>
+                                            <Td>
+                                                <GcdsLink
+                                                    href={`/assets/${asset.id}`}
+                                                >
+                                                    {asset.name}
+                                                </GcdsLink>
+                                            </Td>
+                                            <Td>{asset.assetTag}</Td>
+                                            <Td>{asset.type}</Td>
+                                            <Td>
+                                                {asset.assignedOn.toDateString()}
+                                            </Td>
+                                        </Tr>
+                                    );
+                                })}
+                            </Tbody>
+                        )}
+                    </Table>
+                </TableContainer>
+            </GcdsContainer>
         </MainTemplate>
     );
 }
 
 export default Dashboard;
+
+type asset = {
+    id: number;
+    name: string;
+    assetTag: string;
+    type: string;
+    assignedOn: Date;
+};
+
+async function fetchUserAssets() {
+    const response = await fetchGet('/api/asset/user');
+    if (response.ok) {
+        const assets = await response.json();
+        return assets.map((a: asset) => {
+            return { ...a, assignedOn: new Date(a.assignedOn) };
+        });
+    } else {
+        throw new Error(
+            'fetchUserAssets Error:' + response.status + (await response.text())
+        );
+    }
+}
+// const exampleAssets = [
+//     {
+//         id: 1,
+//         name: 'Dell Laptop',
+//         assetTag: 'A12345',
+//         type: 'Laptop',
+//         assignedOn: new Date('August 1, 2024'),
+//     },
+//     {
+//         id: 2,
+//         name: 'Dell Mouse',
+//         assetTag: 'A12367',
+//         type: 'Mouse',
+//         assignedOn: new Date('August 1, 2024'),
+//     },
+// ];

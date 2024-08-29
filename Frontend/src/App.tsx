@@ -58,7 +58,7 @@ function App() {
 
 function Home() {
   return (
-    <MainTemplate addMargins={false}>
+    <MainTemplate>
       <div className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>

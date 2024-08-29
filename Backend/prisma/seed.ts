@@ -9,6 +9,7 @@ async function main() {
   const roles = ['Admin', 'Custodian', 'Base'];
   const assetTypes = ['Laptop', 'Monitors', 'Headsets', 'Cell phones', 'Docks', 'Chairs', 'Web Cams'];
   const locations = ['NCR', 'Toronto', 'Burlington'];
+  const requestStatuses = ['Pending', 'Approved', 'Declined'];
 
   for (const role of roles) {
     await prisma.role.upsert({
@@ -31,6 +32,14 @@ async function main() {
       where: { location: location },
       update: {},
       create: { location: location }
+    })
+  }
+
+  for (const status of requestStatuses){
+    await prisma.requestStatus.upsert({
+      where: { name: status },
+      update: {},
+      create: { name: status }
     })
   }
 }

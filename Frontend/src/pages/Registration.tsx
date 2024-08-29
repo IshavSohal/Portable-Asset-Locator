@@ -2,6 +2,7 @@ import {
   GcdsButton,
   GcdsContainer,
   GcdsDateModified,
+  GcdsErrorSummary,
   GcdsHeading,
   GcdsInput,
 } from '@cdssnc/gcds-components-react';
@@ -16,6 +17,9 @@ import {
 } from '@cdssnc/gcds-components/dist/types/components';
 
 import { registerUser } from '../requests/auth';
+import { ChakraProvider, Spinner } from '@chakra-ui/react';
+import { useAuth } from '../hooks/AuthProvider';
+import { useNavigate } from 'react-router-dom';
 
 interface InputValues {
   firstName: string;
@@ -36,26 +40,51 @@ interface ErrorValues {
  * @returns the registration page object.
  */
 function Registration() {
-  // TODO: Implement these two states (get values & whatnot), may be needed for submission verification?
+  const { logIn } = useAuth();
+  const navigate = useNavigate();
+
+  /**
+   * Object indicating the value currently inputted in each of the form fields.
+   */
   const [formInputs, setFormInputs] = useState<InputValues>({
     firstName: '',
     lastName: '',
     email: '',
     password: '',
   });
+  function updateFormInputs(e: GcdsInputCustomEvent<any>) {
+    setFormInputs({ ...formInputs, [e.target.name]: e.target.value });
+  }
+
+  /**
+   * Object indicating whether each of the form inputs has an error.
+   */
   const [formErrors, setFormErrors] = useState<ErrorValues>({
     firstName: false,
     lastName: false,
     email: false,
     password: false,
   });
+  const updateErrors = (e: GcdsInputCustomEvent<any>, errorState: boolean) => {
+    setFormErrors({ ...formErrors, [e.target.name]: errorState });
+  };
 
+  /**
+   * Whether the page is currently contacting the registration endpoint (blocking).
+   */
   const [isLoading, setIsLoading] = useState(false);
 
   /**
-   * The current password string.
+   * Whether the error summary should be shown.
    */
-  const [currentPass, setCurrentPass] = useState('');
+  const [showErrorSummary, setShowErrorSummary] = useState(false);
+  /**
+   * The current error string object to show in the error summary.
+   * Should only be updated on the submit event, to prevent updating the error summary
+   * on every single keypress (bad UX).
+   * The up-to-date individual error values (updated on every keypress) are in formErrors.
+   */
+  const [currentErrorSet, setCurrentErrorSet] = useState<Object>({});
 
   /**
    * Error checker for the name input boxes (first & last).
@@ -126,7 +155,7 @@ function Registration() {
    */
   function getPasswordValidator(): Validator<string> {
     // Create errorMessage object
-    const value = currentPass || '';
+    const value = formInputs.password || '';
 
     const checkLen = value.length >= 8;
     const checkUpper = /[A-Z]/.test(value);
@@ -187,9 +216,49 @@ function Registration() {
     };
   }
 
-  function handleChange(e: GcdsInputCustomEvent<any>) {
-    setFormInputs({ ...formInputs, [e.target.name]: e.target.value });
-    console.log(formInputs);
+  /**
+   * Generates the objectified link+error set to display on the error area.
+   * @returns An object, containing the error messages and the page links to the error-causing inputs. Can be passed directly to the ErrorSummary component.
+   */
+  function generateErrorSummary(): Object {
+    let res: any = {};
+
+    // First name errors
+
+    if (formErrors.firstName) {
+      res['#firstName'] = 'Error with first name.';
+    }
+    if (!formInputs.firstName || formInputs.firstName === '') {
+      res['#firstName'] = 'First name is blank.';
+    }
+
+    // Last name errors
+
+    if (formErrors.lastName) {
+      res['#lastName'] = 'Error with last name.';
+    }
+    if (!formInputs.lastName || formInputs.lastName === '') {
+      res['#lastName'] = 'Last name is blank.';
+    }
+
+    // Email errors
+
+    if (formErrors.email) {
+      res['#email'] = 'Error with email.';
+    }
+    if (!formInputs.email || formInputs.email === '') {
+      res['#email'] = 'Email is blank.';
+    }
+    // Password errors
+
+    if (formErrors.password) {
+      res['#password'] = 'Error with password.';
+    }
+    if (!formInputs.password || formInputs.password === '') {
+      res['#password'] = 'Password is blank.';
+    }
+
+    return res;
   }
 
   /**
@@ -200,29 +269,61 @@ function Registration() {
   async function handleSubmission(
     e: GcdsButtonCustomEvent<void>
   ): Promise<void> {
-    // if (formErrors) {
-    //     // Handle any frontend validation errors first
-    //     alert('Please review your inputs as there are some errors');
-    //     return;
-    // }
+    // Checking for errors. If there are any, show error summary and quit before contacting endpoint.
+    if (
+      Object.values(formErrors).find((val) => val === true) ||
+      Object.values(formInputs).includes('')
+    ) {
+      setCurrentErrorSet(generateErrorSummary());
+      setShowErrorSummary(true);
+
+      setTimeout(
+        () =>
+          document
+            .getElementById('error-summary')
+            ?.scrollIntoView({ behavior: 'smooth' }),
+        25
+      );
+
+      return;
+    }
+    setShowErrorSummary(false);
+
     // Assumes that formInputs has been populated.
 
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     try {
-      console.log(formInputs);
       const message = await registerUser(formInputs);
-      // TO-DO
-      alert('User created');
+      alert('User created. Click "OK" to redirect to dashboard.');
+
+      // If registration successful, login with new credentials and redirect to dashboard
+      await logIn(formInputs.email, formInputs.password);
+      navigate('/dashboard');
     } catch (err) {
-      // setError((err as Error).message);
-      alert((err as Error).message);
+      // Email already registered error
+      if ((err as Error).message === 'Conflict') {
+        setCurrentErrorSet({
+          '#email': 'Error in registration: email already registered!',
+        });
+        // Generic catch-all message for other errors
+      } else {
+        setCurrentErrorSet({
+          '': `Error in registration: ${(err as Error).message}`,
+        });
+      }
+      setShowErrorSummary(true);
+
+      setTimeout(
+        () =>
+          document
+            .getElementById('error-summary')
+            ?.scrollIntoView({ behavior: 'smooth' }),
+        25
+      );
     } finally {
       setIsLoading(false);
     }
-
-    // TODO: Logic for calling registration API, frontend error handling (error summary?), handling backend errors sent back (?)
-    console.log('Submission function not implemented!');
   }
 
   return (
@@ -231,12 +332,22 @@ function Registration() {
         <GcdsHeading tag="h1" style={{ marginBottom: 48 }}>
           Register PAL Account
         </GcdsHeading>
+
+        {showErrorSummary && (
+          <GcdsErrorSummary
+            id="error-summary"
+            style={{ marginTop: 10 }}
+            errorLinks={currentErrorSet}
+          />
+        )}
+
         <GcdsInput
-          inputId="input-firstname"
-          error-links="FirstName"
+          id="firstName"
+          inputId="firstName"
+          name="firstName"
+          error-links="legend-firstName"
           label="First Name"
           hint="Maximum 50 characters."
-          name="registration-first-name"
           required
           validator={[
             getNameValidator(true, true),
@@ -244,14 +355,24 @@ function Registration() {
             getNameValidator(false, true),
           ]}
           validateOn="other"
-          onGcdsInput={(e: any) => e.target.validate()}
+          onGcdsInput={(e: any) => {
+            e.target.validate();
+            updateFormInputs(e);
+          }}
+          onGcdsError={(e: any) => updateErrors(e, true)}
+          onGcdsValid={(e: any) => updateErrors(e, false)}
+          onKeyUp={(e: any) => {
+            if (e.key === 'Enter') {
+              handleSubmission(e);
+            }
+          }}
           style={{ marginBottom: '48px', width: '110%' }}
         />
         <GcdsInput
-          inputId="input-lastname"
+          inputId="lastName"
+          name="lastName"
           label="Last Name"
           hint="Maximum 50 characters."
-          name="registration-last-name"
           required
           validator={[
             getNameValidator(true, true),
@@ -259,44 +380,94 @@ function Registration() {
             getNameValidator(false, true),
           ]}
           validateOn="other"
-          onGcdsInput={(e: any) => e.target.validate()}
+          onGcdsInput={(e: any) => {
+            e.target.validate();
+            updateFormInputs(e);
+          }}
+          onKeyUp={(e: any) => {
+            if (e.key === 'Enter') {
+              handleSubmission(e);
+            }
+          }}
+          onGcdsError={(e: any) => updateErrors(e, true)}
+          onGcdsValid={(e: any) => updateErrors(e, false)}
           style={{ marginBottom: '48px', width: '110%' }}
         />
         <GcdsInput
-          inputId="input-email"
+          inputId="email"
+          name="email"
           label="Email"
           hint="Must end in @ec.gc.ca."
-          name="registration-email"
           required
           validator={[getEmailValidator()]}
+          onGcdsInput={(e: any) => {
+            updateFormInputs(e);
+          }}
+          onGcdsError={(e: any) => updateErrors(e, true)}
+          onGcdsValid={(e: any) => updateErrors(e, false)}
+          onKeyUp={(e: any) => {
+            if (e.key === 'Enter') {
+              handleSubmission(e);
+            }
+          }}
           style={{ marginBottom: 48, width: '110%' }}
         />
         <GcdsInput
-          inputId="input-password"
+          inputId="password"
+          name="password"
           label="Password"
           hint="Must be a minimum of 8 characters, with at least one uppercase character and one number. Only these special characters are allowed: !?@#$%^&*()"
-          name="registration-password"
           type="password"
           required
           validator={[getPasswordValidator()]}
           validateOn="other"
           onGcdsInput={(e: any) => {
-            setCurrentPass(e.target.value || ''); // TODO: Bad async stuff, activating too late to show until next round. Find a way to use useEffect.
+            updateFormInputs(e);
+            // TODO: Bad async stuff, activating too late to show until next round. Find a way to use useEffect.
             setTimeout(() => e.target.validate(), 25); // Really hacky solution to deal with above async stuff. Might break, find a better way w/ useEffect or other.
+          }}
+          onGcdsError={(e: any) => updateErrors(e, true)}
+          onGcdsValid={(e: any) => updateErrors(e, false)}
+          onKeyUp={(e: any) => {
+            if (e.key === 'Enter') {
+              handleSubmission(e);
+            }
           }}
           style={{ marginBottom: '48px', width: '110%' }}
         />
 
-        <GcdsButton
-          buttonId="registration-submit"
-          type="submit"
-          onGcdsClick={(e: any) => handleSubmission(e)}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            gap: 20,
+            alignItems: 'center',
+          }}
         >
-          Submit
-        </GcdsButton>
+          <GcdsButton
+            buttonId="registration-submit"
+            type="button"
+            disabled={isLoading}
+            onGcdsClick={(e: any) => handleSubmission(e)}
+          >
+            Submit
+          </GcdsButton>
+          {isLoading && (
+            <ChakraProvider>
+              <Spinner
+                thickness="2px"
+                speed="0.65s"
+                emptyColor="gray.200"
+                color="blue.800"
+                size="lg"
+              />
+            </ChakraProvider>
+          )}
+        </div>
 
         <GcdsContainer size="xl" centered style={{ paddingBottom: 10 }}>
-          <GcdsDateModified>2024-07-19</GcdsDateModified>
+          <GcdsDateModified>2024-08-20</GcdsDateModified>
         </GcdsContainer>
       </MainTemplate>
     </>
