@@ -11,6 +11,27 @@ const userService = new UserService();
 
 export class AssignmentController {
     /**
+     * End an assignment given the assignment ID
+     */
+    public async endAssignment(assignmentID: number, res: Response) {
+        let assignment = await assignmentService.getAssignmentById(assignmentID)
+
+        if (assignment === null) {
+            ConsoleLogger.logWarning("Assignment could not be found");
+            return res.sendStatus(409);
+        }
+
+        assignment.endOfAssignment = new Date();
+        if (assignment.id) {
+            delete (assignment as any).id;
+        }
+
+        let result = await assignmentService.updateAssignment(assignmentID, assignment);
+
+        return res.status(200).json(result);
+    }
+
+    /**
      * Get an assignment given the assignment ID
      */
     public async getAssignment(assignmentID: number, res:Response) {

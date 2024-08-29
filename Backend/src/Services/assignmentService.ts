@@ -55,7 +55,7 @@ export class AssignmentService {
      * @param {Partial<Assignment>} data The new data for the assignment
      * @returns {Promise<Assignment>} The updated assignment
      */
-    public async updateAssignment(assignmentID: number, data: Partial<Assignment>): Promise<Assignment> {
+    public async updateAssignment(assignmentID: number, data: Omit<Assignment, 'id'>): Promise<Assignment> {
         return prisma.assignment.update({ where: { id: assignmentID }, data });
     }
 
