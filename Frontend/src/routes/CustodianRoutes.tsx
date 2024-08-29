@@ -4,7 +4,7 @@ import { useAuth } from '../hooks/AuthProvider';
 const PrivateRoutes = () => {
   const { user } = useAuth();
 
-  if (user && user.role == 'Custodian') return <Outlet />;
+  if (user && user.role === 'Custodian') return <Outlet />;
   return <Navigate to="/dashboard" replace={true} />;
 };
 

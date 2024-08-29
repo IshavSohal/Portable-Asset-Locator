@@ -94,14 +94,14 @@ export function TopNav({ currentPage }: TopNavProps) {
           {user?.role === 'Custodian' && (
             <NavLink
               isCurrentPage={currentPage === 'manage-assets'}
-              linkText="Manage Assets"
+              linkText="Manage assets"
               linkURL={pageURLs['manage-assets']}
             />
           )}
 
           <NavLink
             isCurrentPage={currentPage === 'my-assets'}
-            linkText="My Assets"
+            linkText="My assets"
             linkURL={pageURLs['my-assets']}
           />
 
