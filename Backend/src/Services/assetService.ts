@@ -1,4 +1,9 @@
 import { PrismaClient, Asset } from '@prisma/client';
+import { ConsoleLogger } from "../Logging/ConsoleLogger";
+
+type AssignedAsset = Asset & {
+    assignedOn: Date
+}
 
 type AssignedAsset = Asset & {
     assignedOn: Date
@@ -52,37 +57,51 @@ export class AssetService {
         // Fetch the active/current assignments for the user
         let userAssignments = await prisma.assignment.findMany({ where: { assignee: userID, endOfAssignment: null } });
 
-        // // Extract asset IDs from the assignments
-        // let userAssetIDs = userAssignments.map(assignment => assignment.asset); 
-
-        // // Fetch the assets using the asset IDs
-        // let userAssets = await Promise.all(
-        //     userAssetIDs.map(id => prisma.asset.findUnique({ where: { id: id } }))
-        // );
-
-        // // Filter out any null values
-        // const validUserAssets = userAssets.filter((asset): asset is Asset => asset !== null);
-
+        // If no assignments are found, return an empty array
+        if (!userAssignments.length) {
+            return [];
+        }
 
         let userAssetsAlt = await Promise.all(
             userAssignments.map(async assignment => { 
-                return { asset: await prisma.asset.findUniqueOrThrow({ where: { id: assignment.id } }), assignedOn: assignment.startOfAssignment }
+                try {
+                    // Fetch the asset related to the assignment
+                    let asset = await prisma.asset.findUniqueOrThrow({
+                        where: { id: assignment.asset }
+                    });
+                    return { asset, assignedOn: assignment.startOfAssignment };
+                } catch (error) {
+                    ConsoleLogger.logInfo("Error fetching asset")
+                    return null;
+                }
             })
         );
-        // to-do: handle error
 
-        return userAssetsAlt.filter((object) => object.asset !== null ).map(({asset, assignedOn}) => { 
-            return { ...asset, assignedOn}
-        })
+        // Filter out any null assets and map the results
+        return userAssetsAlt
+            .filter((object): object is { asset: any; assignedOn: Date } => !!object)
+            .map(({ asset, assignedOn }) => ({ ...asset, assignedOn }));
+    }
 
-        // let userAssetsReturn = userAssetsAlt.map(({asset, startDate}) => {
-        //     return {
-        //         ...asset,
-        //         startDate
-        //     }
-        // })
-        
-        // // Return the array of valid assets
-        // return validUserAssets;
+    /**
+     * Get all unassigned assets
+     * 
+     * @return {Promise<Asset[]>} An array of unassigned assets
+     */
+    public async getUnassignedAssets(): Promise<Asset[] | null> {
+        // Fetch all assignments
+        let assignments = await prisma.assignment.findMany();
+
+        // Filter out assignments that have already ended
+        const currentDate = new Date();
+        assignments = assignments.filter(assignment =>
+            !assignment.endOfAssignment || new Date(assignment.endOfAssignment) >= currentDate
+        );
+
+        // Fetch all assets
+        let assets = await prisma.asset.findMany();
+
+        // Filter out assets that are not in the assignments - these are unassigned
+        return assets.filter(asset => !assignments.some(assignment => assignment.asset === asset.id));
     }
 }

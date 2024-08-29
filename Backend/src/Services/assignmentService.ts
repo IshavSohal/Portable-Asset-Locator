@@ -24,7 +24,7 @@ export class AssignmentService {
      * @param {Assignment[]} data An array of data for the new assignments
      * @returns {Promise<{ count: number }>} The number of assignments created
      */
-    public async createUsers(data: Assignment[]): Promise<{ count: number }> {
+    public async createAssignments(data: Assignment[]): Promise<{ count: number }> {
         return prisma.assignment.createMany({ data })
     }
 
@@ -55,7 +55,7 @@ export class AssignmentService {
      * @param {Partial<Assignment>} data The new data for the assignment
      * @returns {Promise<Assignment>} The updated assignment
      */
-    public async updateAssignment(assignmentID: number, data: Partial<Assignment>): Promise<Assignment> {
+    public async updateAssignment(assignmentID: number, data: Omit<Assignment, 'id'>): Promise<Assignment> {
         return prisma.assignment.update({ where: { id: assignmentID }, data });
     }
 

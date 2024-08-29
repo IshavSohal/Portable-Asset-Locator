@@ -19,6 +19,28 @@ const handleValidationErrors = (req: Request, res: Response, next: NextFunction)
 }
 
 /**
+ * End an assignment - this sets the end date of the assignment
+ * to the current time if processed successfully
+ */
+assignmentRoutes.get(
+    '/end/:id',
+    authMiddleware.isCustodian,
+    async (req: Request, res: Response) => {
+        ConsoleLogger.logInfo('Requesting unassignment attempt');
+        const errors = validationResult(req);
+
+        // If JSON validation fails, send a 400, Conflict
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        let id = parseInt(req.params.id, 10)
+
+        return await assignmentController.endAssignment(id, res)
+    }
+)
+
+/**
  *  Get the assignment given the assignment ID
  */
 assignmentRoutes.get(
@@ -52,7 +74,7 @@ assignmentRoutes.route("")
         authMiddleware.isCustodian,
         handleValidationErrors,
         async (req: Request, res: Response) => {
-            ConsoleLogger.logInfo('Registration Attempt');
+            ConsoleLogger.logInfo('Creating an assignment');
             const errors = validationResult(req);
             // If JSON validation fails, send a 400, Conflict
             if (!errors.isEmpty()) {

@@ -20,6 +20,24 @@ const handleValidationErrors = (req: Request, res: Response, next: NextFunction)
 }
 
 /**
+ * Get list of unassigned assets
+ */
+assetRoutes.get(
+    '/unassigned',
+    async (req: Request, res: Response) => {
+        const errors = validationResult(req);
+
+        // If JSON validation fails, send a 400, Conflict
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        ConsoleLogger.logInfo(`Attempt to retrieve unassigned assets`);
+        return await assetController.getUnassignedAssets(res);
+    }
+)
+
+/**
  * Get all assets for a user given the user ID
  */
 assetRoutes.get(
