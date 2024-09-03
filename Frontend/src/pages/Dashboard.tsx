@@ -43,7 +43,7 @@ function Dashboard() {
     }, []);
 
     return (
-        <MainTemplate>
+        <MainTemplate currentPage='my-assets'>
             <GcdsHeading tag="h1">Dashboard</GcdsHeading>
             <GcdsText>
                 Welcome, {user?.firstName} {user?.lastName} ({user?.email}) !

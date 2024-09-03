@@ -43,7 +43,7 @@ function NavLink({
     <GcdsNavLink
       style={{
         fontSize: '20px',
-        paddingBottom: isCurrentPage ? '1px' : '0',
+        lineHeight: isCurrentPage ? '' : '1.18',
         fontFamily: 'Noto sans, sans-serif',
       }}
       current={isCurrentPage}
@@ -68,7 +68,7 @@ export function TopNav({ currentPage }: TopNavProps) {
 
   return (
     <GcdsTopNav slot="menu" label="Top navigation" alignment="right">
-      <GcdsNavLink href="/" slot="home">
+      <GcdsNavLink href={user ? "/dashboard" : "/"} slot="home">
         Portable Asset Locator
       </GcdsNavLink>
 
