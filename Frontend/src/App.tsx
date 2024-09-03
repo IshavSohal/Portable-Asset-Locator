@@ -5,11 +5,12 @@ import Dashboard from './pages/Dashboard';
 import Registration from './pages/Registration';
 import MainTemplate from './templates/MainTemplate';
 import SignOn from './pages/SignOn';
-import AuthProvider, { useAuth } from './hooks/AuthProvider';
+import { useAuth } from './hooks/AuthProvider';
 import { useEffect, useState } from 'react';
 import PrivateRoutes from './routes/PrivateRoutes';
 import UnauthRoutes from './routes/UnauthRoutes';
 import AssetProfile from './pages/AssetProfile';
+import AssignUserForm from './components/AssignUserForm';
 
 function App() {
   const { loadUser, user } = useAuth();
@@ -62,6 +63,9 @@ function Home() {
         <Link className="App-link" to="/dashboard">
           Dashboard
         </Link>
+      </div>
+      <div>
+        <AssignUserForm name="laptop" tag="A12345" />
       </div>
     </MainTemplate>
   );
