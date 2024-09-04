@@ -3,13 +3,15 @@ import logo from './logo.svg';
 import './App.css';
 import Dashboard from './pages/Dashboard';
 import Registration from './pages/Registration';
+import ManageAssets from './pages/ManageAssets';
 import MainTemplate from './templates/MainTemplate';
 import SignOn from './pages/SignOn';
-import AuthProvider, { useAuth } from './hooks/AuthProvider';
+import { useAuth } from './hooks/AuthProvider';
 import { useEffect, useState } from 'react';
 import PrivateRoutes from './routes/PrivateRoutes';
 import UnauthRoutes from './routes/UnauthRoutes';
 import AssetProfile from './pages/AssetProfile';
+import CustodianRoutes from './routes/CustodianRoutes';
 
 function App() {
   const { loadUser, user } = useAuth();
@@ -40,6 +42,9 @@ function App() {
           <Route element={<PrivateRoutes />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/asset/:assetid" element={<AssetProfile />} />
+            <Route element={<CustodianRoutes />}>
+              <Route path="/manage-assets" element={<ManageAssets />} />
+            </Route>
           </Route>
           <Route element={<UnauthRoutes />}>
             <Route path="/signin" element={<SignOn />} />
