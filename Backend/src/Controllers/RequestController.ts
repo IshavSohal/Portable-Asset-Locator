@@ -34,7 +34,7 @@ export class RequestController {
 
         let currDate = new Date();
         let startDate = Date.parse(data.startDate);
-        if(startDate > currDate){
+        if(startDate < currDate){
             ConsoleLogger.logWarning("Invalid start date");
             return res.sendStatus(400);  
         }

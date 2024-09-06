@@ -29,13 +29,19 @@ export class UserService {
     }
 
     /**
-     * Get a user by their ID
+     * Get a user by their ID. Omit their password and iv fields
      * 
      * @param {number} id The ID of the user to retrieve 
      * @returns {Promise<User | null>} The user with the specified ID, or null if not found
      */
-    public async getUserById(UID: number): Promise<User | null> {
-        return prisma.user.findUnique({ where: { UID } });
+    public async getUserById(UID: number): Promise<Partial<User> | null> {
+        return prisma.user.findUnique({ 
+            where: { UID }, 
+            omit: { 
+                password: true, 
+                iv: true
+            }
+        });
     }
 
     /**
