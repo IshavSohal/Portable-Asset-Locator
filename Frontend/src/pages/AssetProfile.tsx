@@ -11,7 +11,6 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
 } from '@chakra-ui/react';
@@ -25,31 +24,17 @@ import { fetchGet } from '../requests/requests';
 import { useEffect, useState } from 'react';
 import { dateFormatter } from '../utils';
 import AssignUserForm from '../components/AssignUserForm';
+import { asset } from '../types/data';
 
 function AssetProfile() {
   const { assetid } = useParams();
-  let [asset, setAsset] = useState({
-    id: null,
-    name: null,
-    type: null,
-    make: null,
-    assetTag: null,
-    serialNumber: null,
-    description: null,
-    location: null,
-    warrantyStartDate: null,
-    warrantyEndDate: null,
-    warrantyDetails: null,
-    dateOfPurchase: null,
-    cost: null,
-    purchaser: null,
-    comment: null,
-    model: null,
+  let [asset, setAsset] = useState<asset>({
+    id: 0,
+    name: '',
+    type: '',
+    assetTag: '',
     custodian: {
-      id: null,
-      firstName: null,
-      lastName: null,
-      email: null,
+      id: 0,
     },
   });
   const [isLoading, setIsLoading] = useState(true);
@@ -90,10 +75,14 @@ function AssetProfile() {
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader>Assign user to {asset.name}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <AssignUserForm name="name" tag="A12345" />
+            <AssignUserForm
+              name={asset.name}
+              tag={asset.assetTag}
+              id={asset.id}
+            />
           </ModalBody>
         </ModalContent>
       </Modal>
@@ -199,13 +188,14 @@ function AssetProfile() {
           >
             <GcdsText style={{ paddingRight: 10, maxWidth: 180 }}>
               <div style={{ fontWeight: 'bold' }}> Date of purchase: </div>
-              <div>{dateFormatter(asset.dateOfPurchase, true)}</div>
+              <div>
+                {asset.dateOfPurchase &&
+                  dateFormatter(asset.dateOfPurchase, true)}
+              </div>
             </GcdsText>
             <GcdsText style={{ paddingRight: 10, maxWidth: 180 }}>
               <div style={{ fontWeight: 'bold' }}> Cost: </div>
-              <div>
-                {asset.cost && asset.cost !== 'N/A' ? '$' + asset.cost : 'N/A'}
-              </div>
+              <div>{asset.cost ? '$' + asset.cost : 'N/A'}</div>
             </GcdsText>
             <GcdsText style={{ paddingRight: 10, maxWidth: 180 }}>
               <div style={{ fontWeight: 'bold' }}> Purchaser: </div>

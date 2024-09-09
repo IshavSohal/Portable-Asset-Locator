@@ -64,9 +64,6 @@ function Home() {
           Dashboard
         </Link>
       </div>
-      <div>
-        <AssignUserForm name="laptop" tag="A12345" />
-      </div>
     </MainTemplate>
   );
 }
