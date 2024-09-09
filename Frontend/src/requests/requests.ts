@@ -9,6 +9,11 @@ const fetchPost = async(endpoint: string, data: any): Promise<Response> => {
       },
       body: JSON.stringify(data),
     });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error('fetchPost Error - Error creating data: ' + errorText);
+    }
   
     return response
   

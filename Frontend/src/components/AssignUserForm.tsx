@@ -3,6 +3,7 @@ import { fetchGet, fetchPost } from '../requests/requests';
 import { user } from '../types/data';
 import {
   GcdsButton,
+  GcdsErrorMessage,
   GcdsSelect,
   GcdsText,
 } from '@cdssnc/gcds-components-react';
@@ -15,12 +16,14 @@ export interface Props {
   tag: string;
   id: number;
   onCancel?: () => {};
+  onComplete: () => void;
 }
 
-function AssignUserForm({ name, tag, id, onCancel }: Props) {
+function AssignUserForm({ name, tag, id, onCancel, onComplete }: Props) {
   const now = new Date();
   const [users, setUsers] = useState<user[]>([]);
-  const [selectedUser, setSelectedUser] = useState<null | string>(null);
+  const [selectedUser, setSelectedUser] = useState<null | number>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<null | string>(null);
   const [loading, setLoading] = useState(true);
 
@@ -39,6 +42,21 @@ function AssignUserForm({ name, tag, id, onCancel }: Props) {
     dataFetch();
   }, []);
 
+  const handleSubmit = async () => {
+    try {
+      setSubmitting(true);
+      if (selectedUser) {
+        const res = await submitAssignment(id, selectedUser);
+        console.log(await res.text());
+        onComplete();
+      }
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <>
       <GcdsText>
@@ -55,11 +73,13 @@ function AssignUserForm({ name, tag, id, onCancel }: Props) {
           name="select-assignee"
           hint="Select user email"
           defaultValue="Select option."
-          onGcdsChange={(e) => setSelectedUser(e.target.value || null)}
+          onGcdsChange={(e) =>
+            e.target.value ? setSelectedUser(parseInt(e.target.value)) : null
+          }
           //disabled={loading}
         >
           {users.map((user) => (
-            <option value={user.email} key={`option-${user.UID}`}>
+            <option value={user.UID} key={`option-${user.UID}`}>
               {user.email}
             </option>
           ))}
@@ -86,8 +106,13 @@ function AssignUserForm({ name, tag, id, onCancel }: Props) {
         </AutoComplete>
         <FormHelperText>Select or type to filter users...</FormHelperText>
       </FormControl> */}
-      <GcdsButton style={{ marginRight: 12 }}>Assign</GcdsButton>
-      <GcdsButton buttonRole="secondary" onClick={onCancel}>
+      {error && (
+        <GcdsErrorMessage messageId="message-props">{error}</GcdsErrorMessage>
+      )}
+      <GcdsButton style={{ marginRight: 12 }} onGcdsClick={handleSubmit}>
+        Assign
+      </GcdsButton>
+      <GcdsButton buttonRole="secondary" onGcdsClick={onCancel}>
         Cancel
       </GcdsButton>
     </>
@@ -105,6 +130,7 @@ const submitAssignment = async (assetId: number, assigneeId: number) => {
     assignee: assigneeId,
   };
   const response = await fetchPost('/api/assignment', assignment);
+  return response;
 };
 
 const mockUsers: user[] = [
