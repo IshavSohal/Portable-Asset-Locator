@@ -1,4 +1,12 @@
 type user = {
+    id: number;
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: 'Admin' | 'Custodian' | 'Base';
+};
+
+type userAlt = {
     UID: number;
     email: string;
     firstName: string;
@@ -33,4 +41,4 @@ type custodian = {
     email?: string,
 }
 
-export type { user, asset, custodian }
+export type { user, asset, custodian, userAlt }

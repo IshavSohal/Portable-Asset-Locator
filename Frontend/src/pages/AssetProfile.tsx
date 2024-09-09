@@ -19,7 +19,7 @@ import {
 import { MdOutlineComment } from 'react-icons/md';
 import { BsLaptop } from 'react-icons/bs';
 import { GoTag } from 'react-icons/go';
-
+import { useAuth } from '../hooks/AuthProvider';
 import MainTemplate from '../templates/MainTemplate';
 import { useParams } from 'react-router-dom';
 import { fetchGet } from '../requests/requests';
@@ -41,6 +41,7 @@ function AssetProfile() {
       id: 0,
     },
   });
+  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -60,6 +61,7 @@ function AssetProfile() {
     };
 
     getAsset().then((res) => {
+      console.log(res);
       setAsset(res);
     });
   }, []);
@@ -88,9 +90,13 @@ function AssetProfile() {
           {SUCCESS_MSG}
         </Alert>
       )}
-      <GcdsContainer size="lg" margin="100">
-        <GcdsButton onClick={() => setModalOpen(true)}>Assign User</GcdsButton>
-      </GcdsContainer>
+      {user && user?.id === asset.custodian.id && (
+        <GcdsContainer size="lg" margin="100">
+          <GcdsButton onClick={() => setModalOpen(true)}>
+            Assign User
+          </GcdsButton>
+        </GcdsContainer>
+      )}
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
         <ModalOverlay />
         <ModalContent>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { fetchGet, fetchPost } from '../requests/requests';
-import { user } from '../types/data';
+import { userAlt } from '../types/data';
 import {
   GcdsButton,
   GcdsErrorMessage,
@@ -21,7 +21,7 @@ export interface Props {
 
 function AssignUserForm({ name, tag, id, onCancel, onComplete }: Props) {
   const now = new Date();
-  const [users, setUsers] = useState<user[]>([]);
+  const [users, setUsers] = useState<userAlt[]>([]);
   const [selectedUser, setSelectedUser] = useState<null | number>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<null | string>(null);
@@ -120,7 +120,7 @@ function AssignUserForm({ name, tag, id, onCancel, onComplete }: Props) {
 }
 
 const getListOfUsers = async () => {
-  const users = (await (await fetchGet('/api/users')).json()) as user[];
+  const users = (await (await fetchGet('/api/users')).json()) as userAlt[];
   return users;
 };
 
@@ -133,7 +133,7 @@ const submitAssignment = async (assetId: number, assigneeId: number) => {
   return response;
 };
 
-const mockUsers: user[] = [
+const mockUsers: userAlt[] = [
   {
     UID: 1,
     email: 'abcdefghi@ec.gc.ca',
