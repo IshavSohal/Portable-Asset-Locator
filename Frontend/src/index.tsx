@@ -8,22 +8,11 @@ import AuthProvider from './hooks/AuthProvider';
 
 import {
   ChakraProvider,
-  extendBaseTheme,
   theme as chakraTheme,
+  extendTheme,
 } from '@chakra-ui/react';
 
-const { Table, Link, Form, FormLabel, FormError, Input } =
-  chakraTheme.components;
-
-const theme = extendBaseTheme({
-  components: {
-    Table,
-    Link,
-    Form,
-    FormLabel,
-    FormError,
-    Input,
-  },
+const theme = extendTheme({
   fonts: {
     body: "'Noto Sans', sans-serif",
     heading: "'Lato', serif",
@@ -36,7 +25,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <AuthProvider>
         <App />
       </AuthProvider>

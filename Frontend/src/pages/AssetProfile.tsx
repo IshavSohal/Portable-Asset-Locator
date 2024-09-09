@@ -13,6 +13,8 @@ import {
   ModalHeader,
   ModalBody,
   ModalCloseButton,
+  Alert,
+  AlertIcon,
 } from '@chakra-ui/react';
 import { MdOutlineComment } from 'react-icons/md';
 import { BsLaptop } from 'react-icons/bs';
@@ -25,6 +27,8 @@ import { useEffect, useState } from 'react';
 import { dateFormatter } from '../utils';
 import AssignUserForm from '../components/AssignUserForm';
 import { asset } from '../types/data';
+
+const SUCCESS_MSG = 'User has been successfully assigned';
 
 function AssetProfile() {
   const { assetid } = useParams();
@@ -39,6 +43,7 @@ function AssetProfile() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
     console.log('Fetching Asset Info');
@@ -59,6 +64,12 @@ function AssetProfile() {
     });
   }, []);
 
+  const handleSuccessfulAssignment = () => {
+    setModalOpen(false);
+    setShowSuccess(true); // TODO: update message/sucess component
+    // TODO: update the assignee so that it can be displayed on page (removed the "Assign user" button)
+  };
+
   if (isLoading) {
     return (
       <MainTemplate currentPage="my-assets">
@@ -71,7 +82,15 @@ function AssetProfile() {
       <GcdsHeading tag="h1" style={{ marginBottom: 48 }}>
         {asset.name + ` (${asset.assetTag})`}
       </GcdsHeading>
-      <GcdsButton onClick={() => setModalOpen(true)}>Assign User</GcdsButton>
+      {showSuccess && (
+        <Alert status="success" marginBottom={4}>
+          <AlertIcon />
+          {SUCCESS_MSG}
+        </Alert>
+      )}
+      <GcdsContainer size="lg" margin="100">
+        <GcdsButton onClick={() => setModalOpen(true)}>Assign User</GcdsButton>
+      </GcdsContainer>
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
         <ModalOverlay />
         <ModalContent>
@@ -82,6 +101,7 @@ function AssetProfile() {
               name={asset.name}
               tag={asset.assetTag}
               id={asset.id}
+              onComplete={() => handleSuccessfulAssignment()}
             />
           </ModalBody>
         </ModalContent>
