@@ -108,6 +108,7 @@ function AssetProfile() {
               tag={asset.assetTag}
               id={asset.id}
               onComplete={() => handleSuccessfulAssignment()}
+              onCancel={() => setModalOpen(false)}
             />
           </ModalBody>
         </ModalContent>

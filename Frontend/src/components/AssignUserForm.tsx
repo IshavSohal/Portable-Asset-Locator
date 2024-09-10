@@ -15,7 +15,7 @@ export interface Props {
   name: string;
   tag: string;
   id: number;
-  onCancel?: () => {};
+  onCancel?: () => void;
   onComplete: () => void;
 }
 
