@@ -114,7 +114,7 @@ function UnassignedAssetsPage() {
                   <Td>{asset.type}</Td>
                   <Td>{asset.location}</Td>
                   <Td>{asset.procurementYear}</Td>
-                  <Td>{asset.custodian || 'N/A'}</Td>
+                  <Td>{asset.custodianEmail || 'N/A'}</Td>
                 </Tr>
               ))}
             </Tbody>

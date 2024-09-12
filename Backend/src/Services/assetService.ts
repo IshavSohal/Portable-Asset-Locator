@@ -82,7 +82,7 @@ export class AssetService {
     /**
      * Get all unassigned assets
      * 
-     * @return {Promise<Asset[]>} An array of unassigned assets
+     * @return {Promise<(Asset & { custodianEmail: string | null })[]>} An array of unassigned assets
      */
     public async getUnassignedAssets(): Promise<Asset[] | null> {
         // Fetch all assignments
@@ -95,9 +95,20 @@ export class AssetService {
         );
 
         // Fetch all assets
-        let assets = await prisma.asset.findMany();
+        let assets = await prisma.asset.findMany({
+            include: {
+                custodianID: {
+                    select: {
+                        email: true
+                    }
+                }
+            }
+        });
 
-        // Filter out assets that are not in the assignments - these are unassigned
-        return assets.filter(asset => !assignments.some(assignment => assignment.asset === asset.id));
+        const unassignedAssets = assets.filter(asset => !assignments.some(assignment => assignment.asset === asset.id));
+        return unassignedAssets.map(asset => ({
+            ...asset,
+            custodianEmail: asset.custodianID?.email || 'N/A'
+        }));
     }
 }
