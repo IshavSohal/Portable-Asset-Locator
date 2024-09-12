@@ -1,5 +1,6 @@
 import MainTemplate from '../templates/MainTemplate';
 import {
+  GcdsButton,
   GcdsContainer,
   GcdsDateModified,
   GcdsHeading,
@@ -14,10 +15,12 @@ import {
   Tr,
   Th,
   Td,
+  Button,
 } from '@chakra-ui/react';
 import { useAuth } from '../hooks/AuthProvider';
 import { useEffect, useState } from 'react';
 import { fetchGet } from '../requests/requests';
+import { useNavigate } from 'react-router-dom'; 
 
 function Dashboard() {
   const [userAssets, setUserAssets] = useState<asset[]>([]);
@@ -25,6 +28,7 @@ function Dashboard() {
 
   const [error, setError] = useState<null | string>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // fetch data
@@ -58,6 +62,11 @@ function Dashboard() {
       <GcdsText>
         Here are all the assets that are currently assigned to you.
       </GcdsText>
+      <GcdsContainer padding-left='1000'>
+      <GcdsButton onClick={() => navigate('/unassigned-assets')}>
+        Request asset
+      </GcdsButton>
+      </GcdsContainer>
       <GcdsContainer border padding="400" margin="0">
         <GcdsText size="caption">Showing {userAssets.length} results.</GcdsText>
         <TableContainer>

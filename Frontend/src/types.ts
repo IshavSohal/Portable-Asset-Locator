@@ -8,3 +8,12 @@ export interface CustodianAsset {
     dateOfPurchase?: Date | null;
     assignedTo?: string | null;
   }
+
+export interface UnassignedAsset {
+    id: number;
+    name: string;
+    type: string;
+    procurementYear: number;
+    custodian: string | null;
+    location: string;
+  }

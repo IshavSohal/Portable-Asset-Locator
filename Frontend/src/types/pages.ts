@@ -1,4 +1,4 @@
-type sitePages = 'register' | 'signin' | 'manage-assets' | 'my-assets';
+type sitePages = 'register' | 'signin' | 'manage-assets' | 'my-assets' | 'unassigned-assets';
 
 type pageURL = {
   [page in sitePages]: string;
@@ -7,8 +7,9 @@ type pageURL = {
 const pageURLs: pageURL = {
   register: '/register',
   signin: '/signin',
-  'manage-assets': '/manage-assets',
-  'my-assets': '/dashboard',
+  'manage-assets': '/',
+  'my-assets': '/',
+  'unassigned-assets': '/unassigned-assets',
 };
 
 export { pageURLs };
