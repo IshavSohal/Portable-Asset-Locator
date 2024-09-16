@@ -6,6 +6,16 @@ type user = {
     role: 'Admin' | 'Custodian' | 'Base';
 };
 
+type assignment = {
+    id: number;
+    assigneeId: user;
+    assignee: number;
+    assetID: asset;
+    asset: number;
+    startOfAssignment: string;
+    endOfAssignment?: string;
+}
+
 type userAlt = {
     UID: number;
     email: string;
@@ -41,4 +51,4 @@ type custodian = {
     email?: string,
 }
 
-export type { user, asset, custodian, userAlt }
+export type { user, assignment, asset, custodian, userAlt }

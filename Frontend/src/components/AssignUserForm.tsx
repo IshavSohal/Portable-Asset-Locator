@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { fetchGet, fetchPost } from '../requests/requests';
-import { userAlt } from '../types/data';
+import { assignment, user, userAlt } from '../types/data';
 import {
   GcdsButton,
   GcdsErrorMessage,
   GcdsSelect,
   GcdsText,
 } from '@cdssnc/gcds-components-react';
+import { Spinner } from '@chakra-ui/react';
 
 export interface Props {
   /**
@@ -16,7 +17,7 @@ export interface Props {
   tag: string;
   id: number;
   onCancel?: () => void;
-  onComplete: () => void;
+  onComplete: (user: user, assignment: assignment) => void;
 }
 
 function AssignUserForm({ name, tag, id, onCancel, onComplete }: Props) {
@@ -44,11 +45,19 @@ function AssignUserForm({ name, tag, id, onCancel, onComplete }: Props) {
 
   const handleSubmit = async () => {
     try {
+      setError('');
       setSubmitting(true);
       if (selectedUser) {
         const res = await submitAssignment(id, selectedUser);
-        console.log(await res.text());
-        onComplete();
+
+        const assignment: assignment = await res.json();
+        let finalUser: any = users.find((user) => user.UID === selectedUser);
+        finalUser.id = finalUser.UID;
+        finalUser.UID = undefined;
+
+        onComplete(finalUser as user, assignment);
+      } else {
+        setError('No user selected!');
       }
     } catch (err) {
       setError((err as Error).message);
@@ -68,6 +77,7 @@ function AssignUserForm({ name, tag, id, onCancel, onComplete }: Props) {
       </GcdsText>
       {!loading && (
         <GcdsSelect
+          disabled={submitting}
           selectId="select-props"
           label="Assign to"
           name="select-assignee"
@@ -109,12 +119,27 @@ function AssignUserForm({ name, tag, id, onCancel, onComplete }: Props) {
       {error && (
         <GcdsErrorMessage messageId="message-props">{error}</GcdsErrorMessage>
       )}
-      <GcdsButton style={{ marginRight: 12 }} onGcdsClick={handleSubmit}>
-        Assign
-      </GcdsButton>
-      <GcdsButton buttonRole="secondary" onGcdsClick={onCancel}>
-        Cancel
-      </GcdsButton>
+      <div
+        style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+      >
+        <GcdsButton
+          disabled={submitting}
+          style={{ marginRight: 12 }}
+          onGcdsClick={handleSubmit}
+        >
+          Assign
+        </GcdsButton>
+        <GcdsButton
+          disabled={submitting}
+          buttonRole="secondary"
+          onGcdsClick={onCancel}
+        >
+          Cancel
+        </GcdsButton>
+        {submitting && (
+          <Spinner thickness="3px" size="lg" style={{ marginLeft: 20 }} />
+        )}
+      </div>
     </>
   );
 }
