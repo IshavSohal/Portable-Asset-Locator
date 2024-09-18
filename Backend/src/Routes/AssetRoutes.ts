@@ -20,6 +20,50 @@ const handleValidationErrors = (req: Request, res: Response, next: NextFunction)
 }
 
 /**
+ *  Get all AssetTypes
+*/
+assetRoutes.get('/unassigned/types',
+    async (req: Request, res: Response) => {
+        ConsoleLogger.logInfo('Attempt to retrieve asset types');
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        return await assetController.getAssetTypes(res);
+    }
+)
+/**
+     * Get all Asset Locations
+     */
+assetRoutes.get('/unassigned/locations',
+    async (req: Request, res: Response) => {
+        ConsoleLogger.logInfo('Attempt to retrieve asset locations');
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        return await assetController.getAssetLocations(res);
+    }
+)
+
+/**
+     * Get all Custodian Emails
+     */
+assetRoutes.get('/unassigned/custodians',
+    async (req: Request, res: Response) => {
+        ConsoleLogger.logInfo('Attempt to retrieve custodian emails');
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        return await assetController.getCustodianEmails(res);
+    }
+)
+
+/**
  * Get list of unassigned assets
  */
 assetRoutes.get(
@@ -143,6 +187,7 @@ assetRoutes.get(
     }
 )
 
+
 /**
  * Create an asset
  */
@@ -197,5 +242,7 @@ assetRoutes.route("")
             return await assetController.createAsset(data, res);
         }
     );
+
+    
 
 module.exports = assetRoutes;

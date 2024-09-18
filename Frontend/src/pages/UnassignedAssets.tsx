@@ -1,41 +1,58 @@
 import { useState, useEffect } from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Flex} from '@chakra-ui/react';
-import { GcdsHeading, GcdsSelect, GcdsText } from '@cdssnc/gcds-components-react';
+import { GcdsHeading, GcdsSelect, GcdsText, GcdsLink } from '@cdssnc/gcds-components-react';
 import MainTemplate from '../templates/MainTemplate';
-import { UnassignedAsset } from '../types';
+import { UnassignedAsset, Assettype, Locations, CustodianEmails} from '../types';
 import { fetchGet } from '../requests/requests';
 
 function UnassignedAssetsPage() {
+    const [assetTypes, setAssetTypes] = useState<Assettype[]>([]);
+    const [locationTypes, setLocationTypes] = useState<Locations[]>([]);
+    const [custodianEmails, setCustodians] = useState<CustodianEmails[]>([]);
     const [assets, setAssets] = useState<UnassignedAsset[]>([]);
-    const [selectedType, setSelectedType] = useState<string>('');
-    const [selectedCustodian, setSelectedCustodian] = useState<string>('');
-    const [selectedLocation, setSelectedLocation] = useState<string>('');
+    const [filteredAssets, setFilteredAssets] = useState<UnassignedAsset[]>([]);
     const [error, setError] = useState<null | string>(null);
     const [loading, setLoading] = useState(true);
+    const [selectedType, setSelectedType] = useState<string | undefined>();
+    const [selectedCustodian, setSelectedCustodian] = useState<string | undefined>(); 
+    const [selectedLocation, setSelectedLocation] = useState<string | undefined>();
 
   useEffect(() => {
     const dataFetch = async () => {
       try {
+        const assetTypesList = (await fetchAssetTypes()) as Assettype[];
+        setAssetTypes(assetTypesList);
+        const locationsList = (await fetchLocations()) as Locations[];
+        setLocationTypes(locationsList);
+        const CustodiansList = (await fetchCustodians()) as CustodianEmails[];
+        setCustodians(CustodiansList);
         const assetsList = (await fetchUnassignedAssets()) as UnassignedAsset[];
         setAssets(assetsList);
+        setFilteredAssets(assetsList);
       } catch (err) {
         setError((err as Error).message);
       } finally {
         setLoading(false);
       }
     };
-
     dataFetch();
   }, []);
 
-  const fetchAssetTypes = async () => {
-    const response = await fetchGet('/api/asset/types');
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw new Error('Failed to fetch asset types');
-    }
-  };
+  useEffect(() => {
+    const filtered = assets.filter(asset => {
+      const matchesType = selectedType ? asset.type === selectedType : true;
+      const matchesCustodian = selectedCustodian ? asset.custodianEmail === selectedCustodian : true;
+      const matchesLocation = selectedLocation ? asset.location === selectedLocation : true;
+      return matchesType && matchesCustodian && matchesLocation;
+    });
+    setFilteredAssets(filtered);
+  }, [selectedType, selectedCustodian, selectedLocation, assets]);
+
+  const extractProcurementYear = (dateOfPurchase?: Date | null): number | 'N/A' => {
+    if (!dateOfPurchase) return 'N/A';
+    const year = new Date(dateOfPurchase).getFullYear();
+    return year;
+};
 
   return (
     <MainTemplate currentPage="unassigned-assets">
@@ -48,35 +65,50 @@ function UnassignedAssetsPage() {
       <Flex style={{gap: '30px'}}>
       <GcdsSelect
           selectId="asset-type-select"
-          label="Type"
-          name="assetType"
-          defaultValue=""
+          label="Asset Type"
+          name="assettype"
+          value={selectedType}
+          onGcdsChange={e => setSelectedType(e.detail)}
         >
-          <option value="">Select a Type</option>
-         
+          <option value="" disabled>Select a Type</option>
+          {assetTypes.map((assettype) => (
+            <option key={assettype.id} value={assettype.id}>
+              {assettype.type}
+            </option>
+          ))}
         </GcdsSelect>
         <GcdsSelect
           selectId="custodian-select"
           label="Custodian"
           name="custodianEmail"
-          defaultValue="Select a Custodian"
-          //onChange={(e) => setSelectedCustodian(e.target.value)}
+          defaultValue=""
+          value={selectedCustodian}
+          onGcdsChange={e => setSelectedCustodian(e.detail)}
         >
-          <option value=""></option>
-          {}
+          <option value="" disabled>Select a Custodian</option>
+          {custodianEmails.map((custodian) => (
+            <option key={custodian.UID} value={custodian.UID}>
+              {custodian.email}
+            </option>
+          ))}
         </GcdsSelect>
         <GcdsSelect
           selectId="location-select"
           label="Location"
           name="assetLocation"
-          defaultValue="Select a Location"
-          //onChange={(e) => setSelectedLocation(e.target.value)}
+          defaultValue=""
+          value={selectedLocation}
+          onGcdsChange={e => setSelectedLocation(e.detail)}
         >
-          <option value=""></option>
-          {}
+          <option value="" disabled>Select a Location</option>
+          {locationTypes.map(assetLocation => (
+            <option key={assetLocation.id.toString()}>
+              {assetLocation.location}
+            </option>
+          ))}
         </GcdsSelect>
       </Flex>
-      <GcdsText size="caption">Showing {assets.length} entries.</GcdsText>
+      <GcdsText size="caption">Showing {filteredAssets.length} entries.</GcdsText>
       <TableContainer>
         <Table variant="striped" colorScheme="blackAlpha" size="lg" marginBottom="100">
           <Thead>
@@ -108,12 +140,14 @@ function UnassignedAssetsPage() {
             </Tbody>
           ) : (
             <Tbody>
-              {assets.map((asset) => (
+              {filteredAssets.map((asset) => (
                 <Tr key={asset.id}>
-                  <Td>{asset.name}</Td>
+                  <Td><GcdsLink href={`/assets/${asset.id}`}>
+                        {asset.name}
+                  </GcdsLink></Td>
                   <Td>{asset.type}</Td>
                   <Td>{asset.location}</Td>
-                  <Td>{asset.procurementYear}</Td>
+                  <Td>{extractProcurementYear(asset.dateOfPurchase)}</Td>
                   <Td>{asset.custodianEmail || 'N/A'}</Td>
                 </Tr>
               ))}
@@ -127,8 +161,45 @@ function UnassignedAssetsPage() {
 
 export default UnassignedAssetsPage;
 
-async function fetchUnassignedAssets(filters: { type?: string; custodian?: string; location?: string } = {}) {
-  const query = new URLSearchParams(filters).toString();
+async function fetchAssetTypes () {
+  const response = await fetchGet('/api/asset/unassigned/types');
+  if (response.ok) {
+    const assettypes = await response.json();
+    return assettypes.map((t: Assettype) => {
+      return { ...t };
+    });
+  } else {
+    throw new Error(
+      'fetchAssetTypes Error:' + response.status + (await response.text())
+    );
+  }
+}
+
+async function fetchLocations(): Promise<Locations[]> {
+  const response = await fetchGet('/api/asset/unassigned/locations');
+  if (response.ok) {
+    const locations = await response.json();
+    return locations.map((l: Location) => ({ ...l }));
+  } else {
+    throw new Error(
+      'fetchLocations Error:' + response.status + (await response.text())
+    );
+  }
+}
+
+async function fetchCustodians(): Promise<CustodianEmails[]> {
+  const response = await fetchGet('/api/asset/unassigned/custodians');
+  if (response.ok) {
+    const custodians = await response.json();
+    return custodians.map((c: CustodianEmails) => ({ ...c }));
+  } else {
+    throw new Error(
+      'fetchCustodians Error:' + response.status + (await response.text())
+    );
+  }
+}
+
+async function fetchUnassignedAssets() {
   const response = await fetchGet('/api/asset/unassigned');
   if (response.ok) {
     const assets = await response.json();
@@ -141,4 +212,9 @@ async function fetchUnassignedAssets(filters: { type?: string; custodian?: strin
     );
   }
 }
+
+
+
+
+
 

@@ -15,7 +15,6 @@ import {
   Tr,
   Th,
   Td,
-  Button,
 } from '@chakra-ui/react';
 import { useAuth } from '../hooks/AuthProvider';
 import { useEffect, useState } from 'react';
@@ -64,7 +63,7 @@ function Dashboard() {
       </GcdsText>
       <GcdsContainer padding-left='1000'>
       <GcdsButton onClick={() => navigate('/unassigned-assets')}>
-        Request asset
+          Request asset
       </GcdsButton>
       </GcdsContainer>
       <GcdsContainer border padding="400" margin="0">

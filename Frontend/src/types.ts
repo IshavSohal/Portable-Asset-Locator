@@ -13,7 +13,22 @@ export interface UnassignedAsset {
   id: number;
   name: string;
   type: string;
-  procurementYear: number;
+  dateOfPurchase?: Date | null;
   custodianEmail?: string;
   location: string;
+}
+
+export interface Assettype{
+  id: number;
+  type: string;
+}
+
+export interface Locations{
+  id: number;
+  location: string;
+}
+
+export interface CustodianEmails{
+  UID: number;
+  email: string;
 }
