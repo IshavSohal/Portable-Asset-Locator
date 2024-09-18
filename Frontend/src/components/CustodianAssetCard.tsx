@@ -9,7 +9,7 @@ interface CustodianAssetCardProps {
 }
 export function CustodianAssetCard({ asset }: CustodianAssetCardProps) {
   return (
-    <Tr>
+    <Tr style={{ textWrap: 'wrap' }}>
       <Td>
         <GcdsLink href={`/asset/${asset.id}`}>{asset.name}</GcdsLink>
       </Td>
