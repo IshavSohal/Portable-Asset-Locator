@@ -146,9 +146,13 @@ function UnassignedAssetsPage() {
             <Tbody>
               {filteredAssets.map((asset) => (
                 <Tr key={asset.id}>
-                  <Td><GcdsLink href={`/assets/${asset.id}`}>
-                        {asset.name}
-                  </GcdsLink></Td>
+                  <Td>
+                    <GcdsLink href={`/assets/${asset.id}`}>
+                      {asset.name}
+                      {/* Only display make and model if both exist */}
+                      {asset.make && asset.model ? ` (${asset.make} ${asset.model})` : ''}
+                    </GcdsLink>
+                  </Td>
                   <Td>{asset.type}</Td>
                   <Td>{asset.location}</Td>
                   <Td>{extractProcurementYear(asset.dateOfPurchase)}</Td>

@@ -12,6 +12,8 @@ export interface CustodianAsset {
 export interface UnassignedAsset {
   id: number;
   name: string;
+  make?: string;
+  model?: string;
   type: string;
   dateOfPurchase?: Date | null;
   custodianEmail?: string;
