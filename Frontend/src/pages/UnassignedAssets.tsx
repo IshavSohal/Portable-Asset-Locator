@@ -62,6 +62,9 @@ function UnassignedAssetsPage() {
         There are assets that are not currently assigned and can be requested. Select an asset to see more details and make a request.
       </GcdsText>
       <GcdsHeading tag="h5">Filters</GcdsHeading>
+      {loading ? (
+                <GcdsText>Loading filters...</GcdsText>
+            ) : (
       <Flex style={{gap: '30px'}}>
       <GcdsSelect
           selectId="asset-type-select"
@@ -70,9 +73,9 @@ function UnassignedAssetsPage() {
           value={selectedType}
           onGcdsChange={e => setSelectedType(e.detail)}
         >
-          <option value="" disabled>Select a Type</option>
+          <option value="" >Select a Type</option>
           {assetTypes.map((assettype) => (
-            <option key={assettype.id} value={assettype.id}>
+            <option key={assettype.id}>
               {assettype.type}
             </option>
           ))}
@@ -85,9 +88,9 @@ function UnassignedAssetsPage() {
           value={selectedCustodian}
           onGcdsChange={e => setSelectedCustodian(e.detail)}
         >
-          <option value="" disabled>Select a Custodian</option>
+          <option value="">Select a Custodian</option>
           {custodianEmails.map((custodian) => (
-            <option key={custodian.UID} value={custodian.UID}>
+            <option key={custodian.UID}>
               {custodian.email}
             </option>
           ))}
@@ -100,7 +103,7 @@ function UnassignedAssetsPage() {
           value={selectedLocation}
           onGcdsChange={e => setSelectedLocation(e.detail)}
         >
-          <option value="" disabled>Select a Location</option>
+          <option value="">Select a Location</option>
           {locationTypes.map(assetLocation => (
             <option key={assetLocation.id.toString()}>
               {assetLocation.location}
@@ -108,6 +111,7 @@ function UnassignedAssetsPage() {
           ))}
         </GcdsSelect>
       </Flex>
+      )}
       <GcdsText size="caption">Showing {filteredAssets.length} entries.</GcdsText>
       <TableContainer>
         <Table variant="striped" colorScheme="blackAlpha" size="lg" marginBottom="100">
