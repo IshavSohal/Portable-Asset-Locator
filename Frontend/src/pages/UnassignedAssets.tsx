@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Flex} from '@chakra-ui/react';
 import { GcdsHeading, GcdsSelect, GcdsText, GcdsLink } from '@cdssnc/gcds-components-react';
 import MainTemplate from '../templates/MainTemplate';
-import { UnassignedAsset, Assettype, Locations, CustodianEmails} from '../types';
+import { UnassignedAsset, AssetType, Locations, CustodianEmails} from '../types';
 import { fetchGet } from '../requests/requests';
 
 function UnassignedAssetsPage() {
-    const [assetTypes, setAssetTypes] = useState<Assettype[]>([]);
+    const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
     const [locationTypes, setLocationTypes] = useState<Locations[]>([]);
     const [custodianEmails, setCustodians] = useState<CustodianEmails[]>([]);
     const [assets, setAssets] = useState<UnassignedAsset[]>([]);
@@ -20,7 +20,7 @@ function UnassignedAssetsPage() {
   useEffect(() => {
     const dataFetch = async () => {
       try {
-        const assetTypesList = (await fetchAssetTypes()) as Assettype[];
+        const assetTypesList = (await fetchAssetTypes()) as AssetType[];
         setAssetTypes(assetTypesList);
         const locationsList = (await fetchLocations()) as Locations[];
         setLocationTypes(locationsList);
@@ -65,13 +65,14 @@ function UnassignedAssetsPage() {
       {loading ? (
                 <GcdsText>Loading filters...</GcdsText>
             ) : (
-      <Flex style={{gap: '30px'}}>
+      <Flex>
       <GcdsSelect
           selectId="asset-type-select"
           label="Asset Type"
           name="assettype"
           value={selectedType}
           onGcdsChange={e => setSelectedType(e.detail)}
+          style={{ width: '230px' }}
         >
           <option value="" >Select a Type</option>
           {assetTypes.map((assettype) => (
@@ -102,6 +103,7 @@ function UnassignedAssetsPage() {
           defaultValue=""
           value={selectedLocation}
           onGcdsChange={e => setSelectedLocation(e.detail)}
+          style={{ width: '280px' }}
         >
           <option value="">Select a Location</option>
           {locationTypes.map(assetLocation => (
@@ -173,7 +175,7 @@ async function fetchAssetTypes () {
   const response = await fetchGet('/api/asset/unassigned/types');
   if (response.ok) {
     const assettypes = await response.json();
-    return assettypes.map((t: Assettype) => {
+    return assettypes.map((t: AssetType) => {
       return { ...t };
     });
   } else {

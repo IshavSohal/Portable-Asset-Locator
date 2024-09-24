@@ -7,8 +7,8 @@ type pageURL = {
 const pageURLs: pageURL = {
   register: '/register',
   signin: '/signin',
-  'manage-assets': '/',
-  'my-assets': '/',
+  'manage-assets': '/manage-assets',
+  'my-assets': '/dashboard',
   'unassigned-assets': '/unassigned-assets',
 };
 

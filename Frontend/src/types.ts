@@ -20,7 +20,7 @@ export interface UnassignedAsset {
   location: string;
 }
 
-export interface Assettype{
+export interface AssetType{
   id: number;
   type: string;
 }
