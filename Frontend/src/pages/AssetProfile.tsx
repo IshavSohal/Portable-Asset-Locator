@@ -25,6 +25,7 @@ import { useParams } from 'react-router-dom';
 import { fetchGet } from '../requests/requests';
 import { useEffect, useState } from 'react';
 import { dateFormatter } from '../utils';
+import NotFound from './NotFound';
 import AssignUserForm from '../components/AssignUserForm';
 import { asset } from '../types/data';
 
@@ -45,18 +46,24 @@ function AssetProfile() {
   const [isLoading, setIsLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     console.log('Fetching Asset Info');
     const getAsset = async () => {
-      const response = await fetchGet(`/api/asset/${assetid}`);
-      if (response.ok) {
+      try {
+        const response = await fetchGet(`/api/asset/${assetid}`);
+        if (response.ok) {
+          return await response.json();
+        } else {
+          // propagate Error so that it may be handled on frontend
+          const { status } = response;
+          throw new Error('loadUser Error:' + status + (await response.text()));
+        }
+      } catch (err) {
+        setError(true);
+      } finally {
         setIsLoading(false);
-        return await response.json();
-      } else {
-        // propagate Error so that it may be handled on frontend
-        const { status } = response;
-        throw new Error('loadUser Error:' + status + (await response.text()));
       }
     };
 
@@ -78,6 +85,8 @@ function AssetProfile() {
         <GcdsText style={{ paddingBottom: 10 }}> Loading... </GcdsText>
       </MainTemplate>
     );
+  } else if (error) {
+    return <NotFound />;
   }
   return (
     <MainTemplate currentPage="my-assets">

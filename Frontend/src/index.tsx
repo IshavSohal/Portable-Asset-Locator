@@ -6,11 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import '@cdssnc/gcds-components-react/gcds.css';
 import AuthProvider from './hooks/AuthProvider';
 
-import {
-  ChakraProvider,
-  theme as chakraTheme,
-  extendTheme,
-} from '@chakra-ui/react';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 
 const theme = extendTheme({
   fonts: {
