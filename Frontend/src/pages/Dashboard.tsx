@@ -115,25 +115,9 @@ type asset = {
   assetTag: string;
   type: string;
   assignedOn: Date;
-  id: number;
-  name: string;
-  assetTag: string;
-  type: string;
-  assignedOn: Date;
 };
 
 async function fetchUserAssets() {
-  const response = await fetchGet('/api/asset/user');
-  if (response.ok) {
-    const assets = await response.json();
-    return assets.map((a: asset) => {
-      return { ...a, assignedOn: new Date(a.assignedOn) };
-    });
-  } else {
-    throw new Error(
-      'fetchUserAssets Error:' + response.status + (await response.text())
-    );
-  }
   const response = await fetchGet('/api/asset/user');
   if (response.ok) {
     const assets = await response.json();
