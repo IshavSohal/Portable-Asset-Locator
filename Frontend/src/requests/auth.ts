@@ -1,4 +1,4 @@
-import { user } from '../types/user'
+import { user } from '../types/data'
 import { fetchPost, fetchGet } from './requests';
 
 

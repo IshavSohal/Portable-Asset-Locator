@@ -1,6 +1,7 @@
 import MainTemplate from '../templates/MainTemplate';
 import {
   GcdsContainer,
+  GcdsDateModified,
   GcdsHeading,
   GcdsLink,
   GcdsText,
@@ -84,7 +85,7 @@ function Dashboard() {
                   return (
                     <Tr key={asset.id}>
                       <Td>
-                        <GcdsLink href={`/assets/${asset.id}`}>
+                        <GcdsLink href={`/asset/${asset.id}`}>
                           {asset.name}
                         </GcdsLink>
                       </Td>
@@ -98,6 +99,9 @@ function Dashboard() {
             )}
           </Table>
         </TableContainer>
+      </GcdsContainer>
+      <GcdsContainer size="xl" centered style={{ paddingBottom: 10 }}>
+        <GcdsDateModified> 2024-09-10 </GcdsDateModified>
       </GcdsContainer>
     </MainTemplate>
   );

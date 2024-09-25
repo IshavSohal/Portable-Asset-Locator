@@ -77,6 +77,6 @@ export class UserService {
      * @returns {Promise<User[]>} An array of all users
      */
     public async getAllUsers(): Promise<User[]> {
-        return prisma.user.findMany();
+        return prisma.user.findMany({ select: { UID: true, firstName: true, lastName: true, email: true, roleName: true }});
     }
 }

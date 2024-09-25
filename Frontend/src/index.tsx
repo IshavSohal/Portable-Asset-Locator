@@ -6,19 +6,9 @@ import reportWebVitals from './reportWebVitals';
 import '@cdssnc/gcds-components-react/gcds.css';
 import AuthProvider from './hooks/AuthProvider';
 
-import {
-  ChakraBaseProvider,
-  extendBaseTheme,
-  theme as chakraTheme,
-} from '@chakra-ui/react';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 
-const { Table, Link } = chakraTheme.components;
-
-const theme = extendBaseTheme({
-  components: {
-    Table,
-    Link,
-  },
+const theme = extendTheme({
   fonts: {
     body: "'Noto Sans', sans-serif",
     heading: "'Lato', serif",
@@ -31,11 +21,11 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <ChakraBaseProvider theme={theme}>
+    <ChakraProvider theme={theme}>
       <AuthProvider>
         <App />
       </AuthProvider>
-    </ChakraBaseProvider>
+    </ChakraProvider>
   </React.StrictMode>
 );
 
