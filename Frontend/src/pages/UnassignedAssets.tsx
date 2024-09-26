@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Flex} from '@chakra-ui/react';
-import { GcdsHeading, GcdsSelect, GcdsText, GcdsLink, GcdsPagination} from '@cdssnc/gcds-components-react';
+import { GcdsHeading, GcdsSelect, GcdsText, GcdsLink} from '@cdssnc/gcds-components-react';
 import MainTemplate from '../templates/MainTemplate';
 import { UnassignedAsset, AssetType, Locations, CustodianEmails} from '../types';
 import { fetchGet } from '../requests/requests';
@@ -16,13 +16,8 @@ function UnassignedAssetsPage() {
     const [selectedType, setSelectedType] = useState<string | undefined>();
     const [selectedCustodian, setSelectedCustodian] = useState<string | undefined>(); 
     const [selectedLocation, setSelectedLocation] = useState<string | undefined>();
-
-    // Pagination state
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 20;
-
-   // URL for pagination links
-   const url = (page: number) => `/${page}`;
         
   useEffect(() => {
     const dataFetch = async () => {
@@ -36,7 +31,6 @@ function UnassignedAssetsPage() {
         const assetsList = (await fetchUnassignedAssets()) as UnassignedAsset[];
         setAssets(assetsList);
         setFilteredAssets(assetsList);
-        setCurrentPage(1);
       } catch (err) {
         setError((err as Error).message);
       } finally {
@@ -47,22 +41,14 @@ function UnassignedAssetsPage() {
   }, []);
 
   useEffect(() => {
-    const filtered = assets.filter(asset => {
+      const filtered = assets.filter(asset => {
       const matchesType = selectedType ? asset.type === selectedType : true;
       const matchesCustodian = selectedCustodian ? asset.custodianEmail === selectedCustodian : true;
       const matchesLocation = selectedLocation ? asset.location === selectedLocation : true;
       return matchesType && matchesCustodian && matchesLocation;
     });
     setFilteredAssets(filtered);
-    setCurrentPage(1);
   }, [selectedType, selectedCustodian, selectedLocation, assets]);
-
- 
-  // Pagination Logic
-  const indexOfLastAsset = currentPage * itemsPerPage;
-  const indexOfFirstAsset = indexOfLastAsset - itemsPerPage;
-  const currentAssets = filteredAssets.slice(indexOfFirstAsset, indexOfLastAsset);
-  const totalPages = Math.ceil(filteredAssets.length / itemsPerPage);
 
   const extractProcurementYear = (dateOfPurchase?: Date | null): number | 'N/A' => {
       if (!dateOfPurchase) return 'N/A';
@@ -70,10 +56,13 @@ function UnassignedAssetsPage() {
       return year;
   };
 
-  const handlePaginationClick = (event: CustomEvent) => {
-    const newPage = event.detail.page;
-    setCurrentPage(newPage);
-  }; 
+  const handleItemsPerPageChange = (value: string) => {
+    setItemsPerPage(Number(value));
+    setCurrentPage(1);
+  };
+
+  // Calculate the current page items to display
+  const paginatedAssets = filteredAssets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <MainTemplate currentPage="unassigned-assets">
@@ -124,7 +113,7 @@ function UnassignedAssetsPage() {
           defaultValue=""
           value={selectedLocation}
           onGcdsChange={e => setSelectedLocation(e.detail)}
-          style={{ width: '280px' }}
+          style={{ width: '270px' }}
         >
           <option value="">Select a Location</option>
           {locationTypes.map(assetLocation => (
@@ -133,9 +122,22 @@ function UnassignedAssetsPage() {
             </option>
           ))}
         </GcdsSelect>
+        <GcdsSelect
+          name="# of entries"
+          selectId="items-per-page-select"
+          label="Max # of entries displayed"
+          value={itemsPerPage.toString()}
+          onGcdsChange={e => handleItemsPerPageChange(e.detail)}
+          style={{ width: '290px' }}
+        >
+           <option value="5">5</option>
+           <option value="10">10</option>
+           <option value="20">20</option>
+           <option value="50">50</option> 
+        </GcdsSelect>
       </Flex>
       )}
-      <GcdsText size="caption">Showing {currentAssets.length} of {filteredAssets.length} entries.</GcdsText>
+      <GcdsText size="caption">Showing {paginatedAssets.length} of {filteredAssets.length} entries.</GcdsText>
       <TableContainer>
         <Table variant="striped" colorScheme="blackAlpha" size="lg" marginBottom="100">
           <Thead>
@@ -167,7 +169,7 @@ function UnassignedAssetsPage() {
             </Tbody>
           ) : (
             <Tbody>
-              {currentAssets.map((asset) => (
+              {paginatedAssets.map((asset) => (
                 <Tr key={asset.id}>
                   <Td>
                     <GcdsLink href={`/assets/${asset.id}`}>
@@ -186,14 +188,6 @@ function UnassignedAssetsPage() {
           )}
         </Table>
       </TableContainer>
-      <GcdsPagination
-                display='list'
-                label="Pagination"
-                totalPages={totalPages}
-                currentPage={currentPage}
-                url={url}
-                onGcdsClick={handlePaginationClick}
-            />
     </MainTemplate>
   );
 }
