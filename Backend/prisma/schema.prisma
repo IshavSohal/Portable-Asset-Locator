@@ -78,7 +78,8 @@ model Assignment {
   assetID                   Asset         @relation(fields: [asset], references: [id])
   asset                     Int       
   startOfAssignment         DateTime      
-  endOfAssignment           DateTime?     
+  endOfAssignment           DateTime?  
+  defaultStartDate          DateTime?    
 }
 
 model Request {
