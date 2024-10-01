@@ -92,6 +92,7 @@ model Request {
   asset                     Int       
   requestStatus             RequestStatus  @relation(fields: [requestStatusName], references: [name])
   requestStatusName         String
-  startDate                 DateTime   
+  startDate                 DateTime  
+  dateOfRequest             DateTime      @default(now())
   notes                     String?       @db.Text     
 }
