@@ -3,8 +3,8 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
-        "@cdssnc/gcds-components": "^0.22.1",
-        "@cdssnc/gcds-components-react": "^0.22.1",
+        "@cdssnc/gcds-components": "^0.26.2",
+        "@cdssnc/gcds-components-react": "^0.26.2",
         "@chakra-ui/icons": "^2.1.1",
         "@chakra-ui/react": "^2.8.2",
         "@emotion/react": "^11.13.0",

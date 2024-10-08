@@ -79,7 +79,7 @@ export class AssignmentService {
     }
 
     /**
-     * Gets all assignments
+     * Gets an active assignment for a given asset
      * 
      * @returns {Promise<Assignment[]>} An array of all assignments
      */

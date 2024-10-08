@@ -36,9 +36,19 @@ type asset = {
 
 type custodian = {
     id: number;
-    firstName?: string,
-    lastName?: string,
-    email?: string,
+    firstName?: string;
+    lastName?: string;
+    email?: string;
 }
 
-export type { user, asset, custodian, userAlt }
+type request = {
+    id: number;
+    requestor: number;
+    assignee: number;
+    asset: number;
+    requestStatusName: string;
+    startDate: Date;          
+    notes?: string;
+}
+
+export type { user, asset, custodian, request, userAlt }

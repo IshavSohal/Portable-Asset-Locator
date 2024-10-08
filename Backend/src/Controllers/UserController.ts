@@ -10,4 +10,20 @@ export class UserController {
         let users = await userService.getAllUsers()
         return res.status(200).json(users);
     }
+
+    public async getUserById(userID: number, res: Response) {
+        ConsoleLogger.logInfo(`Getting user with id: ${userID}`)
+        let user = await userService.getUserById(userID)
+
+        if (user === null){
+            ConsoleLogger.logWarning("User not found");
+            return res.sendStatus(404);
+        } else{
+            delete user.password;
+            delete user.iv;
+            return res.status(200).json(user);
+        }
+       
+    }
 }
+

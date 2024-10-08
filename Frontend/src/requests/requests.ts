@@ -19,17 +19,53 @@ const fetchPost = async(endpoint: string, data: any): Promise<Response> => {
   
   }
 
-  const fetchGet = async (endpoint: string): Promise<Response> => {
-    const server = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8080';
-    const res = await fetch(server + endpoint, {
-        credentials: 'include'
-    });
-    
-    if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error('FetchGet Error - Error fetching data: ' + errorText);
-    }
-    return res;
+const fetchGet = async (endpoint: string): Promise<Response> => {
+  const server = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8080';
+  const res = await fetch(server + endpoint, {
+      credentials: 'include'
+  });
+  
+  if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error('FetchGet Error - Error fetching data: ' + errorText);
+  }
+  return res;
 }
 
-export { fetchGet, fetchPost }
+const fetchDelete = async(endpoint: string): Promise<Response> => {
+  const server = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8080';
+  const response = await fetch(server + endpoint, {
+    method: "DELETE",
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error('fetchDelete Error - Error creating data: ' + errorText);
+  }
+
+  return response;
+}
+
+const fetchPatch = async(endpoint: string, data: any): Promise<Response> => {
+  const server = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8080';
+
+  const response = await fetch(server + endpoint, {
+    method: "PATCH",
+    credentials: 'include', 
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error('fetchDelete Error - Error creating data: ' + errorText);
+  }
+
+  return response;
+}
+
+
+export { fetchGet, fetchPost, fetchDelete, fetchPatch }

@@ -14,8 +14,8 @@ const requestService = new RequestService();
 export class RequestController {
 
     public async createRequest(data:Omit<AssetRequest, 'id'>, res:Response){
-        let request = await requestService.getRequestByAsset(data.asset);
-        if(request !== null && request.requestStatusName === 'Pending'){
+        let request = await requestService.getRequestsByAsset(data.asset);
+        if(request !== null && request !== [] && request.requestStatusName === 'Pending'){
             ConsoleLogger.logWarning("Asset already has a pending request");
             return res.sendStatus(409);
         }
@@ -64,11 +64,68 @@ export class RequestController {
         }
     }
 
+    public async getRequestsByAssetId(assetId: number, res: Response){
+        let result = await requestService.getRequestsByAsset(assetId);
+
+        if (result === null) {
+            ConsoleLogger.logWarning("Error in attempt to retreive requests");
+            return res.sendStatus(409);
+        } else {
+            return res.status(200).json(result);
+        }
+    }
+
+    public async deleteRequest(requestId: number, req: Request, res: Response) {
+        // check if request exists 
+        let result = await requestService.getRequestById(requestId);
+        if (result === null) {
+            ConsoleLogger.logWarning("Request could not be found");
+            return res.sendStatus(409);
+        }
+
+        result = await requestService.deleteRequestById(requestId);
+        let currUser = req.session.user;
+
+        if (result === null) {
+            ConsoleLogger.logWarning("Request could not be deleted");
+            return res.sendStatus(409);
+        } else if (result.requestor !== currUser.id && currUser.role !== "Custodian") {
+            ConsoleLogger.logWarning("User is neither the requestor nor a custodian");
+            return res.sendStatus(403);
+        } else {
+            return res.status(200).json(result);
+        }
+    }
+
+    public async updateRequest(requestId: number, data: Partial<AssetRequest>, req: Request, res: Response){
+        let request = await requestService.getRequestById(requestId);
+        if (request === null) {
+            ConsoleLogger.logWarning("Request could not be found");
+            return res.sendStatus(409);
+        }
+
+        // common fields are overriden by respective values in data
+        let partialRequest = {...data}
+        let result = await requestService.updateRequest(requestId, partialRequest);
+        let currUser = req.session.user;
+        
+        if (result === null) {
+            ConsoleLogger.logWarning("Request could not be updated");
+            return res.sendStatus(409);
+        } else if (result.requestor !== currUser.id && currUser.role !== "Custodian") {
+            ConsoleLogger.logWarning("User is neither the requestor nor a custodian");
+            return res.sendStatus(403);
+        } else {
+            return res.status(200).json(result);
+        }
+    }
+
+
     public async getAllPendingRequests(res: Response){
         let pendingRequests = await requestService.getAllPendingRequests();
 
         if (pendingRequests === null) {
-            ConsoleLogger.logWarning("No pending requests found");
+            ConsoleLogger.logWarning("Error in attempt to retreive requests");
             return res.sendStatus(409);
         } else {
             for (let i=0; i < pendingRequests.length; i++){

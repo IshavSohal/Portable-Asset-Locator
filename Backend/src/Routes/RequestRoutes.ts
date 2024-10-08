@@ -62,6 +62,88 @@ requestRoutes.get(
 );
 
 /**
+ * Get all requests for a given asset
+ */
+requestRoutes.get(
+    "/assetRequests/:id",
+    authMiddleware.isAuthenticated,
+    handleValidationErrors,
+    async (req: Request, res: Response) => {
+        ConsoleLogger.logInfo('Obtaining requests for provided asset id');
+        const errors = validationResult(req);
+
+        // If JSON validation fails, send a 400, Conflict
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        let id = parseInt(req.params.id, 10);
+        return await requestController.getRequestsByAssetId(id, res);
+    }
+);
+
+/**
+ * Delete a request by its id
+ */
+requestRoutes.delete(
+    "/:id",
+    authMiddleware.isAuthenticated,
+    handleValidationErrors,
+    async (req: Request, res: Response) => {
+        ConsoleLogger.logInfo('Deleting request with the provided id');
+        const errors = validationResult(req);
+
+        // If JSON validation fails, send a 400, Conflict
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        let id = parseInt(req.params.id, 10);
+        return await requestController.deleteRequest(id, req, res); 
+    }
+)
+
+
+/**
+ * Update a request by id, using a partial request object
+ */
+requestRoutes.route("/:id")
+    .patch(
+        [
+            body("assignee").optional().isInt().withMessage('Assignee must be a valid user ID'),
+            body("asset").optional().isInt().withMessage('Asset must be a valid asset ID'),
+            body("startDate").optional().isISO8601().withMessage("Start date must be a valid ISO 8601 date-time"),
+            body("notes").optional(),
+            body("requestStatusName").optional()
+        ],
+        authMiddleware.isAuthenticated,
+        handleValidationErrors,
+        async (req: Request, res: Response) => {
+            ConsoleLogger.logInfo("Updating a request");
+            const errors = validationResult(req);
+            // If JSON validation fails, send a 400, Conflict
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() });
+            }
+            let data = {...req.body}
+            if (data.assignee){
+                data.assignee = data.assignee as number;
+            }
+            if (data.asset){
+                data.assignee = data.asset as number;
+            }
+            if (data.startDate){
+                data.assignee = data.startDate as Date;
+            }
+            console.log('testing update data');
+            console.log(data);
+
+            let id = parseInt(req.params.id, 10);
+            return await requestController.updateRequest(id, data, req, res);
+        }
+    )
+
+/**
  *  Create a request
  */
 requestRoutes.route("")

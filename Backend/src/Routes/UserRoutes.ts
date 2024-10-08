@@ -13,5 +13,15 @@ userRoutes.get(
     }
 );
 
+userRoutes.get(
+    "/:id", 
+    authMiddleware.isAuthenticated,
+    async (req: Request, res: Response) => {
+        let userID = parseInt(req.params.id, 10)
+        return await userController.getUserById(userID, res);
+    }
+);
+
+
 module.exports = userRoutes;
 
