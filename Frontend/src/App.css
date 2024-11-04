@@ -17,39 +17,38 @@
   }
 }
 
-@media only screen and (max-width: 1265px){
-  .main-content{
+@media only screen and (max-width: 1265px) {
+  .main-content {
     padding: 0 4%;
   }
-  .footer-content{
-    padding-left: 1%
+  .footer-content {
+    padding-left: 1%;
   }
 }
 
-@media only screen and (max-width: 1250px){
-  .footer-content{
+@media only screen and (max-width: 1250px) {
+  .footer-content {
     padding-left: 2%;
   }
-} 
+}
 
-@media only screen and (max-width: 1235px){
-  .footer-content{
+@media only screen and (max-width: 1235px) {
+  .footer-content {
     padding-left: 3%;
   }
-} 
+}
 
-@media only screen and (max-width: 1220px){
-  .footer-content{
+@media only screen and (max-width: 1220px) {
+  .footer-content {
     padding-left: 4%;
   }
-} 
+}
 
-@media only screen and (max-width: 1205px){
-  .footer-content{
+@media only screen and (max-width: 1205px) {
+  .footer-content {
     padding-left: 5%;
   }
-} 
-
+}
 
 .App-header {
   background-color: #282c34;

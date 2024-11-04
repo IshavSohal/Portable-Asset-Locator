@@ -27,9 +27,8 @@ import { useEffect, useState } from 'react';
 import { dateFormatter } from '../utils';
 import NotFound from './NotFound';
 import AssignUserForm from '../components/AssignUserForm';
-import { asset } from '../types/data';
-
-const SUCCESS_MSG = 'User has been successfully assigned';
+import UnassignUserForm from '../components/UnassignUserForm';
+import { asset, assignment } from '../types/data';
 
 function AssetProfile() {
   const { assetid } = useParams();
@@ -44,9 +43,16 @@ function AssetProfile() {
   });
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [assignModalOpen, setAssignModalOpen] = useState(false);
+  const [unassignModalOpen, setUnassignModalOpen] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState(false);
+  const [currentAssignment, setCurrentAssignment] = useState<assignment | null>(
+    null
+  );
+  const [currentAssignedUser, setCurrentAssignedUser] =
+    useState<typeof user>(null);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     console.log('Fetching Asset Info');
@@ -67,16 +73,81 @@ function AssetProfile() {
       }
     };
 
-    getAsset().then((res) => {
-      console.log(res);
-      setAsset(res);
-    });
+    const getAssignment = async () => {
+      const response = await fetchGet(`/api/assignment/asset/${assetid}`);
+      if (response.ok) {
+        // setIsLoading(false);
+        return await response.json();
+      } else {
+        // propagate Error so that it may be handled on frontend
+        setIsLoading(false);
+        const { status } = response;
+        throw new Error(
+          'loadUser getAssignment Error:' + status + (await response.text())
+        );
+      }
+    };
+
+    const getCurrentUser = async (assignment: assignment | null) => {
+      if (!assignment) {
+        console.log('Get user failed!');
+        setIsLoading(false);
+        return null;
+      }
+
+      const response = await fetchGet(`/api/users/${assignment.assignee}`);
+
+      if (response.ok) {
+        setIsLoading(false);
+        return await response.json();
+      } else {
+        // propagate Error so that it may be handled on frontend
+        const { status } = response;
+        throw new Error(
+          'loadUser getAssignment Error:' + status + (await response.text())
+        );
+      }
+    };
+
+    getAsset()
+      .then((res) => {
+        console.log(res);
+        setAsset(res);
+        return getAssignment();
+      })
+      .then((res) => {
+        console.log('Asset profile: current assignment', res);
+        setCurrentAssignment(res);
+        return getCurrentUser(res);
+      })
+      .then((res) => {
+        console.log('Asset profile: Current user', res);
+        setCurrentAssignedUser(res);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+      });
   }, []);
 
-  const handleSuccessfulAssignment = () => {
-    setModalOpen(false);
+  const handleSuccessfulAssignment = (
+    newUser: typeof user,
+    assignment: assignment
+  ) => {
+    setAssignModalOpen(false);
+    setSuccessMessage('User has been successfully assigned');
+    setCurrentAssignedUser(newUser);
+    setCurrentAssignment(assignment);
     setShowSuccess(true); // TODO: update message/sucess component
     // TODO: update the assignee so that it can be displayed on page (removed the "Assign user" button)
+  };
+
+  const handleSuccessfulUnassignment = () => {
+    setUnassignModalOpen(false);
+    setSuccessMessage('User has been successfully unassigned');
+    setShowSuccess(true);
+    setCurrentAssignedUser(null);
+    setCurrentAssignment(null);
   };
 
   if (isLoading) {
@@ -90,23 +161,70 @@ function AssetProfile() {
   }
   return (
     <MainTemplate currentPage="my-assets">
-      <GcdsHeading tag="h1" style={{ marginBottom: 48 }}>
-        {asset.name + ` (${asset.assetTag})`}
-      </GcdsHeading>
+      <GcdsContainer style={{ marginBottom: 48 }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
+          <GcdsHeading tag="h1" marginBottom="0">
+            {asset.name + ` (${asset.assetTag})`}
+          </GcdsHeading>
+          {!currentAssignment && user && user?.id === asset.custodian.id && (
+            <GcdsContainer size="lg" margin="100">
+              <GcdsButton onClick={() => setAssignModalOpen(true)}>
+                Assign User
+              </GcdsButton>
+            </GcdsContainer>
+          )}
+        </div>
+      </GcdsContainer>
+
       {showSuccess && (
         <Alert status="success" marginBottom={4}>
           <AlertIcon />
-          {SUCCESS_MSG}
+          {successMessage}
         </Alert>
       )}
-      {user && user?.id === asset.custodian.id && (
-        <GcdsContainer size="lg" margin="100">
-          <GcdsButton onClick={() => setModalOpen(true)}>
-            Assign User
-          </GcdsButton>
+      {currentAssignment && (
+        <GcdsContainer
+          style={{
+            marginBottom: 50,
+            marginTop: 50,
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
+            <GcdsText size="body" marginBottom="0">
+              <strong>
+                Assigned to {currentAssignedUser?.firstName}{' '}
+                {currentAssignedUser?.lastName}
+              </strong>{' '}
+              ({currentAssignedUser?.email})
+            </GcdsText>
+            {user && user?.id === asset.custodian.id && (
+              <GcdsButton
+                onClick={() => setUnassignModalOpen(true)}
+                style={{}}
+                buttonRole="danger"
+              >
+                Unassign asset
+              </GcdsButton>
+            )}
+          </div>
         </GcdsContainer>
       )}
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+
+      <Modal isOpen={assignModalOpen} onClose={() => setAssignModalOpen(false)}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Assign user to {asset.name}</ModalHeader>
@@ -116,8 +234,29 @@ function AssetProfile() {
               name={asset.name}
               tag={asset.assetTag}
               id={asset.id}
-              onComplete={() => handleSuccessfulAssignment()}
-              onCancel={() => setModalOpen(false)}
+              onComplete={(user, assignment) =>
+                handleSuccessfulAssignment(user, assignment)
+              }
+              onCancel={() => setAssignModalOpen(false)}
+            />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+      <Modal
+        isOpen={unassignModalOpen}
+        onClose={() => setUnassignModalOpen(false)}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Unassign asset?</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <UnassignUserForm
+              user={currentAssignedUser}
+              asset={asset}
+              assignment={currentAssignment}
+              onComplete={() => handleSuccessfulUnassignment()}
+              onCancel={() => setUnassignModalOpen(false)}
             />
           </ModalBody>
         </ModalContent>
