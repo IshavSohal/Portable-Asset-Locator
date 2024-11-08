@@ -79,11 +79,19 @@ export class AssignmentService {
     }
 
     /**
-     * Gets all assignments
+     * Gets all active assignments for the given asset
      * 
      * @returns {Promise<Assignment[]>} An array of all assignments
      */
     public async getActiveAssignmentFor(assetID: number): Promise<Assignment|null> {
-        return prisma.assignment.findFirst({ where: { asset: assetID, endOfAssignment: null }});
+        return prisma.assignment.findFirst({ 
+            where: {
+                OR: [
+                    { asset: assetID, endOfAssignment: null }, 
+                    { asset: assetID, endOfAssignment: { gt: new Date() } } 
+                ]
+            }
+        });
+
     }
 }
