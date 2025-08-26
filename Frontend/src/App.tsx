@@ -13,6 +13,7 @@ import UnauthRoutes from './routes/UnauthRoutes';
 import AssetProfile from './pages/AssetProfile';
 import CustodianRoutes from './routes/CustodianRoutes';
 import NotFound from './pages/NotFound';
+import UnassignedAssetsPage from './pages/UnassignedAssets';
 
 function App() {
   const { loadUser, user } = useAuth();
@@ -43,6 +44,7 @@ function App() {
           <Route element={<PrivateRoutes />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/asset/:assetid" element={<AssetProfile />} />
+            <Route path="/unassigned-assets" element={<UnassignedAssetsPage />} />
             <Route element={<CustodianRoutes />}>
               <Route path="/manage-assets" element={<ManageAssets />} />
             </Route>

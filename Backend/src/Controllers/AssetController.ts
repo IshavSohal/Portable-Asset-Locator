@@ -64,6 +64,33 @@ export class AssetController {
         return res.status(200).json(userAssets);
     }
 
+     /**
+     * Get all asset types
+     */
+     public async getAssetTypes (res: Response) {
+        let types = await assetService.getAssetTypes();
+        
+        return res.status(200).json(types);
+    }
+
+    /**
+     * Get all asset locations
+     */
+    public async getAssetLocations (res: Response) {
+        let types = await assetService.getAssetLocations();
+        
+        return res.status(200).json(types);
+    }
+
+      /**
+     * Get all custodian emails
+     */
+      public async getCustodianEmails (res: Response) {
+        let types = await assetService.getCustodianEmails();
+        
+        return res.status(200).json(types);
+    }
+
     /**
      * Get all unassigned assets
      */
@@ -91,4 +118,7 @@ export class AssetController {
             return res.status(201).json(result);
         }
     }
+
+    
+        
 }

@@ -1,8 +1,12 @@
-import { PrismaClient, Asset } from '@prisma/client';
+import { PrismaClient, Asset, AssetType, Location, User} from '@prisma/client';
 import { ConsoleLogger } from "../Logging/ConsoleLogger";
 
 type AssignedAsset = Asset & {
     assignedOn: Date
+}
+export interface CustodianEmails{
+    UID: number;
+    email: string;
 }
 
 const prisma = new PrismaClient();
@@ -80,12 +84,65 @@ export class AssetService {
     }
 
     /**
+     * Get all asset types
+     * 
+     * @return {Promise<AssetType[]>} An array of asset types
+     */
+    public async getAssetTypes(): Promise<AssetType[] | null> {
+        try {
+          let assetTypes = await prisma.assetType.findMany();
+          return assetTypes;
+        } catch (error) {
+          ConsoleLogger.logInfo("Error fetching asset types");
+          return null;
+        }
+      }
+    
+      /**
+     * Get all asset locations
+     * 
+     * @return {Promise<Location[]>} An array of asset locations
+     */
+    public async getAssetLocations(): Promise<Location[] | null> {
+        try {
+          let assetLocations = await prisma.location.findMany();
+          return assetLocations;
+        } catch (error) {
+          ConsoleLogger.logInfo("Error fetching asset types");
+          return null;
+        }
+      }
+    
+    /**
+ * Get all custodian emails
+ * 
+ * @return {Promise<User[]>} An array of custodian users
+ */
+public async getCustodianEmails(): Promise<CustodianEmails[] | null> {
+    try {
+        const custodians = await prisma.user.findMany({
+            where: {
+                roleName: 'Custodian'
+            },
+                select: {
+                    UID: true,
+                    email: true
+                }
+        });
+        return custodians;
+    } catch (error) {
+        ConsoleLogger.logInfo("Error fetching custodian emails");
+        return null;
+    }
+}
+      
+    /**
      * Get all unassigned assets
      * 
-     * @return {Promise<Asset[]>} An array of unassigned assets
+     * @return {Promise<(Asset & { custodianEmail: string | null })[]>} An array of unassigned assets
      */
     public async getUnassignedAssets(): Promise<Asset[] | null> {
-        // Fetch all assignments
+        // Fetch all assignments         
         let assignments = await prisma.assignment.findMany();
 
         // Filter out assignments that have already ended
@@ -95,9 +152,21 @@ export class AssetService {
         );
 
         // Fetch all assets
-        let assets = await prisma.asset.findMany();
+        let assets = await prisma.asset.findMany({
+            include: {
+                custodianID: {
+                    select: {
+                        email: true
+                    }
+                }
+            }
+        });
 
-        // Filter out assets that are not in the assignments - these are unassigned
-        return assets.filter(asset => !assignments.some(assignment => assignment.asset === asset.id));
+        const unassignedAssets = assets.filter(asset => !assignments.some(assignment => assignment.asset === asset.id));
+        return unassignedAssets.map(asset => ({
+            ...asset,
+            custodianEmail: asset.custodianID?.email || 'N/A'
+        }));
     }
+    
 }
