@@ -14,83 +14,88 @@ model Role {
 }
 
 model RequestStatus {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
   requests Request[]
 }
 
 model User {
-  UID                 Int           @id @default(autoincrement())
-  email               String        @unique
-  firstName           String
-  lastName            String
-  roleName            String
-  password            String
-  role                Role          @relation(fields: [roleName], references: [name])
-  iv                  Bytes         @default("")
-  asset               Asset[]
-  assignment          Assignment[]
-  request             Request[]     @relation(name: "Requestor")
-  assignee            Request[]     @relation(name: "Assignee")
+  UID        Int          @id @default(autoincrement())
+  email      String       @unique
+  firstName  String
+  lastName   String
+  roleName   String
+  password   String
+  iv         Bytes
+  asset      Asset[]
+  assignment Assignment[]
+  assignee   Request[]    @relation("Assignee")
+  request    Request[]    @relation("Requestor")
+  role       Role         @relation(fields: [roleName], references: [name])
 }
 
 model AssetType {
-  id            Int         @id @default(autoincrement()) 
-  type          String      @unique @db.VarChar(255) 
-  asset         Asset[]
+  id    Int     @id @default(autoincrement())
+  type  String  @unique @db.VarChar(255)
+  asset Asset[]
 }
 
 model Location {
-  id            Int         @id @default(autoincrement()) 
-  location      String      @unique @db.VarChar(255)
-  asset         Asset[]
+  id       Int     @id @default(autoincrement())
+  location String  @unique @db.VarChar(255)
+  asset    Asset[]
 }
 
-model Asset { 
-  id                        Int           @id @default(autoincrement()) 
-  name                      String        @db.VarChar(255) 
-  assetType                 AssetType     @relation(fields: [type], references: [type])
-  type                      String        @db.VarChar(255) 
-  make                      String?       @db.VarChar(255) 
-  model                     String?       @db.VarChar(255) 
-  assetTag                  String        @db.Char(6) 
-  serialNumber              String?       @db.VarChar(255) 
-  description               String?       @db.Text 
-  custodian                 Int           
-  custodianID               User          @relation(fields: [custodian], references: [UID])
-  locationType              Location      @relation(fields: [location], references: [location])
-  location                  String        @db.VarChar(255)
-  warrantyStartDate         DateTime?      
-  warrantyEndDate           DateTime?
-  warrantyDetails           String?       @db.Text
-  dateOfPurchase            DateTime?
-  cost                      Decimal?      @db.Decimal(10,2)
-  purchaser                 String?       @db.VarChar(255)
-  comment                   String?       @db.Text
-  assignment                Assignment[]
-  request                   Request[]       
-} 
+model Asset {
+  id                Int          @id @default(autoincrement())
+  name              String       @db.VarChar(255)
+  type              String       @db.VarChar(255)
+  make              String?      @db.VarChar(255)
+  assetTag          String       @db.Char(6)
+  serialNumber      String?      @db.VarChar(255)
+  description       String?      @db.Text
+  custodian         Int
+  location          String       @db.VarChar(255)
+  warrantyStartDate DateTime?
+  warrantyEndDate   DateTime?
+  warrantyDetails   String?      @db.Text
+  dateOfPurchase    DateTime?
+  cost              Decimal?     @db.Decimal(10, 2)
+  purchaser         String?      @db.VarChar(255)
+  comment           String?      @db.Text
+  model             String?      @db.VarChar(255)
+  custodianID       User         @relation(fields: [custodian], references: [UID])
+  locationType      Location     @relation(fields: [location], references: [location])
+  assetType         AssetType    @relation(fields: [type], references: [type])
+  assignment        Assignment[]
+  request           Request[]
+}
 
 model Assignment {
-  id                        Int           @id @default(autoincrement()) 
-  assigneeID                User          @relation(fields: [assignee], references: [UID], onDelete: NoAction, onUpdate: NoAction)
-  assignee                  Int
-  assetID                   Asset         @relation(fields: [asset], references: [id])
-  asset                     Int       
-  startOfAssignment         DateTime      
-  endOfAssignment           DateTime?     
+  id                Int       @id @default(autoincrement())
+  assignee          Int
+  asset             Int
+  startOfAssignment DateTime
+  endOfAssignment   DateTime?
+  assetID           Asset     @relation(fields: [asset], references: [id])
+  assigneeID        User      @relation(fields: [assignee], references: [UID], onUpdate: NoAction)
 }
 
 model Request {
+  id                Int           @id @default(autoincrement())
+  requestor         Int
+  assignee          Int
+  asset             Int
+  requestStatusName String
+  startDate         DateTime
+  notes             String?       @db.Text
+  assetID           Asset         @relation(fields: [asset], references: [id])
+  assigneeID        User          @relation("Assignee", fields: [assignee], references: [UID], onUpdate: NoAction)
+  requestorID       User          @relation("Requestor", fields: [requestor], references: [UID], onUpdate: NoAction)
+  requestStatus     RequestStatus @relation(fields: [requestStatusName], references: [name])
+}
+
+model Test {
   id                        Int           @id @default(autoincrement()) 
-  requestorID               User          @relation(fields: [requestor], references: [UID], onDelete: NoAction, onUpdate: NoAction, name: "Requestor")
-  requestor                 Int
-  assigneeID                User          @relation(fields: [assignee], references: [UID], onDelete: NoAction, onUpdate: NoAction, name: "Assignee")
-  assignee                  Int
-  assetID                   Asset         @relation(fields: [asset], references: [id])
-  asset                     Int       
-  requestStatus             RequestStatus  @relation(fields: [requestStatusName], references: [name])
-  requestStatusName         String
-  startDate                 DateTime   
-  notes                     String?       @db.Text     
+  name                      String        @unique
 }
